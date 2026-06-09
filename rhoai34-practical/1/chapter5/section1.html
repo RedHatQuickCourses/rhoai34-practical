@@ -271,7 +271,7 @@
 <p><strong>URIs (Fragile):</strong> Direct HTTP/HTTPS links to a model file. <strong>Drawback:</strong> Extremely fragile and insecure for production. If the external server goes down, your deployment fails.</p>
 </li>
 <li>
-<p><strong>S3/Object Storage (Standard):</strong> The traditional method. Models are stored in S3 buckets. KServe uses an init-container to download the model into an emptyDir before the server starts. <strong>Drawback:</strong> S3 objects are highly mutable. A data scientist can overwrite a <code>.safetensors</code> file in the bucket, silently breaking the next pod restart.</p>
+<p><strong>S3/Object Storage (Standard):</strong> The traditional method. Models are stored in S3 buckets. KServe uses an init-container to download the model into an emptyDir before the server starts. In 3.4, the Connections API requires S3 connection Secrets to carry the annotation <code>opendatahub.io/connection-type-protocol: "s3"</code> to be correctly identified and validated by system components. <strong>Drawback:</strong> S3 objects are highly mutable. A data scientist can overwrite a <code>.safetensors</code> file in the bucket, silently breaking the next pod restart.</p>
 </li>
 <li>
 <p><strong>OCI Containers / Modelcars (The Best Practice):</strong> A modern approach where model weights are layered into a standard Open Container Initiative (OCI) image (e.g., <code>oci://quay.io/myorg/granite-7b:v1</code>).</p>
@@ -309,8 +309,26 @@ Modelcars provide immutable, container-native distribution. OCI images are prote
 </li>
 <li>
 <p>Click <strong>Register</strong>. An asynchronous Kubernetes Job will download the weights, package them via <code>olot</code> (OCI Layers On Top) into a busybox ModelCar, push it to Quay, and register the immutable <code>oci://</code> artifact in the registry.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>SSL Troubleshooting:</strong> If the <code>kserve-storage-initializer</code> container fails to download model weights from S3 with an SSL verification error, set the <code>S3_VERIFY_SSL</code> environment variable to <code>false</code> in the connection configuration, or inject the proper custom CA bundle via the DSCI&#8217;s trusted CA configuration. This is common with self-signed certificates on internal MinIO or Ceph deployments.</p>
+</li>
+</ul>
+</div>
 </li>
 </ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_deploying_from_the_registry_smart_connection_handling"><a class="anchor" href="#_deploying_from_the_registry_smart_connection_handling"></a>Deploying from the Registry: Smart Connection Handling</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When deploying a model directly from the Model Registry UI, the system automatically scans the target project for existing Data Connections. If a single matching connection is found, it is auto-selected. If no match exists, the model location data from the registry is auto-filled to create a new connection. This eliminates the need for developers to manually configure S3 secrets during deployment — another step toward true self-service model consumption.</p>
+</div>
+<div class="paragraph">
+<p><em>(For advanced storage anti-patterns — network saturation from large model pulls, egress cost optimization, and OCI caching strategies — see the supplemental rhoai3-storage deep-dive content.)</em></p>
 </div>
 </div>
 </div>

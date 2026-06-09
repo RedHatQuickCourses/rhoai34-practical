@@ -257,7 +257,7 @@ In OpenShift AI 3.4, the telemetry flow operates across distinct layers:</p>
 <p><strong>Ingestion Layer:</strong> These metrics are scraped by <strong>User Workload Monitoring (UWM)</strong>—which must be explicitly enabled on the cluster. The data flows into the <strong>OpenTelemetry Collector (OTC)</strong>, which acts as the standardized ingestion layer.</p>
 </li>
 <li>
-<p><strong>Storage &amp; Visualization:</strong> From OTC, the data is routed into the dedicated OpenShift AI Prometheus instance (for metrics) and Tempo (for distributed tracing). Platform Engineers visualize this aggregated data in centralized Grafana dashboards, or use the <code>DSCI</code> resource to export it to external SIEM tools.</p>
+<p><strong>Storage &amp; Visualization:</strong> From OTC, the data is routed into the dedicated OpenShift AI Prometheus instance (for metrics) and Tempo (for distributed tracing). Platform Engineers visualize this aggregated data in centralized Grafana dashboards. To export metrics to an existing enterprise observability tool (such as Splunk, Datadog, or an external Prometheus), Platform Engineers configure the <code>spec.monitoring.metrics.exporters</code> field in the <strong>DataScienceClusterInitialization (DSCI)</strong> custom resource, which automatically configures the OpenTelemetry Collector to forward metrics to external destinations.</p>
 </li>
 </ol>
 </div>
@@ -295,6 +295,30 @@ In OpenShift AI 3.4, the telemetry flow operates across distinct layers:</p>
 </div>
 <div class="paragraph">
 <p>This data can be exported as a CSV file to provide Finance with an enterprise-grade "Showback" report, attributing specific LLM API costs directly to the business units consuming them.</p>
+</div>
+<div class="paragraph">
+<p>For monitoring distributed workload resource consumption (CPU and memory usage across distributed training and inference jobs), navigate to <strong>Observe &amp; monitor &#8594; Workload metrics</strong> in the OpenShift AI dashboard. This view provides project-level aggregation of distributed workload resource usage across all tenants.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_from_showback_to_business_value"><a class="anchor" href="#_from_showback_to_business_value"></a>From Showback to Business Value</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Showback is the starting point, not the end state. Organizations progressing along the AI platform maturity curve should plan for:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Showback to Chargeback transition:</strong> Moving from "visibility into costs" to "actual cost allocation to business units" using the CSV export data as input to FinOps tooling.</p>
+</li>
+<li>
+<p><strong>Platform success metrics:</strong> Track developer adoption rate (active API keys / total developers), time-to-first-inference (from onboarding to first successful API call), and model deployment velocity (models promoted from registry to production per sprint).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>These metrics demonstrate platform value to leadership and justify continued investment in the self-service AI infrastructure. <em>(See supplemental rhoai3-deploy and rhoai3-validate content for ROI calculation formulas and platform maturity models.)</em></p>
 </div>
 </div>
 </div>

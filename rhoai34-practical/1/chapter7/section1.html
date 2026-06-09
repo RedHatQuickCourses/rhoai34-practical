@@ -245,7 +245,7 @@
 <p>A standalone vLLM deployment only provides a raw inference endpoint. If developers want to build a Retrieval-Augmented Generation (RAG) application, they are forced to write complex "glue code" using external frameworks like LangChain. This forces developers to manually handle document chunking, generate embeddings, orchestrate similarity searches against vector stores, and format context windows.</p>
 </div>
 <div class="paragraph">
-<p>Deploying a <code>LlamaStackDistribution</code> abstracts this complexity entirely. Llama Stack unifies the inference engine, embedding models, and vector storage (e.g., Milvus, pgvector, or inline FAISS) behind a single OpenAI-compatible API layer. Using the Llama Stack <code>/v1/responses</code> API, developers pass their queries using the built-in <code>file_search</code> tool, allowing the platform engine to handle RAG data-retrieval routing natively.</p>
+<p>Deploying a <code>LlamaStackDistribution</code> abstracts this complexity entirely. Llama Stack unifies the inference engine, embedding models, and vector storage behind a single OpenAI-compatible API layer. For lightweight development and experimentation, Llama Stack supports <strong>inline FAISS</strong> — an in-process, in-memory vector store that runs inside the Llama Stack server container itself with no external database required. For production, Platform Engineers should deploy a dedicated remote vector database like Milvus or PostgreSQL with pgvector. Using the Llama Stack <code>/v1/responses</code> API, developers pass their queries using the built-in <code>file_search</code> tool, allowing the platform engine to handle RAG data-retrieval routing natively.</p>
 </div>
 </div>
 </div>
@@ -291,6 +291,17 @@
 <p><strong>Instantiate Distribution:</strong> Apply the <code>LlamaStackDistribution</code> Custom Resource mapping backend engine variables directly to the corresponding Secret targets.</p>
 </li>
 </ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_developer_preview_exposing_vector_databases_to_the_playground"><a class="anchor" href="#_developer_preview_exposing_vector_databases_to_the_playground"></a>Developer Preview: Exposing Vector Databases to the Playground</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As a Developer Preview feature in 3.4, Platform Engineers can expose pre-existing, read-only vector databases directly to the Gen AI Playground. This is achieved by declaring vector stores through <strong>ConfigMaps</strong> containing connection details, collection names, and optional metadata. These declared stores automatically appear under <strong>RAG / Knowledge Sources</strong> in the Playground interface, enabling developers to route queries through Llama Stack RAG primitives without performing manual data ingestion or writing custom code.</p>
+</div>
+<div class="paragraph">
+<p>This pattern is significant for organizational enablement: Platform Engineers provision the vector infrastructure once, declare it via ConfigMaps, and every developer on the platform can immediately prototype RAG applications through the Playground UI — no LangChain code, no infrastructure tickets, no custom wiring.</p>
 </div>
 </div>
 </div>

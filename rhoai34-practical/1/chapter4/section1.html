@@ -250,6 +250,9 @@
 <div class="paragraph">
 <p>The <strong>Model Context Protocol (MCP)</strong> solves this by standardizing how models connect to data sources and tools. Instead of custom integration scripts with scattered API keys, the Platform Engineer deploys pre-built, secure MCP Servers (like the Red Hat OpenShift, Ansible, or partner servers) via the <strong>MCP Catalog</strong>. The infrastructure handles the tool execution, and the LLM merely requests the standardized tool format.</p>
 </div>
+<div class="paragraph">
+<p>Behind the scenes, the <strong><code>mcp-gateway</code></strong> acts as a Kubernetes-native aggregation layer. When Platform Engineers deploy multiple MCP servers (e.g., Ansible, Confluent, GitHub), the mcp-gateway consolidates their tools behind a single unified runtime endpoint. Developers interact with one gateway rather than managing connections to individual servers, and the Platform Engineer gets centralized access control, routing, and audit logging across all tool integrations.</p>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -288,9 +291,20 @@
 <p><strong>Deploying the Tool:</strong> As an admin, navigate to <strong>AI hub &#8594; MCP servers (Catalog)</strong>, find the required tool, and deploy the MCP Server directly into the namespace via the <code>mcp-lifecycle-operator</code>.</p>
 </li>
 <li>
-<p><strong>Testing Safely:</strong> Instruct developers to open the <strong>Gen AI Playground</strong>, click the <strong>MCP</strong> tab, securely authorize the server with a session token, and test the agent interactively.</p>
+<p><strong>Testing Safely:</strong> Instruct developers to open the <strong>Gen AI Playground</strong>, click the <strong>MCP</strong> tab, securely authorize the server with a session token, and test the agent interactively. For immediate safety testing during prototyping, developers can enable <strong>Prompt Guard</strong> directly in the Playground interface to detect prompt injection and jailbreak attempts against their agentic prompts before committing code.</p>
 </li>
 </ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_production_safety_beyond_playground_guardrails"><a class="anchor" href="#_production_safety_beyond_playground_guardrails"></a>Production Safety: Beyond Playground Guardrails</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Prompt Guard in the Playground is a developer-facing safety net for prototyping. For production agentic deployments, organizations should evaluate the <strong>TrustyAI Guardrails Orchestrator</strong> — an input sanitization pipeline that intercepts inference requests at the platform level to detect toxicity, PII exposure, and injection attacks <strong>before</strong> they consume GPU cycles. This ensures safety enforcement operates continuously inside the agent loop, not only during manual testing.</p>
+</div>
+<div class="paragraph">
+<p>This layered approach — MCP Catalog vetting &#8594; Playground Prompt Guard &#8594; Production Guardrails Orchestrator — provides the defense-in-depth narrative required to gain CISO approval for production agentic deployments. <em>(See supplemental rhoai3-validate content for TrustyAI Guardrails Orchestrator implementation details.)</em></p>
 </div>
 </div>
 </div>

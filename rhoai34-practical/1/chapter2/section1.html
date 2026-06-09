@@ -266,7 +266,7 @@
 <p><strong>OpenShift User Groups:</strong> Defines the user&#8217;s identity (e.g., <code>data-scientists</code>, <code>ml-engineers</code>).</p>
 </li>
 <li>
-<p><strong>MaaS Subscriptions (<code>MaaSSubscription</code>):</strong> Maps a User Group to specific models and enforces strict token quotas (e.g., 500k tokens per hour). If a user belongs to multiple groups, the Subscription with the highest Priority dictates their default limits <code>[Source: Red Hat OpenShift AI Self-Managed-3.4-Govern LLM access with Models-as-a-Service - Priority levels]</code>.</p>
+<p><strong>MaaS Subscriptions (<code>MaaSSubscription</code>):</strong> Maps a User Group to specific models and enforces strict token quotas (e.g., 500k tokens per hour). If a user belongs to multiple groups, the system automatically selects the Subscription with the highest numeric Priority Level (e.g., Priority 10 takes precedence over Priority 0) when generating an API key without explicit subscription selection <code>[Source: Red Hat OpenShift AI Self-Managed-3.4-Govern LLM access with Models-as-a-Service - Priority levels]</code>.</p>
 </li>
 <li>
 <p><strong>Authorization Policies (<code>MaaSAuthPolicy</code>):</strong> Grants the User Group the actual network permission to pass through the API Gateway <code>[Source: Red Hat OpenShift AI Self-Managed-3.4-Govern LLM access with Models-as-a-Service - Models-as-a-Service authorization policies]</code>.</p>
@@ -334,6 +334,28 @@ The Platform Engineer should use the OpenShift AI 3.4 <code>ExternalModel</code>
 </div>
 <div class="paragraph">
 <p>The Gateway enforces their specific Subscription token limit (preventing runaway code), logs their exact usage for Finance&#8217;s showback reports in the Observability Dashboard, and safely proxies the request to OpenAI. If a developer&#8217;s MaaS key leaks, the Admin can simply click "Revoke" on that specific key without affecting the other 49 developers.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_api_key_lifecycle_governance"><a class="anchor" href="#_api_key_lifecycle_governance"></a>API Key Lifecycle &amp; Governance</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>MaaS API keys carry a critical security implication: group membership is captured as a <strong>snapshot</strong> at the moment the key is created. If a contractor or employee is later removed from their OIDC group, their previously generated API keys continue to function until they expire or are manually revoked by an administrator. Platform Engineers must build a revocation checklist into their offboarding runbook.</p>
+</div>
+<div class="paragraph">
+<p>To enforce organizational key hygiene, administrators configure the global maximum expiration for all generated API keys in the <code>Tenant</code> custom resource at <code>spec.apiKeys.maxExpirationDays</code> (e.g., 90 days). This prevents developers from creating permanent keys that become long-lived security liabilities.</p>
+</div>
+<div class="paragraph">
+<p><em>(For advanced multi-tenant governance patterns — preemption policies, cross-subscription fairness, and enterprise-scale rollout playbooks — see the supplemental rhoai3-mass2 deep-dive content.)</em></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_enabling_self_service_at_scale"><a class="anchor" href="#_enabling_self_service_at_scale"></a>Enabling Self-Service at Scale</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The MaaS architecture directly enables a self-service AI platform. Developers generate their own API keys, select their own subscriptions, and prototype in the Playground — all without filing a ticket. The Platform Engineer&#8217;s role shifts from "gatekeeper" to "guardrail designer." Finance gets showback reports. Security gets audit trails. Developers get velocity. This is the core value proposition when presenting MaaS to organizational leadership.</p>
 </div>
 <div style="page-break-after: always;"></div>
 <div class="paragraph">

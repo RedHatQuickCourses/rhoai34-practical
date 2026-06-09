@@ -297,6 +297,9 @@
 <li>
 <p><strong>MLServer ServingRuntime:</strong> Now GA in 3.4, this is the designated runtime for classical, structured-data machine learning models built with Scikit-Learn, XGBoost, and LightGBM.</p>
 </li>
+<li>
+<p><strong>Automatic Runtime Suggestion:</strong> When deploying via the UI, OpenShift AI analyzes the selected model framework (e.g., ONNX, SafeTensors) and matches it against the accelerator identifier defined in the chosen Hardware Profile. This allows the system to automatically suggest the optimal serving runtime, reducing manual configuration errors.</p>
+</li>
 </ul>
 </div>
 </div>
