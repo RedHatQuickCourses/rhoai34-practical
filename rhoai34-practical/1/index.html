@@ -51,7 +51,7 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
-    <a class="nav-link" href="LABENV/index.html">Lab Environment</a>
+    <a class="nav-link" href="LABENV/index.html">Lab Environment Setup</a>
   </li>
 </ul>
   </li>
@@ -242,29 +242,31 @@
 <p>She points to the second chart. "At the same time, we&#8217;ve invested over $500,000 in internal GPU infrastructure. Yet, our data scientists are waiting weeks for capacity because resources are hoarded by single teams or sitting idle."</p>
 </div>
 <div class="paragraph">
-<p>The business needs to regain control. By centralizing AI operations, enterprises have realized over $5 million in cost avoidance , achieved a 40%+ reduction in GPU hours, and delivered 2x faster model responses.</p>
+<p>The business needs to regain control. By centralizing AI operations, enterprises have realized over $5 million in cost avoidance, achieved a 40%+ reduction in GPU hours, and delivered 2x faster model responses.</p>
 </div>
 <div class="paragraph">
 <p>Your mandate is clear: Transform this fragmented chaos into a secure, governed, and highly scalable <strong>Enterprise AI Factory</strong>.</p>
 </div>
-<div class="exampleblock">
-<div class="title">Example 1. Arcade: Stepping into the AI Engine Room</div>
-<div class="content">
-<div class="paragraph">
-<p><strong>(Visual: A split screen showing chaotic, fragmented infrastructure on the left, transitioning to a streamlined, automated, and secure factory pipeline on the right.)</strong></p>
-</div>
-<div class="paragraph">
-<p><strong>Narrator:</strong> "Welcome to 'A Practical Approach to OpenShift AI 3.4.' In this course, we will build a centralized, governed AI engine room from the ground up. You will learn how to enforce token limits to control API costs, securely deploy massive models across distributed hardware, and empower your data scientists and developers with self-service, compliant toolchains. Let’s step out of the shadows and get to work."</p>
-</div>
-</div>
-</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_course_prerequisites_environment"><a class="anchor" href="#_course_prerequisites_environment"></a>Course Prerequisites &amp; Environment</h2>
+<h2 id="_course_structure_prerequisites"><a class="anchor" href="#_course_structure_prerequisites"></a>Course Structure &amp; Prerequisites</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This is a practical, hands-on series. Rather than just showing you the "happy path," we will walk through the exact steps to build this architecture while navigating the configurations and capabilities you will face in production.</p>
+<p>This is a practical, hands-on series. Rather than just showing you the "happy path," we walk through the exact configurations and capabilities you will face in production. Each of the 8 modules follows a consistent three-part structure:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Diagnostic Quiz</strong> — Test your existing knowledge before studying the material.</p>
+</li>
+<li>
+<p><strong>Runbook</strong> — Architecture overview, anti-patterns, configuration cheat sheets, and business value context.</p>
+</li>
+<li>
+<p><strong>Interactive Labs</strong> — UI click-path walkthroughs that let you practice without dedicated lab infrastructure.</p>
+</li>
+</ol>
 </div>
 <div class="paragraph">
 <p>To get the most out of this course, you should understand:</p>
@@ -291,23 +293,23 @@
 <p>OpenShift AI 3.4 brings massive updates that directly solve our CIO&#8217;s crisis, targeting three core roles within the enterprise.</p>
 </div>
 <div class="sect2">
-<h3 id="_the_platform_engineer_your_role"><a class="anchor" href="#_the_platform_engineer_your_role"></a>The Platform Engineer (Your Role)</h3>
+<h3 id="_the_platform_engineer_your_primary_role"><a class="anchor" href="#_the_platform_engineer_your_primary_role"></a>The Platform Engineer (Your Primary Role)</h3>
 <div class="paragraph">
 <p>You are responsible for securing the infrastructure, optimizing hardware utilization, and providing visibility into resource consumption.</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Models-as-a-Service (MaaS) &amp; Observability:</strong> Replaces fragmented API keys with a flexible, internal subscription model. Define subscriptions to grant specific groups access to models with strict token quotas, and use the unified dashboard to generate chargeback reports for finance.</p>
+<p><strong>Modules 2-3:</strong> Stand up the platform and govern access with MaaS subscriptions, token quotas, and self-service API keys.</p>
 </li>
 <li>
-<p><strong>Distributed Inference (<code>llm-d</code>):</strong> Overcomes the lack of single-node GPU capacity for massive models by providing a Kubernetes-native framework to serve large language models at scale across multiple nodes.</p>
+<p><strong>Modules 4-5:</strong> Scale massive models across GPUs with llm-d and Kueue, and secure agentic workflows with the MCP Catalog and EvalHub.</p>
 </li>
 <li>
-<p><strong>Kueue for Hardware Sharing:</strong> Maximizes your GPU ROI by intelligently managing quotas and prioritizing job scheduling, stopping the "GPU turf wars."</p>
+<p><strong>Modules 6-7:</strong> Govern hardware sharing with Hardware Profiles and lock down model provenance with the Registry and OCI Modelcars.</p>
 </li>
 <li>
-<p><strong>MCP Catalog:</strong> A centralized UI for discovering and securely deploying Model Context Protocol (MCP) servers to prevent unvetted agentic integrations.</p>
+<p><strong>Modules 8-9:</strong> Enable rapid prototyping with Llama Stack and the Gen AI Playground, then build enterprise observability with financial showback.</p>
 </li>
 </ul>
 </div>
@@ -315,18 +317,15 @@
 <div class="sect2">
 <h3 id="_the_data_scientist"><a class="anchor" href="#_the_data_scientist"></a>The Data Scientist</h3>
 <div class="paragraph">
-<p>Focused on discovering the right models, ensuring their accuracy, and optimizing Retrieval-Augmented Generation (RAG) pipelines.</p>
+<p>Focused on discovering the right models, ensuring their accuracy, and optimizing RAG pipelines.</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Model Catalog &amp; "Tool Calling" Filter:</strong> A curated library of generative AI models. The new "Tool calling" filter instantly identifies models validated for agentic workflows.</p>
+<p><strong>Module 5:</strong> Use the MCP Catalog&#8217;s "Tool calling" filter to identify validated agentic models, then run EvalHub benchmarks to guarantee safety.</p>
 </li>
 <li>
-<p><strong>EvalHub:</strong> An evaluation orchestration service that tests LLMs against standardized benchmarks to guarantee safety and compliance.</p>
-</li>
-<li>
-<p><strong>AutoRAG (Technology Preview):</strong> Automatically tests combinations of chunking, embedding, and retrieval settings to rank the best configurations for your RAG pipelines.</p>
+<p><strong>Module 7:</strong> Register, version, and promote fine-tuned models through the Model Registry with immutable OCI Modelcars.</p>
 </li>
 </ul>
 </div>
@@ -339,10 +338,10 @@
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Gen AI Playground:</strong> An interactive chat environment to rapidly prototype foundation models and test external tools before writing any application code.</p>
+<p><strong>Module 3:</strong> Generate self-service API keys scoped to MaaS subscriptions — no IT tickets required.</p>
 </li>
 <li>
-<p><strong>Self-Service API Keys:</strong> Developers can instantly generate short-lived temporary API keys for prototyping, or permanent keys tied to their MaaS subscriptions, removing IT bottlenecks.</p>
+<p><strong>Module 8:</strong> Prototype foundation models and test agentic MCP tools in the Gen AI Playground before writing any application code.</p>
 </li>
 </ul>
 </div>
@@ -350,47 +349,74 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="_feature_to_role_alignment_matrix_your_runbook"><a class="anchor" href="#_feature_to_role_alignment_matrix_your_runbook"></a>Feature-to-Role Alignment Matrix (Your Runbook)</h2>
+<h2 id="_your_it_support_queue"><a class="anchor" href="#_your_it_support_queue"></a>Your IT Support Queue</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>The CIO&#8217;s mandate has landed as 8 open tickets in your IT support queue. Each module in this course resolves one ticket. By the end, every ticket is closed and the AI Factory is operational.</p>
+</div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 40%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 50%;">
+<col style="width: 16.6668%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Business Challenge</th>
-<th class="tableblock halign-left valign-top">Persona</th>
-<th class="tableblock halign-left valign-top">OpenShift AI 3.4 Feature</th>
-<th class="tableblock halign-left valign-top">UI Action / Resolution</th>
+<th class="tableblock halign-left valign-top">Ticket</th>
+<th class="tableblock halign-left valign-top">Priority</th>
+<th class="tableblock halign-left valign-top">Problem Statement</th>
+<th class="tableblock halign-left valign-top">Resolution</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Spiraling API Costs &amp; Lack of Showback</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Platform Engineer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Models-as-a-Service (MaaS) &amp; Observability</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Navigate to <strong>Settings &#8594; Subscriptions</strong> to set token limits, and <strong>Observe &amp; monitor &#8594; Dashboard</strong> to export usage data.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AIOPS-001</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">P1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Platform deployed but models unreachable.</strong> A junior admin manually created a Kubernetes Route to expose a model endpoint, completely bypassing the Gateway API. MaaS token authentication, rate limiting, and Prometheus scraping are all broken.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="chapter1/section1.html" class="xref page">Module 2</a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Hoarded GPUs &amp; Model Capacity Limits</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Platform Engineer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Kueue &amp; Distributed Inference (<code>llm-d</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Deploy models using the <strong>Distributed inference with llm-d</strong> runtime and apply Kueue labels to share resources.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AIOPS-002</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">P1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>$1.5M in shadow API spend.</strong> 50 developers are sharing a single root OpenAI API key embedded directly in source code. Finance cannot attribute costs. A runaway loop in one developer&#8217;s code exhausted the enterprise token limit, taking down all 50 applications.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="chapter2/section1.html" class="xref page">Module 3</a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Unvetted Shadow Agentic AI</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Data Scientist</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Model Catalog &amp; EvalHub</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Filter the Catalog using the <strong>Tool calling</strong> checkbox, then orchestrate benchmark tests via EvalHub.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AIOPS-003</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">P1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>70B model crashes with OOM on every deploy.</strong> The team keeps increasing Pod replicas hoping the model will "spread out" — but each replica attempts to load the entire 140GB model into a single 24GB GPU. It just copies the failure four times.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="chapter3/section1.html" class="xref page">Module 4</a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Friction in API Credential Management</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Application Developer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Gen AI Playground &amp; API Keys</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Access <strong>Gen AI studio &#8594; API keys</strong> to generate scoped tokens securely.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AIOPS-004</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">P1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Agent leaked Kafka credentials.</strong> A developer embedded personal Confluent Cloud API keys directly into a LangChain script and exposed the agent to the internet. A prompt injection attack could exfiltrate sensitive shipping manifests with zero audit trail.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="chapter4/section1.html" class="xref page">Module 5</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AIOPS-005</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">P2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Production model silently corrupted.</strong> A data scientist uploaded experimental weights to the same S3 URI used by the production InferenceService. The next pod restart loaded the broken model — no version control, no rollback, no audit trail.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="chapter5/section1.html" class="xref page">Module 6</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AIOPS-006</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">P2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>$50K A100 GPU assigned to an idle Pandas notebook.</strong> A data scientist selected "GPU Node" for basic exploratory analysis and left the notebook running over the weekend. Meanwhile, a critical LLM deployment failed with <code>Insufficient quota for nvidia.com/gpu</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="chapter6/section1.html" class="xref page">Module 7</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AIOPS-007</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">P2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Developers waiting 3 weeks for a RAG stack.</strong> The platform team handed off three disconnected endpoints (LLM, embeddings, vector DB). Developers spent weeks writing fragile LangChain glue code. When any backend changed, everything broke.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="chapter7/section1.html" class="xref page">Module 8</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AIOPS-008</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">P2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>CIO demands cost attribution by Friday.</strong> The team is parsing raw pod logs with a custom Python sidecar to count tokens for showback. It misses cached requests, overloads the logging infrastructure, and the report is inaccurate.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="chapter8/section1.html" class="xref page">Module 9</a></p></td>
 </tr>
 </tbody>
 </table>
@@ -400,7 +426,7 @@
 <h2 id="_diagnostic_gateway_knowledge_check"><a class="anchor" href="#_diagnostic_gateway_knowledge_check"></a>Diagnostic Gateway: Knowledge Check</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Before we move into the lab environment to solve the CIO&#8217;s challenges, let&#8217;s verify your core understanding.</p>
+<p>Before you step into the AI Engine Room to close these tickets, let&#8217;s verify your core understanding.</p>
 </div>
 <div class="sidebarblock">
 <div class="content">
@@ -428,38 +454,25 @@
 </ul>
 </div>
 <div class="paragraph">
-<p><strong>(Answer: B - Models-as-a-Service allows you to centrally manage subscriptions, token rate limits, and view unified observability dashboards.)</strong></p>
+<p><strong>(Answer: B — Models-as-a-Service allows you to centrally manage subscriptions, token rate limits, and view unified observability dashboards for financial showback.)</strong></p>
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_whats_next_your_it_support_tickets"><a class="anchor" href="#_whats_next_your_it_support_tickets"></a>What&#8217;s Next: Your IT Support Tickets</h2>
+<h2 id="_ready_to_start_building"><a class="anchor" href="#_ready_to_start_building"></a>Ready to Start Building?</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In the upcoming interactive lab modules, you will step into the AI Engine Room to resolve the following IT tickets:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Ticket 1:</strong> Configure a MaaS subscription and authorization policy to securely govern developer API access and enforce strict token quotas.</p>
-</li>
-<li>
-<p><strong>Ticket 2:</strong> Discover and deploy a massive agentic model using the Distributed Inference (<code>llm-d</code>) runtime to bypass single-node GPU limits.</p>
-</li>
-<li>
-<p><strong>Ticket 3:</strong> Interact with external MCP servers through the Gen AI Playground to test complex tool execution safely.</p>
-</li>
-</ul>
+<p>You have 8 open tickets and one mandate: build the Enterprise AI Factory. Each module closes one ticket — by the end, your queue is clear and your platform is production-ready.</p>
 </div>
 <div class="paragraph">
-<p>Ready to start building? Proceed to Module 2.</p>
+<p>Proceed to <a href="chapter1/index.html" class="xref page">Module 2: Platform Setup &amp; Readiness</a>.</p>
 </div>
 </div>
 </div>
 <nav class="pagination">
-  <span class="next"><a href="LABENV/index.html">Lab Environment</a></span>
+  <span class="next"><a href="LABENV/index.html">Lab Environment Setup</a></span>
 </nav>
 </article>
   </div>

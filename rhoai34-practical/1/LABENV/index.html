@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Lab Environment :: Building the AI Engine</title>
+    <title>Lab Environment Setup :: Building the AI Engine</title>
     <link rel="prev" href="../index.html">
     <link rel="next" href="../chapter1/index.html">
     <meta name="generator" content="Antora 3.2.0-alpha.12">
@@ -51,7 +51,7 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item is-current-page" data-depth="1">
-    <a class="nav-link" href="index.html">Lab Environment</a>
+    <a class="nav-link" href="index.html">Lab Environment Setup</a>
   </li>
 </ul>
   </li>
@@ -219,7 +219,7 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">Building the AI Engine</a></li>
-    <li><a href="index.html">Lab Environment</a></li>
+    <li><a href="index.html">Lab Environment Setup</a></li>
   </ul>
 </nav>
 </div>
@@ -228,9 +228,95 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Lab Environment</h1>
+<h1 class="page">Lab Environment Setup</h1>
+<div id="preamble">
+<div class="sectionbody">
 <div class="paragraph">
-<p>FIXME: Instructions for accessing the lab environment for this hands-on based training.</p>
+<p>Building an Models-as-a-Service platform requires the right foundation. For this course, you will be working in a live, GPU-accelerated Single Node OpenShift (SNO) environment provisioned through the Red Hat Demo Platform (RHDP).</p>
+</div>
+<div class="paragraph">
+<p><strong>Direct Link:</strong> <a href="https://catalog.demo.redhat.com/catalog/babylon-catalog-prod?item=babylon-catalog-prod/published.openshift-ai-v3.prod&amp;utm_source=webapp&amp;utm_medium=share-link" target="_blank" rel="noopener">Red Hat OpenShift AI 3</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_understanding_your_infrastructure"><a class="anchor" href="#_understanding_your_infrastructure"></a>Understanding Your Infrastructure</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This is the exact environment used to validate all course exercises, model deployments, and observability tasks.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Base Hardware:</strong> By default, your instance provides a single NVIDIA L4 GPU with 24GB of VRAM.</p>
+</li>
+<li>
+<p><strong>Advanced Hardware:</strong> Depending on your RHDP access level, you may be able to select larger node sizes, such as the <code>g6.12xlarge</code>, which includes four NVIDIA L4 GPUs—enough compute power to run up to four small-sized LLMs simultaneously.</p>
+</li>
+<li>
+<p><strong>Pre-Deployed Assets:</strong> The lab comes pre-configured with OpenShift AI 3.4 and includes a <code>llama-32-2b</code> model already deployed. This pre-deployed model is immediately available for the playground and serves as an excellent base for agentic development.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><strong>Resource Management</strong><br>
+While this instance has enough memory to host all OpenShift AI features, the environment may struggle if you enable every single feature simultaneously. Additionally, to deploy a new model during the labs, you must first stop the pre-running Llama model (located in the <code>my-first-model</code> project) to free up the GPU resources.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_interactive_order_walkthrough"><a class="anchor" href="#_interactive_order_walkthrough"></a>Interactive Order Walkthrough</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you are new to the Red Hat Demo Platform, use the interactive tour below to see exactly how to navigate the catalog and select the correct GPU parameters for your lab environment.</p>
+</div>
+<iframe
+  src="https://demo.arcade.software/0dtjNJXkvWw8oAX8wOw0?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true"
+  width="100%"
+  height="600px"
+  frameborder="0"
+  allowfullscreen
+  webkitallowfullscreen
+  mozallowfullscreen
+  allow="clipboard-write"
+  muted>
+</iframe>
+<hr>
+<div class="sect2">
+<h3 id="_provisioning_timeline_access"><a class="anchor" href="#_provisioning_timeline_access"></a>Provisioning Timeline &amp; Access</h3>
+<div class="paragraph">
+<p>Lab provisioning typically takes <strong>60 to 90 minutes</strong>.</p>
+</div>
+<div class="paragraph">
+<p>You will receive an email with your access details once the environment is fully operational. Alternatively, you can retrieve your credentials directly from the RHDP portal:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>On the RHDP portal, <strong>click</strong> on <strong>Services</strong> in the left-hand navigation menu.</p>
+</li>
+<li>
+<p><strong>Select your lab</strong> from the active listings on the right-hand side of the page.</p>
+</li>
+<li>
+<p><strong>View your access details</strong>, which will include your OpenShift console URL, administrator credentials, and API endpoints.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
 </div>
 <nav class="pagination">
   <span class="prev"><a href="../index.html">Introduction &amp; Overview</a></span>
