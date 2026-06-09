@@ -335,6 +335,9 @@
 <li>
 <p><strong>Prerequisites for <code>llm-d</code>:</strong> If you plan to use Distributed Inference (<code>llm-d</code>), the OpenShift AI operator alone is not enough. You must pre-install the <strong>cert-manager Operator</strong>, the <strong>Red Hat Connectivity Link Operator</strong> (for gateway routing), and the <strong>Leader Worker Set Operator</strong> (to manage the multi-node pod topology).</p>
 </li>
+<li>
+<p><strong>Custom Namespaces:</strong> If your organization requires custom namespaces for applications or workbenches instead of the defaults (e.g., <code>redhat-ods-applications</code>, <code>rhods-notebooks</code>), these namespaces must be created and labeled <strong>before</strong> installing the OpenShift AI Operator. Never rename default system namespaces.</p>
+</li>
 </ul>
 </div>
 <div style="page-break-after: always;"></div>

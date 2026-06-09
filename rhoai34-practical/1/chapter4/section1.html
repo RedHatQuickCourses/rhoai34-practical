@@ -272,6 +272,9 @@
 <li>
 <p>Crucially, EvalHub seamlessly integrates with <strong>MLflow</strong> (now natively managed in OpenShift AI 3.4), ensuring every evaluation run is tracked, versioned, and auditable for compliance.</p>
 </li>
+<li>
+<p><strong>Prerequisite:</strong> EvalHub requires an external PostgreSQL connection string stored as a Kubernetes Secret (<code>db-url</code>) to manage evaluation jobs.</p>
+</li>
 </ul>
 </div>
 </div>
@@ -301,7 +304,7 @@
 <h2 id="_production_safety_beyond_playground_guardrails"><a class="anchor" href="#_production_safety_beyond_playground_guardrails"></a>Production Safety: Beyond Playground Guardrails</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Prompt Guard in the Playground is a developer-facing safety net for prototyping. For production agentic deployments, organizations should evaluate the <strong>TrustyAI Guardrails Orchestrator</strong> — an input sanitization pipeline that intercepts inference requests at the platform level to detect toxicity, PII exposure, and injection attacks <strong>before</strong> they consume GPU cycles. This ensures safety enforcement operates continuously inside the agent loop, not only during manual testing.</p>
+<p>Prompt Guard in the Playground is a developer-facing safety net for prototyping. For production agentic deployments, organizations should evaluate the <strong>TrustyAI Guardrails Orchestrator</strong> — an input sanitization pipeline that intercepts inference requests at the platform level to detect toxicity, PII exposure, and injection attacks <strong>before</strong> they consume GPU cycles. Two concrete implementations are available via the TrustyAI Operator: <strong>NeMo Guardrails</strong> and the <strong>IBM FMS Guardrails Orchestrator</strong>, which deploy safety models such as HAP (Hate, Abuse, Profanity) detectors to actively block inappropriate interactions. This ensures safety enforcement operates continuously inside the agent loop, not only during manual testing.</p>
 </div>
 <div class="paragraph">
 <p>This layered approach — MCP Catalog vetting &#8594; Playground Prompt Guard &#8594; Production Guardrails Orchestrator — provides the defense-in-depth narrative required to gain CISO approval for production agentic deployments. <em>(See supplemental rhoai3-validate content for TrustyAI Guardrails Orchestrator implementation details.)</em></p>

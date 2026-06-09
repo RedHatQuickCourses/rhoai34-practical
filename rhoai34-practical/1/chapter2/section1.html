@@ -300,6 +300,9 @@
 </li>
 </ol>
 </div>
+<div class="paragraph">
+<p><strong>Prerequisites:</strong> MaaS requires a provisioned <strong>PostgreSQL database (version 14+)</strong> to manage API key lifecycles — OpenShift AI does not provision this automatically. Additionally, <strong>User Workload Monitoring (UWM)</strong> must be enabled on the OpenShift cluster; without it, MaaS cannot collect usage metrics and the installation will show a <code>Degraded</code> status.</p>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -344,7 +347,7 @@ The Platform Engineer should use the OpenShift AI 3.4 <code>ExternalModel</code>
 <p>MaaS API keys carry a critical security implication: group membership is captured as a <strong>snapshot</strong> at the moment the key is created. If a contractor or employee is later removed from their OIDC group, their previously generated API keys continue to function until they expire or are manually revoked by an administrator. Platform Engineers must build a revocation checklist into their offboarding runbook.</p>
 </div>
 <div class="paragraph">
-<p>To enforce organizational key hygiene, administrators configure the global maximum expiration for all generated API keys in the <code>Tenant</code> custom resource at <code>spec.apiKeys.maxExpirationDays</code> (e.g., 90 days). This prevents developers from creating permanent keys that become long-lived security liabilities.</p>
+<p>To enforce organizational key hygiene, administrators configure the global maximum expiration for all generated API keys in the <code>Tenant</code> custom resource at <code>spec.apiKeys.maxExpirationDays</code> (e.g., 90 days). This prevents developers from creating permanent keys that become long-lived security liabilities. The <code>Tenant</code> CR is also where Platform Engineers configure global MaaS settings including telemetry options for showback (covered in detail in Module 9) and Gateway references.</p>
 </div>
 <div class="paragraph">
 <p><em>(For advanced multi-tenant governance patterns — preemption policies, cross-subscription fairness, and enterprise-scale rollout playbooks — see the supplemental rhoai3-mass2 deep-dive content.)</em></p>
