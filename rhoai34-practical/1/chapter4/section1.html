@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Module 5 Runbook: Securing Agentic Workflows :: Building the AI Engine</title>
+    <link rel="prev" href="index.html">
+    <link rel="next" href="section2.html">
+    <meta name="description" content="Theoretical architecture and Anti-Pattern for MCP and EvalHub.">
+    <meta name="generator" content="Antora 3.2.0-alpha.12">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/tabs.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/collapsible.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/reading-time.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/audio-transcript.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Building the AI Engine</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="rhoai34-practical" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Building the AI Engine</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Introduction &amp; Overview</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter1/index.html">Interactive Quiz</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter1/section1.html">Runbook: Platform Setup</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter1/section2.html">Labs: Building the Engine Room</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter2/index.html">Interactive Quiz #2</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter2/section1.html">Runbook: MaaS &amp; Observability</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter2/section2.html">Labs: MaaS &amp; Observability</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter3/index.html">Interactive Quiz #3</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter3/section1.html">Runbook: Distributed Inference &amp; Kueue</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter3/section2.html">Labs: Distributed Inference</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Interactive Quiz #4</a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="section1.html">Runbook: MCP &amp; EvalHub</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="section2.html">Labs: MCP &amp; EvalHub</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../appendix/appendix.html">Appendix</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Building the AI Engine</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Building the AI Engine</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Building the AI Engine</a></li>
+    <li><a href="index.html">Interactive Quiz #4</a></li>
+    <li><a href="section1.html">Runbook: MCP &amp; EvalHub</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Module 5 Runbook: Securing Agentic Workflows</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you passed the Diagnostic Gateway, use this page as your quick-reference job aid. If you are building your foundational skills, read this carefully before proceeding to the interactive labs.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_shift_to_agentic_ai_and_the_security_paradigm"><a class="anchor" href="#_the_shift_to_agentic_ai_and_the_security_paradigm"></a>The Shift to Agentic AI and the Security Paradigm</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Historically, AI deployments were simple Chatbots: a user asked a question, and the LLM returned text. With "Agentic AI," the paradigm has flipped. The LLM is now an agent making decisions to actively call external tools, execute code, or query databases to accomplish a goal.</p>
+</div>
+<div class="paragraph">
+<p>If developers implement this by embedding raw API keys (for AWS, GitHub, databases) into their application code to manually glue the LLM to these tools, they create massive security vulnerabilities.</p>
+</div>
+<div class="paragraph">
+<p>The <strong>Model Context Protocol (MCP)</strong> solves this by standardizing how models connect to data sources and tools. Instead of custom integration scripts with scattered API keys, the Platform Engineer deploys pre-built, secure MCP Servers (like the Red Hat OpenShift, Ansible, or partner servers) via the <strong>MCP Catalog</strong>. The infrastructure handles the tool execution, and the LLM merely requests the standardized tool format.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_value_of_evalhub_securing_ciso_approval"><a class="anchor" href="#_the_value_of_evalhub_securing_ciso_approval"></a>The Value of EvalHub: Securing CISO Approval</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Deploying an Agentic model without empirical safety data is a guaranteed CISO blocker. You cannot rely on "vibes-based" manual chat testing to determine if an agent will exfiltrate data.</p>
+</div>
+<div class="paragraph">
+<p><strong>EvalHub</strong> provides an enterprise-grade orchestration layer to automate and standardize LLM evaluation. It allows Platform Engineers to submit evaluation jobs against industry-standard benchmarks.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For Agentic security, EvalHub integrates the <strong>garak</strong> framework to automatically run security vulnerability scans (like OWASP LLM Top 10 and AVID taxonomy).</p>
+</li>
+<li>
+<p>Crucially, EvalHub seamlessly integrates with <strong>MLflow</strong> (now natively managed in OpenShift AI 3.4), ensuring every evaluation run is tracked, versioned, and auditable for compliance.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuration_cheat_sheet_secure_agentic_deployment"><a class="anchor" href="#_configuration_cheat_sheet_secure_agentic_deployment"></a>Configuration Cheat Sheet: Secure Agentic Deployment</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Vetting the Model:</strong> Go to <strong>AI hub &#8594; Catalog</strong>, check the <strong>Tool calling</strong> filter, and copy the validated CLI deployment arguments (e.g., <code>--enable-auto-tool-choice</code>).</p>
+</li>
+<li>
+<p><strong>Evaluating the Model:</strong> Submit an EvalHub job specifying the model endpoint and selecting safety benchmarks (e.g., garak OWASP Top 10). Review the automated audit trail in the MLflow UI.</p>
+</li>
+<li>
+<p><strong>Deploying the Tool:</strong> As an admin, navigate to <strong>AI hub &#8594; MCP servers (Catalog)</strong>, find the required tool, and deploy the MCP Server directly into the namespace via the <code>mcp-lifecycle-operator</code>.</p>
+</li>
+<li>
+<p><strong>Testing Safely:</strong> Instruct developers to open the <strong>Gen AI Playground</strong>, click the <strong>MCP</strong> tab, securely authorize the server with a session token, and test the agent interactively.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_day_2_diagnostics_the_anti_pattern"><a class="anchor" href="#_day_2_diagnostics_the_anti_pattern"></a>Day-2 Diagnostics: The Anti-Pattern</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Can you spot the architectural flaw?</strong></p>
+</div>
+<div class="paragraph">
+<p><strong>The Scenario: The "Shadow Agent" Exfiltration Risk</strong>
+A developer on the logistics team wants to build an AI agent capable of querying real-time shipping events from a secure internal Confluent Kafka stream. To bypass the "slow" IT provisioning process, they embed their personal Confluent Cloud API credentials directly into a LangChain Python script running locally. They expose the agent to the internet to test it from their phone.</p>
+</div>
+<div class="paragraph">
+<p><strong>Why this is an Anti-Pattern:</strong>
+* The developer has created a "Shadow Agent." The LLM has unrestricted access to the Kafka stream via the developer&#8217;s raw API credentials.
+* If the LLM is subjected to a prompt injection attack, a malicious actor could instruct the agent to query the Kafka stream and exfiltrate sensitive shipping manifests to an external URL.
+* Because the integration is hard-coded locally, the enterprise has zero visibility, no audit logs, and no centralized way to revoke the tool access if compromised.</p>
+</div>
+<div class="paragraph">
+<p><strong>The Solution:</strong>
+In OpenShift AI 3.4, the Platform Engineer eliminates this risk by using the <strong>MCP Catalog</strong>. Instead of the developer hardcoding keys, the Platform Engineer navigates to the MCP Catalog and deploys the Red Hat technology partner Confluent Cloud MCP server.</p>
+</div>
+<div class="paragraph">
+<p>The API credentials are securely managed by the cluster via the <code>mcp-gateway</code>. The developer simply opens the Gen AI Playground, navigates to the MCP tab, and checks the box for the Confluent tool. They can prototype the agent safely within the governed OpenShift environment without ever touching the raw API keys.</p>
+</div>
+<div style="page-break-after: always;"></div>
+<div class="paragraph">
+<p><strong>Ready to build it? Proceed to the Interactive Labs.</strong></p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="index.html">Interactive Quiz #4</a></span>
+  <span class="next"><a href="section2.html">Labs: MCP &amp; EvalHub</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+<script defer src="../../../_/js/vendor/tabs.js"></script>
+<script defer src="../../../_/js/vendor/reading-time.js"></script>
+  </body>
+</html>

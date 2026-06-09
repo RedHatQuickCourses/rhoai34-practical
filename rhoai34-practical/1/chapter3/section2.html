@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Interactive Labs: Scaling Massive Models :: Building the AI Engine</title>
+    <link rel="prev" href="section1.html">
+    <link rel="next" href="../chapter4/index.html">
+    <meta name="description" content="Interactive UI click-paths for configuring OpenShift AI 3.4 Kueue and llm-d.">
+    <meta name="generator" content="Antora 3.2.0-alpha.12">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/tabs.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/collapsible.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/reading-time.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/audio-transcript.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Building the AI Engine</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="rhoai34-practical" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Building the AI Engine</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Introduction &amp; Overview</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter1/index.html">Interactive Quiz</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter1/section1.html">Runbook: Platform Setup</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter1/section2.html">Labs: Building the Engine Room</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter2/index.html">Interactive Quiz #2</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter2/section1.html">Runbook: MaaS &amp; Observability</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter2/section2.html">Labs: MaaS &amp; Observability</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Interactive Quiz #3</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="section1.html">Runbook: Distributed Inference &amp; Kueue</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="section2.html">Labs: Distributed Inference</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter4/index.html">Interactive Quiz #4</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter4/section1.html">Runbook: MCP &amp; EvalHub</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter4/section2.html">Labs: MCP &amp; EvalHub</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../appendix/appendix.html">Appendix</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Building the AI Engine</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Building the AI Engine</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Building the AI Engine</a></li>
+    <li><a href="index.html">Interactive Quiz #3</a></li>
+    <li><a href="section2.html">Labs: Distributed Inference</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Interactive Labs: Scaling Massive Models</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In these interactive labs, you will execute the "Happy Path" to link Kueue to a Hardware Profile and deploy a massive model across multiple GPUs.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_lab_1_stopping_the_gpu_turf_war_kueue"><a class="anchor" href="#_lab_1_stopping_the_gpu_turf_war_kueue"></a>Lab 1: Stopping the GPU Turf War (Kueue)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Goal:</strong> Ensure Kueue is enabled so workloads pend gracefully instead of crashing the cluster.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 1. Arcade: Enable Kueue and LocalQueues</div>
+<div class="content">
+<div class="paragraph">
+<p><strong>Guided Steps:</strong>
+1. Log in to the OpenShift AI dashboard as an administrator.
+2. Navigate to <strong>Settings &#8594; Cluster settings</strong>.
+3. Locate the Kueue section and ensure the UI integration is active.
+4. Navigate to your OpenShift Console terminal and ensure your data science project is labeled for Kueue enforcement: <code>oc label namespace &lt;your-project&gt; kueue.openshift.io/managed=true</code>.
+5. Apply a basic <code>LocalQueue</code> YAML to your namespace named <code>heavy-training-queue</code> that points to your cluster&#8217;s default <code>ClusterQueue</code>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_lab_2_creating_a_hardware_profile"><a class="anchor" href="#_lab_2_creating_a_hardware_profile"></a>Lab 2: Creating a Hardware Profile</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Goal:</strong> Create a UI-selectable profile that automatically links distributed workloads to the Kueue system.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 2. Arcade: Hardware Profiles</div>
+<div class="content">
+<div class="paragraph">
+<p><strong>Guided Steps:</strong>
+1. In the OpenShift AI dashboard, navigate to <strong>Settings &#8594; Hardware profiles</strong>.
+2. Click <strong>Create hardware profile</strong>. Name it <code>Distributed GPU Node</code>.
+3. Click <strong>Add resource</strong>. Set Resource identifier to <code>nvidia.com/gpu</code> and ensure Requests/Limits are set appropriately for a multi-GPU slice.
+4. Scroll down to the <strong>Resource allocation</strong> section.
+5. Under <strong>Workload allocation strategy</strong>, select <strong>Local queue</strong>.
+6. In the Local queue field, enter <code>heavy-training-queue</code>.
+7. Click <strong>Create hardware profile</strong>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_lab_3_deploying_a_distributed_model"><a class="anchor" href="#_lab_3_deploying_a_distributed_model"></a>Lab 3: Deploying a Distributed Model</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Goal:</strong> Deploy a massive model using llm-d, leveraging the queue and hardware profile.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 3. Arcade: Deploying llm-d</div>
+<div class="content">
+<div class="paragraph">
+<p><strong>Guided Steps:</strong>
+1. In the OpenShift AI dashboard, navigate to <strong>Data Science Projects</strong> and open your project.
+2. Click the <strong>Deployments</strong> tab.
+3. In the Model serving platform tile, click <strong>Deploy model</strong>.
+4. Name the deployment <code>massive-70b-model</code>.
+5. Under <strong>Hardware profile</strong>, select your newly created <code>Distributed GPU Node</code>.
+6. Under <strong>Serving runtime</strong>, explicitly select <code>Distributed inference with llm-d</code>.
+7. Provide your S3-compatible storage connection containing the model weights.
+8. Click <strong>Deploy</strong>. Because you assigned the hardware profile tied to Kueue, the underlying service is automatically labeled with <code>kueue.x-k8s.io/queue-name: heavy-training-queue</code> and will pend gracefully if GPUs are currently in use.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Module Complete!</strong> You have successfully eliminated GPU resource conflicts and scaled inference beyond the limits of a single node.</p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="section1.html">Runbook: Distributed Inference &amp; Kueue</a></span>
+  <span class="next"><a href="../chapter4/index.html">Interactive Quiz #4</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+<script defer src="../../../_/js/vendor/tabs.js"></script>
+<script defer src="../../../_/js/vendor/reading-time.js"></script>
+  </body>
+</html>

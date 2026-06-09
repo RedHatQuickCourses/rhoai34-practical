@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Module 3 Runbook: Governing Access with Models-as-a-Service :: Building the AI Engine</title>
+    <link rel="prev" href="index.html">
+    <link rel="next" href="section2.html">
+    <meta name="description" content="Theoretical architecture, cheat sheet, and Anti-Pattern for MaaS.">
+    <meta name="generator" content="Antora 3.2.0-alpha.12">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/tabs.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/collapsible.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/reading-time.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/audio-transcript.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Building the AI Engine</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="rhoai34-practical" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Building the AI Engine</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Introduction &amp; Overview</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter1/index.html">Interactive Quiz</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter1/section1.html">Runbook: Platform Setup</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter1/section2.html">Labs: Building the Engine Room</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Interactive Quiz #2</a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="section1.html">Runbook: MaaS &amp; Observability</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="section2.html">Labs: MaaS &amp; Observability</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter3/index.html">Interactive Quiz #3</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter3/section1.html">Runbook: Distributed Inference &amp; Kueue</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter3/section2.html">Labs: Distributed Inference</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter4/index.html">Interactive Quiz #4</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter4/section1.html">Runbook: MCP &amp; EvalHub</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter4/section2.html">Labs: MCP &amp; EvalHub</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../appendix/appendix.html">Appendix</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Building the AI Engine</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Building the AI Engine</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Building the AI Engine</a></li>
+    <li><a href="index.html">Interactive Quiz #2</a></li>
+    <li><a href="section1.html">Runbook: MaaS &amp; Observability</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Module 3 Runbook: Governing Access with Models-as-a-Service</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you passed the Diagnostic Gateway, use this page as your quick-reference job aid. If you are building your foundational skills, read this carefully before proceeding to the interactive labs.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_centralized_gateway_vs_direct_static_api_keys"><a class="anchor" href="#_the_centralized_gateway_vs_direct_static_api_keys"></a>The Centralized Gateway vs. Direct Static API Keys</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In traditional "Shadow AI" environments, developers bypass IT by directly requesting and embedding vendor API keys (like OpenAI or AWS Bedrock) into their source code. This is a massive vulnerability: if a key leaks, there is no way to instantly restrict access, and the enterprise has zero visibility into which team is driving up the cloud bill.</p>
+</div>
+<div class="paragraph">
+<p><strong>Models-as-a-Service (MaaS)</strong> solves this using the MaaS API Gateway (backed by Kuadrant and Red Hat Connectivity Link). Instead of handing out the root provider keys, the Platform Engineer stores the root provider key in a secure Kubernetes Secret and registers an <code>ExternalModel</code> resource.</p>
+</div>
+<div class="paragraph">
+<p>The MaaS Gateway acts as a proxy using a <strong>Two-Tier Authentication</strong> pattern:
+1. Users authenticate to the Gateway using scoped, self-service MaaS API Keys.
+2. The Gateway tracks their token consumption against their assigned quota, applies rate limits, and then securely injects the root provider key into the outbound request <code>[Source: Red Hat OpenShift AI Self-Managed-3.4-Govern LLM access with Models-as-a-Service - Two-tier authentication]</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_architecture_of_access_groups_subscriptions_and_keys"><a class="anchor" href="#_the_architecture_of_access_groups_subscriptions_and_keys"></a>The Architecture of Access: Groups, Subscriptions, and Keys</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Access in MaaS 3.4 is decoupled into distinct layers to provide maximum GitOps flexibility:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>OpenShift User Groups:</strong> Defines the user&#8217;s identity (e.g., <code>data-scientists</code>, <code>ml-engineers</code>).</p>
+</li>
+<li>
+<p><strong>MaaS Subscriptions (<code>MaaSSubscription</code>):</strong> Maps a User Group to specific models and enforces strict token quotas (e.g., 500k tokens per hour). If a user belongs to multiple groups, the Subscription with the highest Priority dictates their default limits <code>[Source: Red Hat OpenShift AI Self-Managed-3.4-Govern LLM access with Models-as-a-Service - Priority levels]</code>.</p>
+</li>
+<li>
+<p><strong>Authorization Policies (<code>MaaSAuthPolicy</code>):</strong> Grants the User Group the actual network permission to pass through the API Gateway <code>[Source: Red Hat OpenShift AI Self-Managed-3.4-Govern LLM access with Models-as-a-Service - Models-as-a-Service authorization policies]</code>.</p>
+</li>
+<li>
+<p><strong>API Keys:</strong> Developers generate their own self-service keys scoped to their Subscription <code>[Source: Red Hat OpenShift AI Self-Managed-3.4-Govern LLM access with Models-as-a-Service - Self-service API key management]</code>.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuration_cheat_sheet_granting_a_new_team_access"><a class="anchor" href="#_configuration_cheat_sheet_granting_a_new_team_access"></a>Configuration Cheat Sheet: Granting a New Team Access</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To provision access for a new team, a Platform Engineer completes these exact steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Publish the Model:</strong> Create a <code>MaaSModelRef</code> (for internal models) or an <code>ExternalModel</code> (for external APIs like OpenAI) to register the endpoint.</p>
+</li>
+<li>
+<p><strong>Create the Subscription:</strong> Navigate to <strong>Settings &#8594; Subscriptions</strong>. Assign the OpenShift User Group, select the model, and define the Token Rate Limit (e.g., 1,000,000 / 1h).</p>
+</li>
+<li>
+<p><strong>Create the Authorization Policy:</strong> Check the "Create matching authorization policy" box during Subscription creation, or manually create a <code>MaaSAuthPolicy</code> matching the Group to the Model.</p>
+</li>
+<li>
+<p><strong>Inform the Developer:</strong> Instruct developers to navigate to <strong>Gen AI studio &#8594; API keys</strong> to generate their scoped, self-service tokens.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_day_2_diagnostics_the_anti_pattern"><a class="anchor" href="#_day_2_diagnostics_the_anti_pattern"></a>Day-2 Diagnostics: The Anti-Pattern</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Can you spot the architectural flaw?</strong></p>
+</div>
+<div class="paragraph">
+<p><strong>The Scenario: The Shadow AI Key Leak</strong>
+Your company decides to experiment with OpenAI&#8217;s GPT-4o. To move fast, the Lead Platform Engineer creates a single enterprise OpenAI account, generates a root API key, and emails it to the 50 developers on the Analytics team. The developers embed this key directly into their application code (<code>Authorization: Bearer sk-openai-&#8230;&#8203;</code>).</p>
+</div>
+<div class="paragraph">
+<p><strong>Why this is an Anti-Pattern:</strong>
+* <strong>No Showback:</strong> Finance receives a single massive bill from OpenAI at the end of the month, with zero ability to determine which developer or application is responsible.
+* <strong>No Quota Enforcement:</strong> A runaway loop in a single developer&#8217;s code can exhaust the entire company&#8217;s provider-level token limit, taking down production applications for everyone.
+* <strong>Security Nightmare:</strong> If a developer accidentally commits the root key to a public GitHub repo, the Platform Engineer has to revoke the key at the provider level, instantly breaking all 50 applications simultaneously.</p>
+</div>
+<div class="paragraph">
+<p><strong>The Solution:</strong>
+The Platform Engineer should use the OpenShift AI 3.4 <code>ExternalModel</code> custom resource. The root OpenAI API key is stored securely in a Kubernetes Secret inside the cluster. Developers never see it. Instead, developers generate their own temporary or permanent MaaS API keys via the OpenShift AI dashboard and send requests to the centralized OpenShift AI Gateway.</p>
+</div>
+<div class="paragraph">
+<p>The Gateway enforces their specific Subscription token limit (preventing runaway code), logs their exact usage for Finance&#8217;s showback reports in the Observability Dashboard, and safely proxies the request to OpenAI. If a developer&#8217;s MaaS key leaks, the Admin can simply click "Revoke" on that specific key without affecting the other 49 developers.</p>
+</div>
+<div style="page-break-after: always;"></div>
+<div class="paragraph">
+<p><strong>Ready to build it? Proceed to the Interactive Labs.</strong></p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="index.html">Interactive Quiz #2</a></span>
+  <span class="next"><a href="section2.html">Labs: MaaS &amp; Observability</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+<script defer src="../../../_/js/vendor/tabs.js"></script>
+<script defer src="../../../_/js/vendor/reading-time.js"></script>
+  </body>
+</html>

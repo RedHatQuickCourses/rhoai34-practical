@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Module 2 Runbook: Platform Setup &amp; Readiness :: Building the AI Engine</title>
+    <meta name="description" content="Theoretical architecture and component mapping for OpenShift AI 3.4 setup.">
+    <meta name="generator" content="Antora 3.2.0-alpha.12">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/tabs.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/collapsible.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/reading-time.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/audio-transcript.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Building the AI Engine</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="rhoai34-practical" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Building the AI Engine</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Introduction &amp; Overview</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Interactive Quiz</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="section1.html">Runbook: Platform Setup</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="section2.html">Labs: Building the Engine Room</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter2/index.html">Interactive Quiz #2</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter2/section1.html">Runbook: MaaS &amp; Observability</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter2/section2.html">Labs: MaaS &amp; Observability</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter3/index.html">Interactive Quiz #3</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter3/section1.html">Runbook: Distributed Inference &amp; Kueue</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter3/section2.html">Labs: Distributed Inference</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter4/index.html">Interactive Quiz #4</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter4/section1.html">Runbook: MCP &amp; EvalHub</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter4/section2.html">Labs: MCP &amp; EvalHub</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../appendix/appendix.html">Appendix</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Building the AI Engine</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Building the AI Engine</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Building the AI Engine</a></li>
+    <li><a href="section3.html">Runbook: Platform Setup</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Module 2 Runbook: Platform Setup &amp; Readiness</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you passed the Diagnostic Gateway, use this page as your quick-reference job aid. If you are building your foundational skills, read this carefully before proceeding to the interactive labs.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_understanding_the_architecture_layers"><a class="anchor" href="#_understanding_the_architecture_layers"></a>Understanding the Architecture Layers</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Setting up OpenShift AI is not a single-click installation; it is a layered architecture. Platform Engineers must understand the distinction between the management plane and the activation plane.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>The Operator (Management Plane):</strong> Installing the Red Hat OpenShift AI Operator from OperatorHub simply lays down the management plane. It does <strong>not</strong> actually install the AI components (like Jupyter, MLflow, or KServe).</p>
+</li>
+<li>
+<p><strong>DataScienceClusterInitialization (DSCI - The Foundation):</strong> The DSCI custom resource handles global, cluster-wide configurations that must exist before components spin up. This includes injecting cluster-wide trusted CA certificate bundles and enabling the centralized OpenTelemetry/Prometheus observability stack.</p>
+</li>
+<li>
+<p><strong>DataScienceCluster (DSC - The Activation Layer):</strong> The DSC custom resource defines exactly which components are instantiated in the cluster by setting their <code>managementState</code> to <code>Managed</code> or <code>Removed</code>.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Note for 3.4:</strong> The MLflow Operator is now a natively managed component directly within the DSC, removing the need for legacy feature flags.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_paradigm_shift_the_kubernetes_gateway_api"><a class="anchor" href="#_the_paradigm_shift_the_kubernetes_gateway_api"></a>The Paradigm Shift: The Kubernetes Gateway API</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In previous versions of OpenShift AI, configuring KServe required OpenShift Service Mesh and OpenShift Serverless (Knative).</p>
+</div>
+<div class="paragraph">
+<p><strong>In OpenShift AI 3.4, the KServe Serverless deployment mode is officially deprecated.</strong></p>
+</div>
+<div class="paragraph">
+<p>Instead, Platform Engineers must use <strong>KServe RawDeployment mode</strong>, which leverages the Kubernetes Gateway API for path-based routing. This modern architecture replaces individual OpenShift Routes and sidecar-heavy Service Mesh architectures with a single Gateway entry point (e.g., <code>openshift-ai-inference</code> Gateway). Advanced routing, token authentication, and distributed serving (<code>llm-d</code>) are now handled natively via the Gateway API paired with Red Hat Connectivity Link (Kuadrant).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_selecting_the_right_3_4_serving_runtime"><a class="anchor" href="#_selecting_the_right_3_4_serving_runtime"></a>Selecting the Right 3.4 Serving Runtime</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>OpenShift AI 3.4 provides highly specialized runtimes out-of-the-box. Selecting the wrong runtime will cause immediate Out-Of-Memory (OOM) errors or massive latency.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>vLLM ServingRuntime:</strong> The standard for serving Single-Node Large Language Models on NVIDIA/AMD GPUs. It uses advanced techniques like PagedAttention and continuous batching.</p>
+</li>
+<li>
+<p><strong>Distributed Inference (<code>llm-d</code>):</strong> Used when an LLM is too large to fit into the memory of a single GPU. It spans model weights across multiple nodes/GPUs using Ray and the Leader Worker Set operator.</p>
+</li>
+<li>
+<p><strong>MLServer ServingRuntime:</strong> Now GA in 3.4, this is the designated runtime for classical, structured-data machine learning models built with Scikit-Learn, XGBoost, and LightGBM.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_day_2_diagnostics_the_anti_pattern"><a class="anchor" href="#_day_2_diagnostics_the_anti_pattern"></a>Day-2 Diagnostics: The Anti-Pattern</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Can you spot the architectural flaw?</strong></p>
+</div>
+<div class="paragraph">
+<p><strong>The Scenario:</strong> A junior admin deployed the OpenShift AI 3.4 Operator and activated KServe in the DSC. A Data Scientist deploys a model, but external applications cannot reach the endpoint. The junior admin decides to manually write a Kubernetes <code>Route</code> YAML file exposing port 8080 of the model&#8217;s pod to the public internet.</p>
+</div>
+<div class="paragraph">
+<p><strong>Why this is an Anti-Pattern:</strong> By bypassing the Gateway API and creating a manual route, the admin has completely broken the platform&#8217;s security and observability. The Models-as-a-Service (MaaS) token authentication, rate limiting, and Prometheus metrics scraping rely entirely on traffic passing through the centralized <code>openshift-ai-inference</code> Gateway. In 3.4, external ingress should <strong>only</strong> be configured by checking the "Make deployed models available through an external route" box in the UI, which registers the route securely with the Gateway.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuration_cheat_sheet_openshift_ai_3_4"><a class="anchor" href="#_configuration_cheat_sheet_openshift_ai_3_4"></a>Configuration Cheat Sheet: OpenShift AI 3.4</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As a Platform Engineer, you will be expected to know these specific configurations to ensure the platform operates smoothly and upgrades safely:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Operator Upgrades (OLM):</strong> When installing the operator, always select the <strong>Manual</strong> update approval strategy. OpenShift AI requires sequential updates. "Manual" ensures you don&#8217;t accidentally skip a required intermediate minor version during cluster maintenance.</p>
+</li>
+<li>
+<p><strong>Monitoring User Workloads:</strong> Activating the observability stack in the DSCI monitors the <strong>platform</strong>. To ensure Prometheus automatically scrapes metrics from a data scientist&#8217;s custom model pod, you must apply the <code>monitoring.opendatahub.io/scrape=true</code> label to their workload.</p>
+</li>
+<li>
+<p><strong>Prerequisites for <code>llm-d</code>:</strong> If you plan to use Distributed Inference (<code>llm-d</code>), the OpenShift AI operator alone is not enough. You must pre-install the <strong>cert-manager Operator</strong>, the <strong>Red Hat Connectivity Link Operator</strong> (for gateway routing), and the <strong>Leader Worker Set Operator</strong> (to manage the multi-node pod topology).</p>
+</li>
+</ul>
+</div>
+<div style="page-break-after: always;"></div>
+<div class="paragraph">
+<p><strong>Ready to build it? Proceed to the Interactive Labs.</strong></p>
+</div>
+</div>
+</div>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+<script defer src="../../../_/js/vendor/tabs.js"></script>
+<script defer src="../../../_/js/vendor/reading-time.js"></script>
+  </body>
+</html>

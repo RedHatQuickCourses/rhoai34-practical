@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Interactive Labs: Securing Agentic Workflows :: Building the AI Engine</title>
+    <link rel="prev" href="section1.html">
+    <link rel="next" href="../appendix/appendix.html">
+    <meta name="description" content="Interactive UI click-paths for vetting models and deploying MCP servers.">
+    <meta name="generator" content="Antora 3.2.0-alpha.12">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/tabs.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/collapsible.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/reading-time.css">
+    <link rel="stylesheet" href="../../../_/css/vendor/audio-transcript.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img src="../../../_/img/redhat-logo.png" height="40px" alt="Red Hat"></a>
+      <a class="navbar-item" style="font-size: 24px; color: white" href="../../..">Building the AI Engine</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="https://github.com/RedHatQuickCourses/REPLACEREPONAME/issues" target="_blank">Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="rhoai34-practical" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Building the AI Engine</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Introduction &amp; Overview</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../LABENV/index.html">Lab Environment</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter1/index.html">Interactive Quiz</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter1/section1.html">Runbook: Platform Setup</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter1/section2.html">Labs: Building the Engine Room</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter2/index.html">Interactive Quiz #2</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter2/section1.html">Runbook: MaaS &amp; Observability</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter2/section2.html">Labs: MaaS &amp; Observability</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter3/index.html">Interactive Quiz #3</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter3/section1.html">Runbook: Distributed Inference &amp; Kueue</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter3/section2.html">Labs: Distributed Inference</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Interactive Quiz #4</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="section1.html">Runbook: MCP &amp; EvalHub</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="section2.html">Labs: MCP &amp; EvalHub</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../appendix/appendix.html">Appendix</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Building the AI Engine</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Building the AI Engine</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Building the AI Engine</a></li>
+    <li><a href="index.html">Interactive Quiz #4</a></li>
+    <li><a href="section2.html">Labs: MCP &amp; EvalHub</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Interactive Labs: Securing Agentic Workflows</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In these interactive labs, you will execute the "Happy Path" to find a validated model, deploy a secure integration tool, and test it as a developer.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_lab_1_vetting_an_agentic_model_model_catalog"><a class="anchor" href="#_lab_1_vetting_an_agentic_model_model_catalog"></a>Lab 1: Vetting an Agentic Model (Model Catalog)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Goal:</strong> Ensure you select a model empirically validated for agentic workflows, avoiding models that will hallucinate tool calls.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 1. Arcade: Filtering for Tool Calling</div>
+<div class="content">
+<div class="paragraph">
+<p><strong>Guided Steps:</strong>
+1. Log in to the OpenShift AI dashboard.
+2. In the left navigation menu, click <strong>AI hub &#8594; Catalog</strong>.
+3. In the left filter pane, locate the Task section and select the <strong>Tool calling</strong> checkbox. The catalog will refresh to display only models validated for tool-use compatibility.
+4. Click on a validated model card (e.g., <code>Ministral-3-14B-Instruct-2512</code>) to open its details page.
+5. Scroll to the YAML frontmatter section on the model card and locate the tool-calling metadata.
+6. Copy the specific required CLI arguments (e.g., <code>--enable-auto-tool-choice</code>, <code>--tool-call-parser</code>) and the chat template.
+7. Click <strong>Deploy model</strong>.
+8. In the deployment wizard, paste the copied CLI arguments into the <strong>Additional serving runtime arguments</strong> text box to ensure the model deploys with its agentic capabilities activated. Click <strong>Deploy</strong>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_lab_2_deploying_a_trusted_tool_mcp_catalog"><a class="anchor" href="#_lab_2_deploying_a_trusted_tool_mcp_catalog"></a>Lab 2: Deploying a Trusted Tool (MCP Catalog)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Goal:</strong> Deploy a pre-packaged tool from the Catalog so developers can access backend systems without handling raw API credentials.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 2. Arcade: Deploying an MCP Server</div>
+<div class="content">
+<div class="paragraph">
+<p><strong>Guided Steps (Admin):</strong>
+1. Ensure the <code>mcp-lifecycle-operator</code> is installed on the cluster.
+2. In the OpenShift AI dashboard, navigate to <strong>AI hub &#8594; MCP servers</strong>.
+3. Browse the catalog and click on a trusted integration (e.g., the Confluent Cloud or GitHub MCP Server).
+4. Review the tool&#8217;s capabilities and required environment variables (which will be securely stored as secrets).
+5. Click <strong>Deploy</strong> and select the target developer namespace (<code>logistics-agent-project</code>).
+6. The <code>mcp-gateway</code> now securely hosts this tool endpoint for the namespace.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_lab_3_testing_the_agent_safely_gen_ai_playground"><a class="anchor" href="#_lab_3_testing_the_agent_safely_gen_ai_playground"></a>Lab 3: Testing the Agent Safely (Gen AI Playground)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Goal:</strong> Act as the developer connecting to the governed tool using the UI, verifying the agentic workflow is operational.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 3. Arcade: Connecting Tools in the Playground</div>
+<div class="content">
+<div class="paragraph">
+<p><strong>Guided Steps (Developer):</strong>
+1. In the OpenShift AI dashboard, navigate to <strong>Gen AI studio &#8594; Playground</strong>.
+2. Select your newly deployed tool-capable model from the model dropdown.
+3. On the right-hand panel, click the <strong>MCP</strong> tab.
+4. You will see the MCP Server deployed by the Admin in Lab 2. Click the <strong>Auth</strong> icon to authorize your session securely.
+5. <strong>Enable Safety:</strong> In the Playground settings, toggle on <strong>Prompt Guard</strong> to ensure your test inputs are scanned for prompt injections.
+6. Type a prompt that requires the tool (e.g., <strong>"Check the Kafka stream for shipping delays"</strong>).
+7. Watch the chat interface as the LLM successfully invokes the tool, receives the data, and formulates an answer—all without you writing a single line of integration code.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Course Complete!</strong> You have successfully built a secure, scalable, and governed AI Engine Room using OpenShift AI 3.4.</p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="section1.html">Runbook: MCP &amp; EvalHub</a></span>
+  <span class="next"><a href="../appendix/appendix.html">Appendix</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+<script defer src="../../../_/js/vendor/tabs.js"></script>
+<script defer src="../../../_/js/vendor/reading-time.js"></script>
+  </body>
+</html>

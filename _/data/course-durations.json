@@ -1,11 +1,11 @@
 {
-  "totalSeconds": 428,
+  "totalSeconds": 1516,
   "pageCount": 15,
   "pages": [
     {
       "module": "ROOT",
       "page": "index.adoc",
-      "seconds": 15
+      "seconds": 267
     },
     {
       "module": "LABENV",
@@ -15,62 +15,62 @@
     {
       "module": "chapter1",
       "page": "index.adoc",
-      "seconds": 9
+      "seconds": 5
     },
     {
       "module": "chapter1",
       "page": "section1.adoc",
-      "seconds": 9
+      "seconds": 197
     },
     {
       "module": "chapter1",
       "page": "section2.adoc",
-      "seconds": 9
-    },
-    {
-      "module": "chapter1",
-      "page": "section3.adoc",
-      "seconds": 9
-    },
-    {
-      "module": "chapter1",
-      "page": "tabs-demo.adoc",
-      "seconds": 20
-    },
-    {
-      "module": "chapter1",
-      "page": "collapsible-demo.adoc",
-      "seconds": 36
-    },
-    {
-      "module": "chapter1",
-      "page": "images.adoc",
-      "seconds": 271
+      "seconds": 100
     },
     {
       "module": "chapter2",
       "page": "index.adoc",
-      "seconds": 9
+      "seconds": 5
     },
     {
       "module": "chapter2",
       "page": "section1.adoc",
-      "seconds": 9
+      "seconds": 216
+    },
+    {
+      "module": "chapter2",
+      "page": "section2.adoc",
+      "seconds": 115
     },
     {
       "module": "chapter3",
       "page": "index.adoc",
-      "seconds": 9
+      "seconds": 5
     },
     {
       "module": "chapter3",
       "page": "section1.adoc",
-      "seconds": 9
+      "seconds": 176
     },
     {
       "module": "chapter3",
       "page": "section2.adoc",
-      "seconds": 9
+      "seconds": 98
+    },
+    {
+      "module": "chapter4",
+      "page": "index.adoc",
+      "seconds": 5
+    },
+    {
+      "module": "chapter4",
+      "page": "section1.adoc",
+      "seconds": 194
+    },
+    {
+      "module": "chapter4",
+      "page": "section2.adoc",
+      "seconds": 128
     },
     {
       "module": "appendix",

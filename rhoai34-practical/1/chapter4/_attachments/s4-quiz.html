@@ -1,0 +1,566 @@
+{{<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+      /* --- Basic Styles --- */
+        :root {
+            --correct-color: #63993d;
+            --incorrect-color: #f0561d;
+            --intro-color: #111;
+            --next-btn-color: #0066cc;
+            --prev-btn-color: #383838;
+            --restart-btn-color: #ee0000;
+            --text-color: #111;
+        }
+
+        body {
+            font-family: 'Red Hat Display', sans-serif;
+            color: var(--text-color);
+            margin: 1.5em;
+        }
+
+        /* --- Quiz Components --- */
+        #quiz-intro {
+            color: var(--intro-color);
+            margin-bottom: 2em;
+            line-height: 1.6;
+            background-color: #f4f4f4;
+            padding: 1.5em;
+            border-left: 4px solid #ee0000;
+            border-radius: 4px;
+        }
+
+        #question-counter {
+            color: #383838;
+            margin-bottom: 1em;
+            font-weight: 700;
+        }
+
+        #question-container {
+            margin-bottom: 1.5em;
+        }
+
+        #question-text {
+            font-size: 1.25em;
+            font-weight: 700;
+            margin-bottom: 1em;
+        }
+
+        .answer-item {
+            margin-bottom: 1em;
+        }
+
+        .answer-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 0.75em;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            transition: border-color 0.3s;
+        }
+        .answer-label:hover {
+            border-color: #999;
+        }
+
+        .custom-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #555;
+            border-radius: 4px;
+            margin-right: 12px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .explanation {
+            display: none;
+            padding: 0.75em;
+            margin-top: 0.5em;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+        
+        .explanation a {
+            color: inherit;
+            text-decoration: underline;
+        }
+
+        /* --- State Styling --- */
+        .answer-item.answered.correct .answer-label,
+        .answer-item.answered.correct .explanation {
+            background-color: #f0f8ec;
+            border-color: var(--correct-color);
+            color: var(--correct-color);
+        }
+
+        .answer-item.answered.incorrect .answer-label,
+        .answer-item.answered.incorrect .explanation {
+            background-color: #fff0e9;
+            border-color: var(--incorrect-color);
+            color: var(--incorrect-color);
+        }
+
+        .answer-item.answered.correct .custom-checkbox {
+            border-color: var(--correct-color);
+            background-color: var(--correct-color);
+            color: white;
+        }
+
+        .answer-item.answered.incorrect .custom-checkbox {
+            border-color: var(--incorrect-color);
+            background-color: var(--incorrect-color);
+            color: white;
+        }
+
+        /* --- Results Screen --- */
+        #results-container {
+            display: none;
+            text-align: center;
+            padding: 2.5em;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            margin-bottom: 2em;
+        }
+
+        .score-text {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 0.2em;
+        }
+
+        .score-details {
+            font-size: 1.2em;
+            color: #555;
+            margin-bottom: 1.5em;
+        }
+
+        .pass { color: var(--correct-color); }
+        .fail { color: var(--incorrect-color); }
+
+        .results-message {
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        /* --- Navigation --- */
+        #navigation-container {
+            margin-top: 2em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-button {
+            border: none;
+            padding: 0.8em 1.5em;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            color: white;
+            transition: opacity 0.3s;
+        }
+
+        .nav-button:hover {
+            opacity: 0.85;
+        }
+
+        #prev-btn { background-color: var(--prev-btn-color); }
+        #next-btn { background-color: var(--next-btn-color); }
+        #results-btn { background-color: var(--correct-color); }
+        #restart-btn { background-color: var(--restart-btn-color); }
+    </style>
+  </head>
+  <body>
+    <div id="quiz-container">
+      <div id="quiz-intro"></div>
+      
+      <div id="results-container">
+          <div class="score-text" id="final-score-percent"></div>
+          <div class="score-details" id="final-score-breakdown"></div>
+          <div class="results-message" id="final-message"></div>
+      </div>
+
+      <div id="question-counter"></div>
+      <div id="question-container">
+        <p id="question-text"></p>
+        <div id="answers-container"></div>
+      </div>
+      
+      <div id="navigation-container">
+        <button id="prev-btn" class="nav-button" style="display: none;">Previous</button>
+        <button id="next-btn" class="nav-button" style="display: none;">Next</button>
+        <button id="results-btn" class="nav-button" style="display: none;">View Results</button>
+        <button id="restart-btn" class="nav-button" style="display: none;">Restart Gateway</button>
+      </div>
+    </div>
+    
+    <script>
+      const quizDataText = `<b>Module 5: Diagnostic Gateway.</b> <br><br>Developers are bypassing IT to build "Shadow Agents" using hard-coded API keys, and the CISO has halted all deployments due to unvetted tool-chaining and prompt injection risks. Prove you know how to architect secure Agentic AI using the new MCP Catalog and EvalHub in OpenShift AI 3.4. <br><br><b>The 80% Rule:</b> Score 80% or higher to jump straight to the Runbook. If you score below 80%, you will proceed to the interactive labs to build these critical security skills.
+
+---
+Q1: What is the primary purpose of the Model Context Protocol (MCP) in the context of OpenShift AI Agentic workflows?
+
+A: It is a proprietary Red Hat network protocol replacing gRPC for model serving.
+Incorrect: It is not a proprietary serving protocol; it is an open standard for tool integration.
+
+A: It provides a standardized connection between models and external data sources or tools, eliminating the need for developers to write custom, hard-coded integration code.
+Correct: The MCP server standardizes interactions, enabling MCP-compatible clients to interact with external tools and environments securely through natural language without custom integration scripts.
+
+A: It is a new evaluation framework replacing LM Evaluation Harness.
+Incorrect: EvalHub is the framework manager; MCP handles the tool connectivity.
+
+A: It is a routing protocol used strictly for multi-node GPU communication.
+Incorrect: Multi-node GPU communication is handled by NCCL and Ray/LWS, not MCP.
+---
+Q2: How does the new 3.4 Developer Preview MCP Catalog prevent "shadow tool usage" in the enterprise?
+
+A: It scans developer laptops for unauthorized LangChain scripts.
+Incorrect: OpenShift AI does not scan external developer hardware.
+
+A: It completely blocks the LLM from making outbound API calls.
+Incorrect: Blocking all calls defeats the purpose of an Agentic AI; it needs to govern them, not blindly block them.
+
+A: It provides a centralized UI where Platform Engineers can discover, vet, and securely deploy pre-packaged MCP servers (like Ansible or databases) into a namespace for developers to consume.
+Correct: The MCP Catalog provides a centralized experience for Platform Engineers to browse, view capabilities, and deploy pre-packaged MCP servers (from Red Hat, partners, and community) directly into namespaces, ensuring tools are vetted and centrally managed.
+
+A: It forces developers to submit Jira tickets to run python pip installs.
+Incorrect: It avoids ticketing by providing a governed, self-service catalog of approved tools.
+---
+Q3: Before a Platform Engineer can successfully deploy an MCP server from the Catalog into a namespace, what upstream community component must be present on the cluster?
+
+A: kserve-controller-manager
+Incorrect: KServe handles model serving, not the lifecycle of MCP servers.
+
+A: mcp-lifecycle-operator
+Correct: The deploy action in the MCP catalog UI is gated on the presence of the mcp-lifecycle-operator. If this Kubernetes operator is not installed, the deployment option is not available, as it is required to automatically provision the Deployments and Services for MCP servers.
+
+A: vllm-routing-daemon
+Incorrect: This is not a real OpenShift AI component.
+
+A: ray-cluster-operator
+Incorrect: Ray is used for distributed compute, not MCP server lifecycle management.
+---
+Q4: Once an MCP server is deployed, how do developers securely connect and test it without handling raw API credentials in their application code?
+
+A: They embed the credentials in their local .env file.
+Incorrect: This is the exact "Shadow Agent" anti-pattern we are trying to prevent.
+
+A: They navigate to the Gen AI Playground's MCP tab, select the deployed server, and click the "Auth" icon to authorize access using a session token.
+Correct: In the Gen AI Playground, developers navigate to the MCP tab, select the server, and click the Auth icon to securely authorize access for their session. They can then invoke the tools directly through the chat interface.
+
+A: They SSH into the MCP server pod to run their tests.
+Incorrect: Developers should not have SSH access to running infrastructure pods.
+
+A: They bypass the MCP server and call the external tool directly.
+Incorrect: This circumvents all platform governance and auditing.
+---
+Q5: The CISO has blocked AI deployments because models are being deployed based on "vibes" rather than empirical safety data. How does EvalHub solve this?
+
+A: EvalHub is a manual spreadsheet tracking system for CISO approvals.
+Incorrect: EvalHub is an automated orchestration engine, not a spreadsheet.
+
+A: EvalHub provides an orchestration REST API and SDK to run automated, standardized, and reproducible evaluations against frameworks like garak (safety scanning) and lm_evaluation_harness.
+Correct: EvalHub is an evaluation orchestration service that runs isolated, horizontally scalable Kubernetes Jobs to evaluate LLMs using frameworks like lm_evaluation_harness, garak (security vulnerability scanning), and others, moving testing from manual to empirical and standardized.
+
+A: EvalHub acts as a web application firewall blocking all malicious traffic.
+Incorrect: EvalHub is an evaluation platform, not a real-time inline WAF or Guardrail.
+
+A: EvalHub encrypts the model weights at rest.
+Incorrect: EvalHub evaluates model outputs; it does not handle storage encryption.
+---
+Q6: To ensure the CISO has a historical audit trail of all model safety and accuracy scores, how does EvalHub track its evaluation runs?
+
+A: By emailing CSV reports to the cluster admin.
+Incorrect: Email is not an enterprise-grade tracking or auditing system.
+
+A: By automatically creating an experiment and logging benchmark metrics to MLflow, which is now a natively managed component in 3.4.
+Correct: EvalHub automatically integrates with MLflow (now a managed component in OpenShift AI 3.4) to log benchmark metrics as MLflow runs within a designated experiment, providing long-term tracking and a centralized audit trail.
+
+A: By exporting logs directly to external SIEM tools via FTP.
+Incorrect: It logs metrics to MLflow, not raw logs via FTP.
+
+A: By storing results in the browser's local storage.
+Incorrect: Local storage is ephemeral and cannot serve as an enterprise audit trail.
+---
+Q7: A developer needs to build an agentic workflow but isn't sure which models actually support tool calling. How does the 3.4 Model Catalog solve this?
+
+A: Developers must deploy every model and test it manually.
+Incorrect: This is incredibly inefficient and costly.
+
+A: The Model Catalog includes a new "Tool calling" task filter that displays only validated models, and shows the exact CLI arguments needed right on the model card.
+Correct: The Model Catalog now includes a "Tool calling" filter. For validated models, it renders the specific CLI requirements (like --enable-auto-tool-choice and --tool-call-parser) and chat templates directly in the YAML frontmatter of the model card.
+
+A: A hardcoded list of tool-calling models is maintained in a cluster ConfigMap.
+Incorrect: It is integrated directly into the dynamic Catalog UI.
+
+A: The catalog automatically injects tool-calling logic into any model.
+Incorrect: The catalog cannot give a model capabilities it wasn't trained for.
+---
+Q8: Agentic AI is highly susceptible to "Prompt Injections," where users try to override system instructions. Which EvalHub provider is specifically built to test for this vulnerability?
+
+A: guidellm
+Incorrect: GuideLLM is used for performance profiling and sizing, not security scanning.
+
+A: lm_evaluation_harness
+Incorrect: The EleutherAI harness is generally for accuracy and reasoning benchmarks, not specifically adversarial injection scanning.
+
+A: lighteval
+Incorrect: Lighteval is another accuracy/evaluation suite, not a dedicated adversarial scanner.
+
+A: garak
+Correct: The garak provider within EvalHub is a specialized security vulnerability and safety scanner designed to test LLMs for weaknesses like prompt injections, OWASP LLM Top 10, and AVID taxonomy issues.
+---
+Q9: While developing in the Gen AI Playground, how can developers immediately test their agentic prompts against basic injection/jailbreak attempts before committing code?
+
+A: By installing a third-party browser extension.
+Incorrect: Third party extensions are security risks and not supported by OpenShift AI.
+
+A: By enabling the basic safety guardrails (Prompt Guard) available directly in the Gen AI Playground interface to detect prompt injections.
+Correct: The Gen AI Playground in 3.4 provides access to basic safety guardrails, including Prompt Guard for Prompt Injection/Jailbreak detection, allowing developers to filter unsafe content and test prompt security interactively.
+
+A: By running a local shell script.
+Incorrect: The Playground provides native UI integration for this.
+
+A: The Playground cannot test for prompt injections.
+Incorrect: 3.4 added basic Guardrail features directly into the Playground UI.
+---
+Q10: In the MCP architecture on OpenShift AI, what component aggregates tools from multiple registered MCP servers behind a single endpoint for centralized access control?
+
+A: mcp-gateway
+Correct: The mcp-gateway is a Kubernetes-native gateway that aggregates tools from multiple registered MCP servers behind a single unified runtime endpoint, enabling centralized access control and routing.
+
+A: mcp-lifecycle-operator
+Incorrect: The operator handles the creation of the server pods, not the network routing.
+
+A: evalhub-server
+Incorrect: EvalHub is for model testing, not MCP tool aggregation.
+
+A: kserve-controller
+Incorrect: KServe handles model endpoints, not MCP tool endpoints.`;
+
+      // --- PARSING LOGIC ---
+      function parseQuizData(text) {
+          try {
+              const parts = text.split('---');
+              const intro = parts.shift().trim();
+              
+              const questions = parts.filter(p => p.trim() !== '').map((part) => {
+                  const lines = part.trim().split('\n').map(l => l.trim()).filter(l => l !== '');
+                  if (lines.length === 0) return null;
+
+                  const questionLine = lines.shift();
+                  const questionText = questionLine.replace(/^Q\d+:\s*/, '').trim();
+                  
+                  const answers = [];
+                  let currentAnswer = null;
+
+                  for (const line of lines) {
+                      if (line.startsWith('A:')) {
+                          if (currentAnswer) {
+                              answers.push(currentAnswer);
+                          }
+                          currentAnswer = { text: line.substring(2).trim(), isCorrect: false, explanation: '' };
+                      } else if (line.startsWith('Correct:')) {
+                          if(currentAnswer) {
+                              currentAnswer.isCorrect = true;
+                              currentAnswer.explanation = line.substring(8).trim();
+                          }
+                      } else if (line.startsWith('Incorrect:')) {
+                           if(currentAnswer) {
+                              currentAnswer.isCorrect = false;
+                              currentAnswer.explanation = line.substring(10).trim();
+                          }
+                      } else {
+                          if (currentAnswer) {
+                              currentAnswer.explanation += ' ' + line;
+                          }
+                      }
+                  }
+                  if (currentAnswer) {
+                      answers.push(currentAnswer);
+                  }
+                  
+                  return { question: questionText, answers: answers, firstAttemptCorrect: null };
+              }).filter(q => q !== null);
+
+              return { intro, questions };
+          } catch (e) {
+              console.error("Failed to parse quiz data:", e);
+              return { intro: "<span style='color:red;'>Fatal Parsing Error. Check developer console.</span>", questions: [] };
+          }
+      }
+
+      // --- QUIZ APPLICATION LOGIC ---
+      try {
+          const { intro, questions } = parseQuizData(quizDataText);
+          let currentQuestionIndex = 0;
+
+          const introEl = document.getElementById('quiz-intro');
+          const questionCounterEl = document.getElementById('question-counter');
+          const questionTextEl = document.getElementById('question-text');
+          const answersContainerEl = document.getElementById('answers-container');
+          
+          const resultsContainerEl = document.getElementById('results-container');
+          const finalScorePercentEl = document.getElementById('final-score-percent');
+          const finalScoreBreakdownEl = document.getElementById('final-score-breakdown');
+          const finalMessageEl = document.getElementById('final-message');
+
+          const nextBtn = document.getElementById('next-btn');
+          const prevBtn = document.getElementById('prev-btn');
+          const resultsBtn = document.getElementById('results-btn');
+          const restartBtn = document.getElementById('restart-btn');
+
+          introEl.innerHTML = intro;
+
+          if (!questions || questions.length === 0) {
+              questionTextEl.innerHTML = "<span style='color:red;'>No questions were loaded. Ensure the data format is correct.</span>";
+          } else {
+              function displayQuestion(index) {
+                  const question = questions[index];
+                  questionCounterEl.style.display = 'block';
+                  questionContainerEl = document.getElementById('question-container');
+                  questionContainerEl.style.display = 'block';
+                  resultsContainerEl.style.display = 'none';
+
+                  questionCounterEl.textContent = `Question ${index + 1} of ${questions.length}`;
+                  questionTextEl.textContent = question.question;
+                  answersContainerEl.innerHTML = '';
+
+                  question.answers.forEach((answer, answerIndex) => {
+                      const answerItem = document.createElement('div');
+                      answerItem.className = 'answer-item';
+                      
+                      answerItem.innerHTML = `
+                          <div class="answer-label" data-index="${answerIndex}">
+                              <span class="custom-checkbox"></span>
+                              <span class="answer-text">${answer.text}</span>
+                          </div>
+                          <div class="explanation">${answer.explanation}</div>
+                      `;
+                      answersContainerEl.appendChild(answerItem);
+                  });
+                  
+                  updateNavigation();
+              }
+              
+              function handleAnswerClick(event) {
+                  const label = event.target.closest('.answer-label');
+                  if (!label) return;
+
+                  const answerItem = label.parentElement;
+                  const explanation = answerItem.querySelector('.explanation');
+                  const checkbox = label.querySelector('.custom-checkbox');
+
+                  const isAnswered = answerItem.classList.contains('answered');
+
+                  if (isAnswered) {
+                       answerItem.classList.remove('answered', 'correct', 'incorrect');
+                       explanation.style.display = 'none';
+                       checkbox.textContent = '';
+                  } else {
+                      const answerIndex = parseInt(label.dataset.index);
+                      const answer = questions[currentQuestionIndex].answers[answerIndex];
+                      
+                      if (questions[currentQuestionIndex].firstAttemptCorrect === null) {
+                          questions[currentQuestionIndex].firstAttemptCorrect = answer.isCorrect;
+                      }
+
+                      answerItem.classList.add('answered');
+                      explanation.style.display = 'block';
+
+                      if (answer.isCorrect) {
+                          answerItem.classList.add('correct');
+                          checkbox.innerHTML = '&#10003;'; 
+                      } else {
+                          answerItem.classList.add('incorrect');
+                          checkbox.innerHTML = '&#10007;'; 
+                      }
+                  }
+              }
+
+              function showResults() {
+                  document.getElementById('question-counter').style.display = 'none';
+                  document.getElementById('question-container').style.display = 'none';
+                  
+                  const correctCount = questions.filter(q => q.firstAttemptCorrect === true).length;
+                  const wrongCount = questions.filter(q => q.firstAttemptCorrect === false).length;
+                  const skippedCount = questions.length - correctCount - wrongCount;
+                  const percentage = Math.round((correctCount / questions.length) * 100);
+
+                  finalScorePercentEl.textContent = `${percentage}%`;
+                  finalScoreBreakdownEl.textContent = `${correctCount} Correct | ${wrongCount} Incorrect | ${skippedCount} Skipped`;
+
+                  if (percentage >= 80) {
+                      finalScorePercentEl.className = 'score-text pass';
+                      finalMessageEl.innerHTML = `<b>Congratulations!</b> You have demonstrated mastery of Securing Agentic Workflows. You may proceed directly to the Runbook and skip the interactive setup labs.`;
+                  } else {
+                      finalScorePercentEl.className = 'score-text fail';
+                      finalMessageEl.innerHTML = `You're on your way, but there are a few architectural concepts we need to solidify. Please proceed to the Runbook and complete the interactive setup labs below to build your foundational skills.`;
+                  }
+
+                  resultsContainerEl.style.display = 'block';
+
+                  prevBtn.style.display = 'none';
+                  nextBtn.style.display = 'none';
+                  resultsBtn.style.display = 'none';
+                  restartBtn.style.display = 'inline-block';
+              }
+
+              function updateNavigation() {
+                  prevBtn.style.display = currentQuestionIndex > 0 ? 'inline-block' : 'none';
+                  
+                  const isLastQuestion = currentQuestionIndex === questions.length - 1;
+                  nextBtn.style.display = isLastQuestion ? 'none' : 'inline-block';
+                  resultsBtn.style.display = isLastQuestion ? 'inline-block' : 'none';
+                  restartBtn.style.display = 'none';
+
+                  const navContainer = document.getElementById('navigation-container');
+                  navContainer.style.justifyContent = currentQuestionIndex === 0 ? 'flex-end' : 'space-between';
+              }
+
+              answersContainerEl.addEventListener('click', handleAnswerClick);
+
+              nextBtn.addEventListener('click', () => {
+                  if (currentQuestionIndex < questions.length - 1) {
+                      currentQuestionIndex++;
+                      displayQuestion(currentQuestionIndex);
+                  }
+              });
+
+              prevBtn.addEventListener('click', () => {
+                  if (currentQuestionIndex > 0) {
+                      currentQuestionIndex--;
+                      displayQuestion(currentQuestionIndex);
+                  }
+              });
+
+              resultsBtn.addEventListener('click', () => {
+                  showResults();
+              });
+
+              restartBtn.addEventListener('click', () => {
+                  questions.forEach(q => q.firstAttemptCorrect = null);
+                  currentQuestionIndex = 0;
+                  displayQuestion(currentQuestionIndex);
+              });
+
+              displayQuestion(currentQuestionIndex);
+          }
+      } catch (err) {
+          document.body.innerHTML = `<p style="color:red; font-weight:bold;">Initialization Error: ${err.message}</p>`;
+      }
+    </script>
+  </body>
+</html>}}
