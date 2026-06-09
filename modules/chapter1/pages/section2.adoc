@@ -16,8 +16,8 @@ It is time to step into the Engine Room. In these interactive labs, you will exe
 
 **Guided Steps:**
 1. In the OpenShift web console, log in as a cluster administrator.
-2. Navigate to **Operators -> OperatorHub** and install **Red Hat OpenShift AI**.
-3. Navigate to **Operators -> Installed Operators** and click the Operator.
+2. Navigate to **Ecosystem -> Software Catalog** and install **Red Hat OpenShift AI**.
+3. Navigate to **Ecosystem -> Installed Operators** and click the Operator.
 4. Click the **Data Science Cluster** tab, then click **Create DataScienceCluster**.
 5. Select **YAML view**. Change the `managementState` from `Removed` to `Managed` for the following core components: `kserve`, `kueue`, `mlflowoperator`, and `modelregistry`.
 6. Click **Create**.

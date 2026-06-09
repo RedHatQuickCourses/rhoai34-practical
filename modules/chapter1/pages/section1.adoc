@@ -8,7 +8,7 @@ If you passed the Diagnostic Gateway, use this page as your quick-reference job 
 == Understanding the Architecture Layers
 Setting up OpenShift AI is not a single-click installation; it is a layered architecture. Platform Engineers must understand the distinction between the management plane and the activation plane.
 
-* **The Operator (Management Plane):** Installing the Red Hat OpenShift AI Operator from OperatorHub simply lays down the management plane. It does *not* actually install the AI components (like Jupyter, MLflow, or KServe).
+* **The Operator (Management Plane):** Installing the Red Hat OpenShift AI Operator from the **Ecosystem / Software Catalog** simply lays down the management plane. It does *not* actually install the AI components (like Jupyter, MLflow, or KServe).
 * **DataScienceClusterInitialization (DSCI - The Foundation):** The DSCI custom resource handles global, cluster-wide configurations that must exist before components spin up. This includes injecting cluster-wide trusted CA certificate bundles and enabling the centralized OpenTelemetry/Prometheus observability stack.
 * **DataScienceCluster (DSC - The Activation Layer):** The DSC custom resource defines exactly which components are instantiated in the cluster by setting their `managementState` to `Managed` or `Removed`. 
 ** *Note for 3.4:* The MLflow Operator is now a natively managed component directly within the DSC, removing the need for legacy feature flags.
