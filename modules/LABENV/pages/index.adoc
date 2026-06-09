@@ -1,3 +1,52 @@
-= Lab Environment
+= Lab Environment Setup
 
-FIXME: Instructions for accessing the lab environment for this hands-on based training.
+Building an Models-as-a-Service platform requires the right foundation. For this course, you will be working in a live, GPU-accelerated Single Node OpenShift (SNO) environment provisioned through the Red Hat Demo Platform (RHDP).
+
+**Direct Link:** https://catalog.demo.redhat.com/catalog/babylon-catalog-prod?item=babylon-catalog-prod/published.openshift-ai-v3.prod&utm_source=webapp&utm_medium=share-link[Red Hat OpenShift AI 3,window=_blank]
+
+== Understanding Your Infrastructure
+
+This is the exact environment used to validate all course exercises, model deployments, and observability tasks. 
+
+* **Base Hardware:** By default, your instance provides a single NVIDIA L4 GPU with 24GB of VRAM. 
+* **Advanced Hardware:** Depending on your RHDP access level, you may be able to select larger node sizes, such as the `g6.12xlarge`, which includes four NVIDIA L4 GPUs—enough compute power to run up to four small-sized LLMs simultaneously.
+* **Pre-Deployed Assets:** The lab comes pre-configured with OpenShift AI 3.4 and includes a `llama-32-2b` model already deployed. This pre-deployed model is immediately available for the playground and serves as an excellent base for agentic development.
+
+[WARNING]
+====
+**Resource Management** +
+While this instance has enough memory to host all OpenShift AI features, the environment may struggle if you enable every single feature simultaneously. Additionally, to deploy a new model during the labs, you must first stop the pre-running Llama model (located in the `my-first-model` project) to free up the GPU resources.
+====
+
+---
+
+== Interactive Order Walkthrough
+
+If you are new to the Red Hat Demo Platform, use the interactive tour below to see exactly how to navigate the catalog and select the correct GPU parameters for your lab environment.
+
+++++
+<iframe 
+  src="https://demo.arcade.software/0dtjNJXkvWw8oAX8wOw0?embed&embed_mobile=inline&embed_desktop=inline&show_copy_link=true"
+  width="100%" 
+  height="600px" 
+  frameborder="0" 
+  allowfullscreen
+  webkitallowfullscreen
+  mozallowfullscreen
+  allow="clipboard-write"
+  muted>
+</iframe>
+++++
+
+---
+
+=== Provisioning Timeline & Access
+
+Lab provisioning typically takes **60 to 90 minutes**. 
+
+You will receive an email with your access details once the environment is fully operational. Alternatively, you can retrieve your credentials directly from the RHDP portal:
+
+1. On the RHDP portal, **click** on **Services** in the left-hand navigation menu.
+2. **Select your lab** from the active listings on the right-hand side of the page.
+3. **View your access details**, which will include your OpenShift console URL, administrator credentials, and API endpoints.
+

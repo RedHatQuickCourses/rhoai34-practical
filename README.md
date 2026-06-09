@@ -77,5 +77,4 @@ open build/site/index.html
 
 ## Development
 
-- [Development using DevSpace](./DEVSPACE.md)
 - [Content editing guidelines](./USAGEGUIDE.adoc)
