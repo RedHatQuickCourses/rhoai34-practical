@@ -1,6 +1,6 @@
 {
-  "totalSeconds": 1516,
-  "pageCount": 15,
+  "totalSeconds": 2734,
+  "pageCount": 27,
   "pages": [
     {
       "module": "ROOT",
@@ -71,6 +71,66 @@
       "module": "chapter4",
       "page": "section2.adoc",
       "seconds": 128
+    },
+    {
+      "module": "chapter5",
+      "page": "index.adoc",
+      "seconds": 5
+    },
+    {
+      "module": "chapter5",
+      "page": "section1.adoc",
+      "seconds": 206
+    },
+    {
+      "module": "chapter5",
+      "page": "section2.adoc",
+      "seconds": 107
+    },
+    {
+      "module": "chapter6",
+      "page": "index.adoc",
+      "seconds": 5
+    },
+    {
+      "module": "chapter6",
+      "page": "section1.adoc",
+      "seconds": 168
+    },
+    {
+      "module": "chapter6",
+      "page": "section2.adoc",
+      "seconds": 98
+    },
+    {
+      "module": "chapter7",
+      "page": "index.adoc",
+      "seconds": 5
+    },
+    {
+      "module": "chapter7",
+      "page": "section1.adoc",
+      "seconds": 167
+    },
+    {
+      "module": "chapter7",
+      "page": "section2.adoc",
+      "seconds": 141
+    },
+    {
+      "module": "chapter8",
+      "page": "index.adoc",
+      "seconds": 5
+    },
+    {
+      "module": "chapter8",
+      "page": "section1.adoc",
+      "seconds": 205
+    },
+    {
+      "module": "chapter8",
+      "page": "section2.adoc",
+      "seconds": 106
     },
     {
       "module": "appendix",

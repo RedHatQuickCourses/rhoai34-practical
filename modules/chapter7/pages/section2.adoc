@@ -1,0 +1,64 @@
+= Interactive Labs: Enabling Rapid Prototyping (Llama Stack, Gen AI Studio, & AI Hub)
+:navtitle: Labs: Prototyping & Studio
+:description: Hands-on walk-throughs for finding validated models, uploading RAG datasets, and authorizing agentic MCP servers.
+
+In these interactive labs, you will trace the prototyping lifecycle: discovering optimized configurations within the AI Hub, utilizing the Gen AI Playground to validate a RAG document search flow, and authorizing an active tool calling server via the Model Context Protocol.
+
+== Lab 1: Discovering AI Assets in the Hub
+**Goal:** Navigate the centralized Model Catalog to evaluate validated foundational assets and capture optimized baseline deployment settings.
+
+.Arcade: Explore AI Hub Catalog
+====
+// Antora iframe embed placeholder for Arcade 1
+// ++++ 
+// <iframe src="URL_TO_ARCADE_1" width="100%" height="600px"></iframe> 
+// ++++
+
+**Guided Steps:**
+1. Log in to the OpenShift AI dashboard using your engineer credentials.
+2. In the primary left navigation menu, expand **AI hub** and select **Catalog**.
+3. Filter the curated view by clicking **Red Hat AI models** on the main menu bar to isolate supported foundation distributions.
+4. Locate and click on the **granite-3.1-8b-instruct** model card.
+5. Select the **Performance Insights** tab to review validated benchmark data across varying underlying hardware profiles.
+6. Return to the main **Readme** view, locate the **Recommended Configurations** YAML configuration block, and copy the explicitly recommended CLI tool flags (e.g., `--enable-auto-tool-choice`).
+====
+
+== Lab 2: Testing RAG in the Playground
+**Goal:** Verify a model's operational context retrieval and documentation citing capabilities within a safe, code-free interface.
+
+.Arcade: Validate Document RAG Flows
+====
+// Antora iframe embed placeholder for Arcade 2
+// ++++ 
+// <iframe src="URL_TO_ARCADE_2" width="100%" height="600px"></iframe> 
+// ++++
+
+**Guided Steps:**
+1. From the left dashboard navigation tree, expand **Gen AI studio** and select **Playground**.
+2. Locate the central dropdown selector in the main chat header panel and choose your deployed foundation model.
+3. In the left-hand configuration inspector block, select the **Knowledge** customization tab.
+4. Click **Upload files**, browse your local path, and submit a sample reference dataset PDF (ensure size is under `10MB`).
+5. Toggle into the adjacent **Prompt** configuration panel and insert system baseline rules instructing the model to leverage its external indexing functions (e.g., `You MUST use the knowledge_search tool to obtain updated info.`).
+6. Enter an explicit query into the main user chat field that targets information contained only within the file. Verify that the model accurately pulls from the context window and provides a proper reference citation.
+====
+
+== Lab 3: Enabling and Testing MCP Tools
+**Goal:** Authorize and validate a live external tool interface using a pre-staged Model Context Protocol (MCP) server configuration.
+
+.Arcade: Validate MCP Tooling
+====
+// Antora iframe embed placeholder for Arcade 3
+// ++++ 
+// <iframe src="URL_TO_ARCADE_3" width="100%" height="600px"></iframe> 
+// ++++
+
+**Guided Steps:**
+1. Open the **Gen AI studio -> Playground** workspace panel.
+2. Ensure you have loaded a modern model variant possessing active, verified tool-calling capabilities.
+3. In the left-hand parameters view panel, click down into the dedicated **MCP** tool tab.
+4. Review the structural list of configured platform servers, locate your target connector instance (e.g., `GitHub` or `Confluent`), and click the **Auth** padlock icon to secure your active tool session with an integration token.
+5. In the primary chat console input line, prompt the model to perform an environment action utilizing that connection (e.g., `Query the latest pull requests from my repository`).
+6. Observe the backend execution to verify that the model successfully translates the text prompt into a structured MCP tool call, queries the external data point, and structures the response cleanly back to the chat window.
+====
+
+**Course Complete!** You have constructed the AI Engine Room from the ground up—architecting operator fabrics, scaling high-density inference pipelines, governing accelerator hardware, and standardizing rapid RAG prototyping surfaces for your enterprise development teams.

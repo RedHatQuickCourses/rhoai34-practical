@@ -1,0 +1,47 @@
+= Module 9 Runbook: Observability, Monitoring, & Platform Showback
+:navtitle: Runbook: Telemetry & Showback
+:description: Theoretical architecture for the OpenShift AI Telemetry flow, vLLM metrics, and Financial Showback.
+
+If you passed the Diagnostic Gateway, use this page as your quick-reference job aid. If you are building your foundational skills, read this carefully before proceeding to the interactive labs.
+
+== The Full Stack Telemetry Flow
+Enterprise observability is not just about checking if a pod is running; it is about tracking the entire AI pipeline.
+In OpenShift AI 3.4, the telemetry flow operates across distinct layers:
+
+1. **Hardware Telemetry:** Begins at the hardware level with the Data Center GPU Manager (DCGM) exposing raw accelerator metrics (like `DCGM_FI_DEV_GPU_UTIL`). 
+2. **Application Telemetry:** The runtime engines (like vLLM) emit application-specific metrics (like `vllm:time_to_first_token`).
+3. **Ingestion Layer:** These metrics are scraped by **User Workload Monitoring (UWM)**—which must be explicitly enabled on the cluster. The data flows into the **OpenTelemetry Collector (OTC)**, which acts as the standardized ingestion layer. 
+4. **Storage & Visualization:** From OTC, the data is routed into the dedicated OpenShift AI Prometheus instance (for metrics) and Tempo (for distributed tracing). Platform Engineers visualize this aggregated data in centralized Grafana dashboards, or use the `DSCI` resource to export it to external SIEM tools.
+
+== Model Performance Telemetry: TTFT, ITL, and Saturation
+Platform Engineers must monitor specific LLM metrics to gauge user experience and trigger autoscaling, rather than relying on generic CPU monitoring:
+
+* **Time-To-First-Token (TTFT):** Measures the latency from when a user sends a prompt to when the first word appears. High TTFT usually indicates an overloaded queue.
+* **Time-Per-Output-Token (TPOT / ITL):** Measures the inter-token latency (how fast the text streams). If this slows down, the GPU is likely struggling with compute or memory bandwidth.
+* **KV Cache Saturation:** LLMs store attention keys/values in the GPU's KV Cache (`vllm:gpu_cache_usage_perc`). If the KV cache hits 100%, the model cannot accept new requests. The system queues them (`vllm:num_requests_waiting`). The new 3.4 Workload Variant Autoscaler (WVA) watches these exact saturation metrics to intelligently trigger horizontal pod autoscaling before the queue gets too long.
+
+== Usage Tracking & Showback Frameworks
+Spiraling cloud costs are a major risk in generative AI. OpenShift AI 3.4 solves this with the Models-as-a-Service (MaaS) Observability Dashboard.
+
+By enabling telemetry on the MaaS `Tenant` custom resource, the MaaS API gateway (backed by Kuadrant and Limitador) actively tracks every single inference request. The dashboard aggregates this data, allowing the Platform Engineer to see exactly how many tokens were consumed by specific users, groups, or Subscriptions. 
+
+This data can be exported as a CSV file to provide Finance with an enterprise-grade "Showback" report, attributing specific LLM API costs directly to the business units consuming them.
+
+== Day-2 Diagnostics: The Anti-Pattern
+*Can you spot the architectural flaw?*
+
+**The Scenario: The CPU Scaling Trap**
+A Platform Engineer deploys a massive 70B parameter LLM for the customer support team. To handle traffic spikes, they configure a standard Kubernetes Horizontal Pod Autoscaler (HPA) to scale the model replicas whenever CPU utilization exceeds 80%. They also write a custom sidecar Python script to parse the raw text logs of the pod to count tokens for financial showback. 
+During peak hours, user requests start timing out with 500 errors. The engineer checks the cluster and sees that the HPA never triggered a scale-up because the CPU was only at 30%.
+
+**Why this is an Anti-Pattern:**
+* **Scaling Anti-Pattern:** LLM inference is fundamentally GPU and Memory-bound, not CPU-bound. The GPU's KV Cache filled up to 100%, causing the queue to overflow and drop requests, all while the CPU remained mostly idle. Standard CPU-based HPA is useless for LLMs.
+* **Showback Anti-Pattern:** Parsing raw pod logs to count tokens is fragile, misses cached requests, and puts massive unnecessary load on the logging infrastructure.
+
+**The Solution:**
+In OpenShift AI 3.4, the Platform Engineer must use the native AI telemetry architecture.
+* **For Scaling:** They deploy the model using the **Workload Variant Autoscaler (WVA)**. The WVA scales based on actual LLM saturation signals—specifically the `vllm:kv_cache_usage_perc` and `vllm:num_requests_waiting` metrics.
+* **For Showback:** They enable **MaaS Telemetry**. The MaaS API Gateway natively tracks exact token counts and feeds the data directly into the MaaS Observability Dashboard for a clean, CSV-exportable showback report.
+
+<<<
+*Ready to build it? Proceed to the Interactive Labs.*

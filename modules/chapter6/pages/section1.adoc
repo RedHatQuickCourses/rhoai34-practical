@@ -1,0 +1,41 @@
+= Module 7 Runbook: Hardware Profiles & GPU Performance
+:navtitle: Runbook: Hardware & Performance
+:description: Theoretical architecture for Hardware Profiles, MIG vs. Time-slicing, and DCGM Observability.
+
+If you passed the Diagnostic Gateway, use this page as your quick-reference job aid. If you are building your foundational skills, read this carefully before proceeding to the interactive labs.
+
+== The Hierarchy of Hardware Governance
+In OpenShift AI 3.4, hardware is governed in a strict, layered hierarchy to keep physical drivers abstracted away from end users.
+
+* **The GPU Operator:** Whether NVIDIA, AMD, or Intel Gaudi, the lowest level is the Operator. It manages the physical hardware driver, device plugins, and node labeling.
+* **Hardware Profiles:** *(Note: In 3.4, legacy "Accelerator Profiles" and "Container Sizes" are deprecated).* The modern governance layer is the Hardware Profile. This is a custom resource (CR) that packages everything the end-user needs into a single UI dropdown. A Hardware Profile defines the specific hardware identifiers, exact CPU/Memory limits, and critically, the **Node Selectors and Tolerations** required to bypass taints and route the workload to the correct node.
+
+== GPU Resource Sharing: MIG vs. Time-slicing
+A Platform Engineer must choose how to divide expensive GPUs based on the workload:
+
+* **Multi-Instance GPU (MIG):** Physically partitions the hardware. MIG provides strict memory and fault isolation. *Use case:* Multi-tenant production model serving where latency and security boundaries are critical.
+* **GPU Time-slicing:** Uses software to divide processing time into short, alternating slots. All workloads share the same GPU memory without strict isolation. *Use case:* Lightweight exploratory Jupyter notebooks and data preprocessing where full GPU isolation is unnecessary and maximizing concurrent users is the goal.
+
+== The Observability Flow (DCGM)
+To prevent flying blind, the infrastructure team relies on the Data Center GPU Manager (DCGM).
+1. The Platform Engineer enables the `dcgmExporter` inside the NVIDIA ClusterPolicy.
+2. The exporter exposes hardware metrics (e.g., `DCGM_FI_DEV_GPU_UTIL` for utilization, `DCGM_FI_DEV_GPU_TEMP` for temperature).
+3. The centralized OpenShift AI Prometheus stack scrapes these endpoints.
+4. Administrators visualize them in Grafana or the OpenShift dashboard to identify idle GPUs or CPU-GPU bottlenecks (e.g., high CPU throttling with low GPU utilization).
+
+== Day-2 Diagnostics: The Anti-Pattern
+*Can you spot the architectural flaw?*
+
+**The Scenario: The Weekend GPU Hoarder**
+A data scientist needs to do some basic exploratory data analysis using Pandas and simple scikit-learn models in a Jupyter notebook. In the OpenShift AI deployment wizard, they simply select "GPU Node" from the dropdown. The cluster provisions their pod and hands them a full, dedicated 80GB NVIDIA A100 GPU. They leave the notebook running over the weekend while they are away. Meanwhile, a critical LLM deployment fails because it cannot schedule due to `Insufficient quota for nvidia.com/gpu`.
+
+**Why this is an Anti-Pattern:**
+Assigning a full, dedicated premium GPU to a lightweight exploratory environment wastes thousands of dollars of compute capacity. Notebooks are highly interactive and often sit idle while users type or read code.
+
+**The Solution:**
+* **Configure GPU Time-Slicing:** The engineer modifies the NVIDIA GPU Operator by creating a `time-slicing-config` ConfigMap with `replicas: 10`. This allows up to 10 lightweight notebook pods to share the memory and compute of a single physical GPU concurrently.
+* **Create Distinct Hardware Profiles:** The engineer creates a Hardware Profile named "Shared Exploratory GPU" configured with a limit of `nvidia.com/gpu: 1` (which now represents 1 slice).
+* **Apply Taints and Tolerations:** To ensure production models get dedicated hardware, the engineer taints the A100 nodes. They create a "Production A100 GPU" Hardware Profile that contains the specific Tolerations to bypass that taint, ensuring the A100s are reserved strictly for InferenceServices.
+
+<<<
+*Ready to build it? Proceed to the Interactive Labs.*

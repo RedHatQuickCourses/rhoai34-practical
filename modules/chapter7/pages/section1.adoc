@@ -1,0 +1,40 @@
+= Module 8 Runbook: Enabling Rapid Prototyping (Llama Stack, Gen AI Studio, & AI Hub)
+:navtitle: Runbook: Llama Stack & Studio
+:description: Core architectural concepts behind Llama Stack Distributions, Gen AI Studio Playgrounds, and AI Hub asset utilization.
+
+If you passed the Diagnostic Gateway, use this page as your quick-reference job aid. If you are building your foundational skills, read this carefully before proceeding to the interactive labs.
+
+== Llama Stack vs. Standalone vLLM
+A standalone vLLM deployment only provides a raw inference endpoint. If developers want to build a Retrieval-Augmented Generation (RAG) application, they are forced to write complex "glue code" using external frameworks like LangChain. This forces developers to manually handle document chunking, generate embeddings, orchestrate similarity searches against vector stores, and format context windows.
+
+Deploying a `LlamaStackDistribution` abstracts this complexity entirely. Llama Stack unifies the inference engine, embedding models, and vector storage (e.g., Milvus, pgvector, or inline FAISS) behind a single OpenAI-compatible API layer. Using the Llama Stack `/v1/responses` API, developers pass their queries using the built-in `file_search` tool, allowing the platform engine to handle RAG data-retrieval routing natively.
+
+== The Discovery & Validation Stack
+OpenShift AI 3.4 organizes rapid prototyping into two distinct administrative zones:
+
+* **AI Hub (The Library):** The centralized Model Catalog. It eliminates deployment guesswork by housing curated, validated foundation models. It provides infrastructure teams with performance insights, recommended baseline arguments, and verified tool-calling snippets directly on the model reference card.
+* **Gen AI Studio & Playground (The Proving Ground):** A secure, code-free UI interface. Instead of spinning up test scripts, developers use the interactive Playground to swap system prompts, adjust core sampling parameters, upload raw PDFs to test out active RAG routing, and authorize Model Context Protocol (MCP) servers to test live Agentic tooling integrations.
+
+== Configuration Cheat Sheet: Llama Stack with Remote Milvus
+To stand up an enterprise-grade prototyping environment, a Platform Engineer orchestrates the following dependencies:
+
+1. **Deploy Metadata Database:** Provision a PostgreSQL instance (required for Llama Stack configuration state and file reference storage).
+2. **Deploy Vector Store:** Instantiate your target vector database service (e.g., a standalone Milvus service exposing gRPC traffic on port `19530`).
+3. **Deploy Core Models:** Run your target foundation LLM via vLLM and deploy an explicit text embedding model (e.g., `nomic-embed-text`).
+4. **Assemble Credentials:** Collect endpoints and access tokens into a localized Kubernetes `Secret`.
+5. **Instantiate Distribution:** Apply the `LlamaStackDistribution` Custom Resource mapping backend engine variables directly to the corresponding Secret targets.
+
+== Day-2 Diagnostics: The Anti-Pattern
+*Can you spot the architectural flaw?*
+
+**The Scenario: The "Shadow Wiring" Anti-Pattern**
+An engineering team is building a internal compliance RAG assistant. To support them, the platform administrator hands off three disconnected infrastructure endpoints: an LLM endpoint URL, an embedding model routing path, and a raw connection string to an unmanaged external database container. The developers proceed to spend weeks writing custom LangChain code to manage text splitting, generate vectors, execute proximity searches, and maintain state logic. When the database is updated or a new version of the LLM is launched, the code breaks completely, and the infrastructure team has zero visibility into the actual retrieval requests.
+
+**Why this is an Anti-Pattern:**
+Fragmenting the underlying component layers forces the application stack to carry heavy, fragile data orchestration code. This creates maintenance bottlenecks and blocks centralized platform audit monitoring.
+
+**The Solution:**
+The Platform Engineer unifies the layers by deploying a declarative `LlamaStackDistribution` Custom Resource. Llama Stack packages the inference routes, embedding generation, and vector index bindings into a unified engine room. Developers completely delete their fragile LangChain orchestration blocks and issue standard calls directly to the Llama Stack OpenAI-aligned endpoints, letting the platform handle data retrieval natively.
+
+<<<
+*Ready to build it? Proceed to the Interactive Labs.*

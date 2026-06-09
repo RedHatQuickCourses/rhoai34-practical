@@ -1,0 +1,64 @@
+= Interactive Labs: Hardware Profiles & GPU Performance
+:navtitle: Labs: Hardware Governance
+:description: Interactive UI click-paths for configuring time-slicing, hardware profiles, and observability.
+
+In these interactive labs, you will execute the "Happy Path" to configure time-slicing, enforce scheduling via Hardware Profiles, and verify utilization using OpenShift AI metrics.
+
+== Lab 1: Configuring GPU Time-Slicing
+**Goal:** Configure the NVIDIA GPU Operator to allow multiple workloads to share a single GPU.
+
+.Arcade: Configure Time-Slicing
+====
+// Antora iframe embed placeholder for Arcade 1
+// ++++ 
+// <iframe src="URL_TO_ARCADE_1" width="100%" height="600px"></iframe> 
+// ++++
+
+**Guided Steps:**
+1. Log in to the OpenShift web console as a cluster administrator.
+2. Navigate to **Workloads -> ConfigMaps**.
+3. Select the `nvidia-gpu-operator` project.
+4. Click **Create ConfigMap** and select **YAML view**.
+5. Enter the YAML to define the slice replicas (e.g., `name: time-slicing-config`, `replicas: 4` for your specific GPU architecture like `tesla-t4`). Click **Create**.
+6. Navigate to **Ecosystem -> Installed Operators -> NVIDIA GPU Operator -> ClusterPolicy**.
+7. Edit the `gpu-cluster-policy` YAML to reference the new ConfigMap: `devicePlugin.config.name: time-slicing-config`. Click **Save**.
+====
+
+== Lab 2: Creating an Enforced Hardware Profile
+**Goal:** Create a UI-selectable Hardware Profile that enforces Tolerations so workloads schedule correctly.
+
+.Arcade: Create Hardware Profile
+====
+// Antora iframe embed placeholder for Arcade 2
+// ++++ 
+// <iframe src="URL_TO_ARCADE_2" width="100%" height="600px"></iframe> 
+// ++++
+
+**Guided Steps:**
+1. From the OpenShift AI dashboard, click **Settings -> Hardware profiles**.
+2. Click **Create hardware profile**. Name it `Production Inference Node`.
+3. Click **Add resource**. Set Resource label to `nvidia.com/gpu`, and set Requests and Limits to `1`.
+4. Scroll down to the **Node selectors and tolerations** section.
+5. Click **Add toleration**.
+6. Set the Operator to `Exists`, Effect to `NoSchedule`, and Key to `nvidia.com/gpu`.
+7. Click **Create hardware profile**.
+====
+
+== Lab 3: Identifying GPU Underutilization (Observability)
+**Goal:** Query the DCGM metrics to identify GPUs that are allocated but sitting idle.
+
+.Arcade: View DCGM Metrics
+====
+// Antora iframe embed placeholder for Arcade 3
+// ++++ 
+// <iframe src="URL_TO_ARCADE_3" width="100%" height="600px"></iframe> 
+// ++++
+
+**Guided Steps:**
+1. In the OpenShift web console, navigate to **Observe -> Metrics**.
+2. Ensure you have the `monitoring-rules-view` role or cluster-admin rights.
+3. In the query field, enter `DCGM_FI_DEV_GPU_UTIL` and click **Run queries** to view the percentage of time the GPUs are actively processing tasks.
+4. In a new query field, enter `container_cpu_cfs_throttled_seconds_total` to check for CPU throttling. If CPU throttling is High but GPU utilization is Low, you have identified a severe resource allocation inefficiency.
+====
+
+**Module Complete!** You have successfully governed your expensive hardware, ensuring maximum concurrency for exploration and guaranteed quality of service for production.

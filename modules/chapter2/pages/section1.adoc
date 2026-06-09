@@ -36,6 +36,7 @@ To provision access for a new team, a Platform Engineer completes these exact st
 Your company decides to experiment with OpenAI's GPT-4o. To move fast, the Lead Platform Engineer creates a single enterprise OpenAI account, generates a root API key, and emails it to the 50 developers on the Analytics team. The developers embed this key directly into their application code (`Authorization: Bearer sk-openai-...`).
 
 **Why this is an Anti-Pattern:**
+
 * **No Showback:** Finance receives a single massive bill from OpenAI at the end of the month, with zero ability to determine which developer or application is responsible.
 * **No Quota Enforcement:** A runaway loop in a single developer's code can exhaust the entire company's provider-level token limit, taking down production applications for everyone.
 * **Security Nightmare:** If a developer accidentally commits the root key to a public GitHub repo, the Platform Engineer has to revoke the key at the provider level, instantly breaking all 50 applications simultaneously.

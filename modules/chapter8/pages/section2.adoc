@@ -1,0 +1,63 @@
+= Interactive Labs: Observability, Monitoring, & Platform Showback
+:navtitle: Labs: Telemetry & Showback
+:description: Hands-on walk-throughs for enabling User Workload Monitoring, MaaS Showback tracking, and scraping custom vLLM metrics.
+
+In these interactive labs, you will configure the essential telemetry backbone of OpenShift AI, enabling financial accountability and performance tracing.
+
+== Lab 1: Enabling the Centralized Observability Stack
+**Goal:** Deploy the OpenTelemetry, Prometheus, and Tempo stack to collect metrics across the cluster.
+
+.Arcade: Enable Core Observability
+====
+// Antora iframe embed placeholder for Arcade 1
+// ++++ 
+// <iframe src="URL_TO_ARCADE_1" width="100%" height="600px"></iframe> 
+// ++++
+
+**Guided Steps:**
+1. Log in to the OpenShift web console as a cluster administrator.
+2. Navigate to **Ecosystem -> Installed Operators** and click the **Red Hat OpenShift AI Operator**.
+3. Click the **DSCInitialization** tab and click the `default-dsci` instance.
+4. Select the **YAML** tab.
+5. In the `spec.monitoring` section, set the `managementState` to `Managed`. Ensure you define the metrics storage size (e.g., `size: 5Gi`). Click **Save**.
+6. *To make the dashboard visible:* Navigate to **Home -> API Explorer**, search for `OdhDashboardConfig`, click the `odh-dashboard-config` instance, and edit the YAML to set `spec.dashboardConfig.observabilityDashboard: true`.
+====
+
+== Lab 2: Enabling MaaS Telemetry for Financial Showback
+**Goal:** Instruct the MaaS Gateway to capture token usage data for cost attribution.
+
+.Arcade: Configure Showback Export
+====
+// Antora iframe embed placeholder for Arcade 2
+// ++++ 
+// <iframe src="URL_TO_ARCADE_2" width="100%" height="600px"></iframe> 
+// ++++
+
+**Guided Steps:**
+1. In the OpenShift console, navigate to **Administration -> CustomResourceDefinitions**.
+2. Search for `Tenant` and click the resource name.
+3. Click the **Instances** tab and click `default-tenant`. Select the **YAML** tab.
+4. In the `spec.telemetry` section, set `enabled: true`.
+5. Under metrics, set `captureModelUsage: true` and `captureOrganization: true`. Click **Save**.
+6. Open the OpenShift AI Dashboard, navigate to **Observe & monitor -> Dashboard**, click the **Usage** tab, and click **Export as CSV** to download the billing showback report for Finance.
+====
+
+== Lab 3: Scraping Custom User Workload Metrics
+**Goal:** Ensure Prometheus is actively scraping a data science team's deployed model so you can track KV Cache saturation.
+
+.Arcade: Enable Custom Scraping
+====
+// Antora iframe embed placeholder for Arcade 3
+// ++++ 
+// <iframe src="URL_TO_ARCADE_3" width="100%" height="600px"></iframe> 
+// ++++
+
+**Guided Steps:**
+1. Log in to the OpenShift web console and navigate to **Workloads -> Deployments**.
+2. Select the namespace of the data science project where the model is deployed.
+3. Click the deployment of the model server (e.g., `vllm-server`), and click the **YAML** tab.
+4. In the `spec.template.metadata.labels` section, add the following exact label: `monitoring.opendatahub.io/scrape: 'true'`. Click **Save**.
+5. Navigate to **Observe -> Metrics** in the Developer perspective. Enter `vllm:gpu_cache_usage_perc` into the custom query box and click **Run queries** to view the live KV cache saturation of the newly labeled pod.
+====
+
+**Course Complete!** You have constructed the AI Engine Room from the ground up—architecting operator fabrics, scaling high-density inference pipelines, governing accelerator hardware, standardizing RAG prototyping, and establishing strict financial showback controls.

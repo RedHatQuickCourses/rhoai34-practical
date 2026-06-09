@@ -1,0 +1,49 @@
+= Module 6 Runbook: Model Catalog, Registry, and Storage
+:navtitle: Runbook: Registry & Modelcars
+:description: Theoretical architecture and Anti-Pattern for the Model Registry and OCI Modelcars.
+
+If you passed the Diagnostic Gateway, use this page as your quick-reference job aid. If you are building your foundational skills, read this carefully before proceeding to the interactive labs.
+
+== Model Catalog vs. Model Registry: Governing the Lifecycle
+In a mature AI architecture, Platform Engineers must define clear boundaries between discovery and governance to prevent shadow AI assets.
+
+* **The Model Catalog (AI Hub):** This is the entry point. It provides a curated library to discover, evaluate, and deploy third-party, pre-trained foundation models (like Red Hat validated Granite or Llama models). 
+* **The Model Registry:** This is the System of Record. When your data scientists fine-tune those catalog models using their own data, the resulting artifact is pushed to the Model Registry. The Registry governs the metadata (training parameters, formats, versions, and deployment events) to ensure you always know exactly which version of a custom model is running in production.
+
+*(Note: Prior to promotion to the Registry, data scientists track their experimental training runs and evaluations logically using **MLflow**, which is now deployed as a natively managed component in 3.4).*
+
+== Deep Dive: Storage Connection Types
+How a model gets from storage into GPU memory is critical to stability and speed. In OpenShift AI 3.4, there are three primary connection patterns. 
+
+* **URIs (Fragile):** Direct HTTP/HTTPS links to a model file. *Drawback:* Extremely fragile and insecure for production. If the external server goes down, your deployment fails.
+* **S3/Object Storage (Standard):** The traditional method. Models are stored in S3 buckets. KServe uses an init-container to download the model into an emptyDir before the server starts. *Drawback:* S3 objects are highly mutable. A data scientist can overwrite a `.safetensors` file in the bucket, silently breaking the next pod restart.
+* **OCI Containers / Modelcars (The Best Practice):** A modern approach where model weights are layered into a standard Open Container Initiative (OCI) image (e.g., `oci://quay.io/myorg/granite-7b:v1`).
+
+**Benefits of OCI Modelcars:**
+Modelcars provide immutable, container-native distribution. OCI images are protected by standard container registry RBAC and image pull secrets. Furthermore, Kubernetes node-level image caching drastically reduces model startup times because nodes don't need to repeatedly re-download 50GB of weights from S3 over the network if the image is already pulled.
+
+== Configuration Cheat Sheet: Registering & Storing OCI Models
+Platform Engineers should mandate OCI distribution for production. OpenShift AI 3.4 makes this simple via the UI:
+
+1. Navigate to **AI hub -> Models -> Registry**.
+2. Click **Register model**.
+3. Instead of just referencing an S3 bucket, select **Register and store** under Model location.
+4. Define the **Model origin** (the S3 bucket where the raw weights live).
+5. Define the **Model destination** (e.g., `quay.io/my-org/my-model:v1`) and provide credentials.
+6. Click **Register**. An asynchronous Kubernetes Job will download the weights, package them via `olot` (OCI Layers On Top) into a busybox ModelCar, push it to Quay, and register the immutable `oci://` artifact in the registry.
+
+== Day-2 Diagnostics: The Anti-Pattern
+*Can you spot the architectural flaw?*
+
+**The Scenario: The Mutated Weights Crisis**
+A data scientist on the risk team deploys a critical fraud-detection model. To save time, instead of using a formal registry, they deploy the InferenceService by pasting a direct, public URI (`https://external-storage.com/models/fraud-detection-v1.onnx`) into the deployment configuration.
+
+A month later, the inference endpoint starts producing wildly inaccurate garbage outputs. The Platform Engineer discovers that the data scientist uploaded an experimental, broken model to that exact same external URL, silently overwriting the original file. Because KServe pulled the new file upon pod restart, production broke with zero audit trail.
+
+**The Solution:**
+Loading models from loose, mutable URIs or personal S3 buckets without version control is an operational Anti-Pattern. There is no immutability, no provenance, and no way to instantly roll back to a known-good state.
+
+The Platform Engineer must solve this natively in 3.4 by enforcing the **Model Registry** paired with **OCI Modelcars**. Instead of direct URIs, the data scientist registers their approved model. The Platform Engineer uses the *Register and store* workflow to transform the S3 weights into an immutable OCI Modelcar image pushed to the enterprise container registry. If a new version is created, it gets a new tag (`:v2`), ensuring the production `:v1` tag can never be silently overwritten.
+
+<<<
+*Ready to build it? Proceed to the Interactive Labs.*

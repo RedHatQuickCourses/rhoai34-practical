@@ -1,0 +1,65 @@
+= Interactive Labs: Model Catalog, Registry, and Storage
+:navtitle: Labs: Registry & Modelcars
+:description: Interactive UI click-paths for configuring the Model Registry and OCI Modelcars.
+
+In these interactive labs, you will execute the "Happy Path" to activate the Model Registry component, transform a mutable S3 model into an immutable OCI Modelcar, and deploy it securely.
+
+== Lab 1: Activating the Model Registry
+**Goal:** As a cluster administrator, enable the Model Registry component in the DataScienceCluster CR so data scientists can govern their assets.
+
+.Arcade: Enable Model Registry
+====
+// Antora iframe embed placeholder for Arcade 1
+// ++++ 
+// <iframe src="URL_TO_ARCADE_1" width="100%" height="600px"></iframe> 
+// ++++
+
+**Guided Steps:**
+1. Log in to the OpenShift web console as a cluster administrator.
+2. Navigate to **Operators -> Installed Operators**.
+3. Click **Red Hat OpenShift AI**, then click the **Data Science Cluster** tab.
+4. Click `default-dsc`, and select the **YAML** tab.
+5. Locate the `spec.components` section and add/update the `modelregistry` block to `managementState: Managed` and `registriesNamespace: rhoai-model-registries`.
+6. Click **Save**. Verify the `rhoai-model-registries` project is created.
+====
+
+== Lab 2: Transforming a Model to an OCI ModelCar
+**Goal:** Take a raw S3 model and run a transfer job from the UI to package it as an immutable OCI container.
+
+.Arcade: Register and Store (OCI)
+====
+// Antora iframe embed placeholder for Arcade 2
+// ++++ 
+// <iframe src="URL_TO_ARCADE_2" width="100%" height="600px"></iframe> 
+// ++++
+
+**Guided Steps:**
+1. In the OpenShift AI dashboard, click **AI hub -> Models -> Registry**.
+2. Select your Model Registry instance and click **Register model**.
+3. In the Model location and storage section, select **Register and store**.
+4. In the Model transfer job name field, enter `Package Fraud Model to OCI`.
+5. In the Model origin location section, select **Object storage** and enter the raw S3 bucket credentials where your `.onnx` files live.
+6. In the Model destination location section, enter the OCI registry details (e.g., `quay.io/my-org/fraud-model:v1`) and your Quay robot credentials.
+7. Click **Register**. You can click the notification link to monitor the Kubernetes transfer job in real-time.
+====
+
+== Lab 3: Deploying the Immutable Model
+**Goal:** Deploy the newly packaged OCI model directly from the UI without manual YAML.
+
+.Arcade: Deploy from Registry
+====
+// Antora iframe embed placeholder for Arcade 3
+// ++++ 
+// <iframe src="URL_TO_ARCADE_3" width="100%" height="600px"></iframe> 
+// ++++
+
+**Guided Steps:**
+1. Navigate back to **AI hub -> Models -> Registry**.
+2. Click the name of your newly registered model.
+3. Click the **Versions** tab.
+4. Click the action menu (**⋮**) beside the `v1` version and click **Deploy**.
+5. In the deployment dialog, select your target Data Science Project. The system will automatically detect or create the matching OCI Connection Secret using the `opendatahub.io/connection-type-protocol: "oci"` annotation.
+6. Select the Serving runtime and hardware profile, then click **Deploy model**.
+====
+
+**Module Complete!** You have successfully governed your AI assets by transforming fragile, mutable files into immutable, production-grade container artifacts.

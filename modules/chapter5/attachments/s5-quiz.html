@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+      /* --- Basic Styles --- */
+        :root {
+            --correct-color: #63993d;
+            --incorrect-color: #f0561d;
+            --intro-color: #111;
+            --next-btn-color: #0066cc;
+            --prev-btn-color: #383838;
+            --restart-btn-color: #ee0000;
+            --text-color: #111;
+        }
+
+        body {
+            font-family: 'Red Hat Display', sans-serif;
+            color: var(--text-color);
+            margin: 1.5em;
+        }
+
+        /* --- Quiz Components --- */
+        #quiz-intro {
+            color: var(--intro-color);
+            margin-bottom: 2em;
+            line-height: 1.6;
+            background-color: #f4f4f4;
+            padding: 1.5em;
+            border-left: 4px solid #ee0000;
+            border-radius: 4px;
+        }
+
+        #question-counter {
+            color: #383838;
+            margin-bottom: 1em;
+            font-weight: 700;
+        }
+
+        #question-container {
+            margin-bottom: 1.5em;
+        }
+
+        #question-text {
+            font-size: 1.25em;
+            font-weight: 700;
+            margin-bottom: 1em;
+        }
+
+        .answer-item {
+            margin-bottom: 1em;
+        }
+
+        .answer-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 0.75em;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            transition: border-color 0.3s;
+        }
+        .answer-label:hover {
+            border-color: #999;
+        }
+
+        .custom-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #555;
+            border-radius: 4px;
+            margin-right: 12px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .explanation {
+            display: none;
+            padding: 0.75em;
+            margin-top: 0.5em;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+        
+        .explanation a {
+            color: inherit;
+            text-decoration: underline;
+        }
+
+        /* --- State Styling --- */
+        .answer-item.answered.correct .answer-label,
+        .answer-item.answered.correct .explanation {
+            background-color: #f0f8ec;
+            border-color: var(--correct-color);
+            color: var(--correct-color);
+        }
+
+        .answer-item.answered.incorrect .answer-label,
+        .answer-item.answered.incorrect .explanation {
+            background-color: #fff0e9;
+            border-color: var(--incorrect-color);
+            color: var(--incorrect-color);
+        }
+
+        .answer-item.answered.correct .custom-checkbox {
+            border-color: var(--correct-color);
+            background-color: var(--correct-color);
+            color: white;
+        }
+
+        .answer-item.answered.incorrect .custom-checkbox {
+            border-color: var(--incorrect-color);
+            background-color: var(--incorrect-color);
+            color: white;
+        }
+
+        /* --- Results Screen --- */
+        #results-container {
+            display: none;
+            text-align: center;
+            padding: 2.5em;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            margin-bottom: 2em;
+        }
+
+        .score-text {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 0.2em;
+        }
+
+        .score-details {
+            font-size: 1.2em;
+            color: #555;
+            margin-bottom: 1.5em;
+        }
+
+        .pass { color: var(--correct-color); }
+        .fail { color: var(--incorrect-color); }
+
+        .results-message {
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        /* --- Navigation --- */
+        #navigation-container {
+            margin-top: 2em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-button {
+            border: none;
+            padding: 0.8em 1.5em;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            color: white;
+            transition: opacity 0.3s;
+        }
+
+        .nav-button:hover {
+            opacity: 0.85;
+        }
+
+        #prev-btn { background-color: var(--prev-btn-color); }
+        #next-btn { background-color: var(--next-btn-color); }
+        #results-btn { background-color: var(--correct-color); }
+        #restart-btn { background-color: var(--restart-btn-color); }
+    </style>
+  </head>
+  <body>
+    <div id="quiz-container">
+      <div id="quiz-intro"></div>
+      
+      <div id="results-container">
+          <div class="score-text" id="final-score-percent"></div>
+          <div class="score-details" id="final-score-breakdown"></div>
+          <div class="results-message" id="final-message"></div>
+      </div>
+
+      <div id="question-counter"></div>
+      <div id="question-container">
+        <p id="question-text"></p>
+        <div id="answers-container"></div>
+      </div>
+      
+      <div id="navigation-container">
+        <button id="prev-btn" class="nav-button" style="display: none;">Previous</button>
+        <button id="next-btn" class="nav-button" style="display: none;">Next</button>
+        <button id="results-btn" class="nav-button" style="display: none;">View Results</button>
+        <button id="restart-btn" class="nav-button" style="display: none;">Restart Gateway</button>
+      </div>
+    </div>
+    
+    <script>
+      const quizDataText = `<b>Module 6: Diagnostic Gateway.</b> <br><br>Your data scientists are pasting random S3 URIs into production, leading to overwritten model weights and critical application failures. Prove you know how to govern AI assets using the Model Registry, Data Connections, and OCI Modelcars in OpenShift AI 3.4. <br><br><b>The 80% Rule:</b> Score 80% or higher to jump straight to the Runbook. If you score below 80%, you will proceed to the interactive labs to build these critical data architecture skills.
+
+---
+Q1: What is the primary architectural purpose of the Model Registry in Red Hat OpenShift AI?
+
+A: To automatically generate synthetic training data.
+Incorrect: The registry does not generate data; it stores metadata about trained models.
+
+A: To act as a central repository for registering, versioning, and managing the lifecycle and metadata of AI models from development to deployment.
+Correct: A model registry acts as a bridge between model experimentation and serving, providing a structured, organized central repository to store, share, version, deploy, and track the lifecycle and metadata of AI models.
+
+A: To serve as an API gateway for external LLM providers like OpenAI.
+Incorrect: This is handled by the MaaS ExternalModel and the Kuadrant Gateway API.
+
+A: To execute distributed training jobs across multiple GPUs.
+Incorrect: Training execution is handled by Ray or LWS, not the registry.
+---
+Q2: To create a production-grade Model Registry instance in OpenShift AI 3.4, what external prerequisite component must a Platform Engineer provide?
+
+A: An Apache Kafka cluster.
+Incorrect: Kafka is for streaming data, not for storing relational model registry metadata.
+
+A: An external PostgreSQL 16.x or MySQL (5.x+) database to store the registry metadata.
+Correct: While a default database is available for non-production testing, a production-grade model registry requires connecting an external MySQL or PostgreSQL database where the model metadata is securely stored.
+
+A: A dedicated Red Hat build of Kueue Operator.
+Incorrect: Kueue handles job scheduling, not registry metadata.
+
+A: An embedded SQLite database.
+Incorrect: SQLite is generally for local development, not enterprise production registries.
+---
+Q3: In OpenShift AI 3.4, what is the fundamental difference between the Model Catalog (AI Hub) and the Model Registry?
+
+A: The Catalog stores datasets; the Registry stores Python code.
+Incorrect: Neither store datasets or raw Python execution code.
+
+A: The Catalog is for discovering and evaluating available generative AI models (like Red Hat validated foundation models), while the Registry is a repository where your organization registers, versions, and tracks the lifecycle of its own deployed and fine-tuned models.
+Correct: The Model Catalog provides a curated library to discover and evaluate third-party models provided by Red Hat or custom sources. The Model Registry is the organization's own repository for storing, versioning, and deploying its tracked AI models.
+
+A: The Catalog only holds predictive AI models; the Registry only holds generative AI models.
+Incorrect: Both components can handle predictive or generative AI models.
+
+A: They are the exact same component with different UI names.
+Incorrect: They serve entirely different stages of the AI lifecycle (discovery vs. governance).
+---
+Q4: When a Platform Engineer deploys a model directly from the Model Registry UI, how does the system handle storage connections?
+
+A: The engineer must manually copy the S3 secret into the model server pod.
+Incorrect: The UI abstracts this complex manual Kubernetes secret management.
+
+A: The system scans the target project for Data Connections; if a matching connection is found, it is autoselected. If none match, the registry details are autofilled to create a new connection.
+Correct: When deploying from the registry, OpenShift AI scans the target project's connections. If a single matching connection exists, it is autoselected; if none match, the model location data from the registry is autofilled as a new connection.
+
+A: The registry automatically mounts a ReadWriteMany (RWX) Persistent Volume to the deployment.
+Incorrect: Model servers usually rely on S3 or OCI connections, not shared RWX volumes.
+
+A: The model must be downloaded to the local laptop first.
+Incorrect: The control plane brokers the connection directly to the storage backend.
+---
+Q5: What are the three primary methods for referencing and storing model weights for deployment in OpenShift AI 3.4?
+
+A: NFS, SMB, and iSCSI.
+Incorrect: While underlying storage blocks might use these, they are not the primary AI artifact referencing methods.
+
+A: S3-compatible Object Storage, URIs, and Open Container Initiative (OCI) images (Modelcars).
+Correct: Before deploying a model, it must be stored in either an S3 bucket, accessible via URI, or uploaded to Open Container Initiative (OCI) containers (also known as modelcars in KServe).
+
+A: Local laptop storage, Git repositories, and ConfigMaps.
+Incorrect: These are not scalable patterns for multi-GB model weights.
+
+A: SQLite, PostgreSQL, and Redis.
+Incorrect: These are relational/key-value databases, not optimized for massive binary model weights.
+---
+Q6: What is a key performance and infrastructure benefit of deploying models via OCI Containers (Modelcars) instead of pulling from standard S3 buckets?
+
+A: OCI containers do not require an internet connection.
+Incorrect: You still need a network connection to the container registry to pull the image initially.
+
+A: They automatically generate synthetic training data for the model.
+Incorrect: Modelcars only package the static weights; they do not execute data generation.
+
+A: They reduce startup times by avoiding redundant model downloads, reduce disk space usage locally, and improve performance by allowing pre-fetched images via container registries.
+Correct: Deploying models via OCI containers (modelcars) reduces startup times by avoiding downloading the same model multiple times, reduces disk space usage, and improves model performance by allowing pre-fetched images natively through the container registry.
+
+A: They bypass the need for KServe model-serving runtimes.
+Incorrect: The model still requires a serving runtime (like vLLM) to load the weights into memory and serve the API.
+---
+Q7: When configuring a Data Connection for S3-compatible storage via the new 3.4 Connections API, what specific Kubernetes annotation ensures the system correctly recognizes it as an S3 connection?
+
+A: opendatahub.io/connection-type-protocol: "s3"
+Correct: In 3.4, the Connections API requires connection Secrets to use the opendatahub.io/connection-type-protocol: "s3" annotation to be correctly identified and validated by components.
+
+A: kserve.io/s3-credentials: "true"
+Incorrect: This is the legacy KServe annotation pattern, now superseded by the Connections API.
+
+A: openshift.io/storage-class: "s3"
+Incorrect: Storage classes define underlying block/file storage, not S3 application credentials.
+
+A: s3.aws.com/v1alpha1: "enabled"
+Incorrect: This is not a valid OpenShift AI annotation.
+---
+Q8: Starting in 3.4, how does OpenShift AI support the creation of OCI Modelcar images directly from the dashboard?
+
+A: The Platform Engineer must manually write a Dockerfile and run podman build.
+Incorrect: The UI automates this process entirely.
+
+A: By selecting "Register and store" in the Model Registry, which starts an asynchronous Kubernetes Job to copy the model from S3 into an OCI registry as a ModelCar-format image.
+Correct: Selecting the "Register and store" option in the Model Registry UI starts an async Kubernetes Job that pulls the model from the source, layers it into an OCI ModelCar image using olot, pushes it to the OCI registry, and registers the new oci:// URI artifact.
+
+A: By configuring a Tekton pipeline.
+Incorrect: While possible, the native UI feature uses an internal async job, not a required external Tekton pipeline.
+
+A: By enabling the auto-oci feature flag in the OdhDashboardConfig.
+Incorrect: The feature is active via the UI workflow without a dashboard feature flag.
+---
+Q9: What is the role of MLflow in relation to the overall model lifecycle before a model is promoted to the Model Registry?
+
+A: MLflow acts as the ingress gateway for external traffic.
+Incorrect: Routing is handled by Kuadrant and the Gateway API.
+
+A: MLflow is the underlying container runtime replacing CRI-O.
+Incorrect: MLflow is an application layer tool, not a Kubernetes container runtime.
+
+A: MLflow tracks experiments, runs, and logs models during the training and evaluation phases, providing logical isolation per project/workspace before final models are registered.
+Correct: Deployed as a natively managed component, MLflow provides logical isolation of experiments, runs, and logged models per workspace, tracking training runs and evaluations before models are promoted to production model registries.
+
+A: MLflow provides the physical storage backend for Modelcar images.
+Incorrect: Container registries (like Quay) provide the backend for Modelcars, not MLflow.
+---
+Q10: You notice a data scientist created an S3 data connection, but the kserve-storage-initializer container is failing to download the model, throwing an SSL verification error. How can you fix this?
+
+A: Disable KServe RawDeployment mode.
+Incorrect: The deployment mode does not dictate the TLS validation of the S3 download script.
+
+A: Set the S3_VERIFY_SSL environment variable to false in the connection configuration or ensure the proper custom CA bundle is injected.
+Correct: If you encounter SSL errors when the storage initializer attempts to connect to S3, you can bypass them by changing the S3_VERIFY_SSL environment variable to false, or securely fix it by injecting the appropriate CA bundle.
+
+A: Change the object storage authentication type to USER_CREDENTIALS.
+Incorrect: The authentication method does not fix TLS/SSL certificate trust issues.
+
+A: Change the deployment to use the llm-d runtime.
+Incorrect: The runtime type won't resolve underlying network/TLS failures to the S3 bucket.`;
+
+      // --- PARSING LOGIC ---
+      function parseQuizData(text) {
+          try {
+              const parts = text.split('---');
+              const intro = parts.shift().trim();
+              
+              const questions = parts.filter(p => p.trim() !== '').map((part) => {
+                  const lines = part.trim().split('\n').map(l => l.trim()).filter(l => l !== '');
+                  if (lines.length === 0) return null;
+
+                  const questionLine = lines.shift();
+                  const questionText = questionLine.replace(/^Q\d+:\s*/, '').trim();
+                  
+                  const answers = [];
+                  let currentAnswer = null;
+
+                  for (const line of lines) {
+                      if (line.startsWith('A:')) {
+                          if (currentAnswer) {
+                              answers.push(currentAnswer);
+                          }
+                          currentAnswer = { text: line.substring(2).trim(), isCorrect: false, explanation: '' };
+                      } else if (line.startsWith('Correct:')) {
+                          if(currentAnswer) {
+                              currentAnswer.isCorrect = true;
+                              currentAnswer.explanation = line.substring(8).trim();
+                          }
+                      } else if (line.startsWith('Incorrect:')) {
+                           if(currentAnswer) {
+                              currentAnswer.isCorrect = false;
+                              currentAnswer.explanation = line.substring(10).trim();
+                          }
+                      } else {
+                          if (currentAnswer) {
+                              currentAnswer.explanation += ' ' + line;
+                          }
+                      }
+                  }
+                  if (currentAnswer) {
+                      answers.push(currentAnswer);
+                  }
+                  
+                  return { question: questionText, answers: answers, firstAttemptCorrect: null };
+              }).filter(q => q !== null);
+
+              return { intro, questions };
+          } catch (e) {
+              console.error("Failed to parse quiz data:", e);
+              return { intro: "<span style='color:red;'>Fatal Parsing Error. Check developer console.</span>", questions: [] };
+          }
+      }
+
+      // --- QUIZ APPLICATION LOGIC ---
+      try {
+          const { intro, questions } = parseQuizData(quizDataText);
+          let currentQuestionIndex = 0;
+
+          const introEl = document.getElementById('quiz-intro');
+          const questionCounterEl = document.getElementById('question-counter');
+          const questionTextEl = document.getElementById('question-text');
+          const answersContainerEl = document.getElementById('answers-container');
+          
+          const resultsContainerEl = document.getElementById('results-container');
+          const finalScorePercentEl = document.getElementById('final-score-percent');
+          const finalScoreBreakdownEl = document.getElementById('final-score-breakdown');
+          const finalMessageEl = document.getElementById('final-message');
+
+          const nextBtn = document.getElementById('next-btn');
+          const prevBtn = document.getElementById('prev-btn');
+          const resultsBtn = document.getElementById('results-btn');
+          const restartBtn = document.getElementById('restart-btn');
+
+          introEl.innerHTML = intro;
+
+          if (!questions || questions.length === 0) {
+              questionTextEl.innerHTML = "<span style='color:red;'>No questions were loaded. Ensure the data format is correct.</span>";
+          } else {
+              function displayQuestion(index) {
+                  const question = questions[index];
+                  questionCounterEl.style.display = 'block';
+                  questionContainerEl = document.getElementById('question-container');
+                  questionContainerEl.style.display = 'block';
+                  resultsContainerEl.style.display = 'none';
+
+                  questionCounterEl.textContent = `Question ${index + 1} of ${questions.length}`;
+                  questionTextEl.textContent = question.question;
+                  answersContainerEl.innerHTML = '';
+
+                  question.answers.forEach((answer, answerIndex) => {
+                      const answerItem = document.createElement('div');
+                      answerItem.className = 'answer-item';
+                      
+                      answerItem.innerHTML = `
+                          <div class="answer-label" data-index="${answerIndex}">
+                              <span class="custom-checkbox"></span>
+                              <span class="answer-text">${answer.text}</span>
+                          </div>
+                          <div class="explanation">${answer.explanation}</div>
+                      `;
+                      answersContainerEl.appendChild(answerItem);
+                  });
+                  
+                  updateNavigation();
+              }
+              
+              function handleAnswerClick(event) {
+                  const label = event.target.closest('.answer-label');
+                  if (!label) return;
+
+                  const answerItem = label.parentElement;
+                  const explanation = answerItem.querySelector('.explanation');
+                  const checkbox = label.querySelector('.custom-checkbox');
+
+                  const isAnswered = answerItem.classList.contains('answered');
+
+                  if (isAnswered) {
+                       answerItem.classList.remove('answered', 'correct', 'incorrect');
+                       explanation.style.display = 'none';
+                       checkbox.textContent = '';
+                  } else {
+                      const answerIndex = parseInt(label.dataset.index);
+                      const answer = questions[currentQuestionIndex].answers[answerIndex];
+                      
+                      if (questions[currentQuestionIndex].firstAttemptCorrect === null) {
+                          questions[currentQuestionIndex].firstAttemptCorrect = answer.isCorrect;
+                      }
+
+                      answerItem.classList.add('answered');
+                      explanation.style.display = 'block';
+
+                      if (answer.isCorrect) {
+                          answerItem.classList.add('correct');
+                          checkbox.innerHTML = '&#10003;'; 
+                      } else {
+                          answerItem.classList.add('incorrect');
+                          checkbox.innerHTML = '&#10007;'; 
+                      }
+                  }
+              }
+
+              function showResults() {
+                  document.getElementById('question-counter').style.display = 'none';
+                  document.getElementById('question-container').style.display = 'none';
+                  
+                  const correctCount = questions.filter(q => q.firstAttemptCorrect === true).length;
+                  const wrongCount = questions.filter(q => q.firstAttemptCorrect === false).length;
+                  const skippedCount = questions.length - correctCount - wrongCount;
+                  const percentage = Math.round((correctCount / questions.length) * 100);
+
+                  finalScorePercentEl.textContent = `${percentage}%`;
+                  finalScoreBreakdownEl.textContent = `${correctCount} Correct | ${wrongCount} Incorrect | ${skippedCount} Skipped`;
+
+                  if (percentage >= 80) {
+                      finalScorePercentEl.className = 'score-text pass';
+                      finalMessageEl.innerHTML = `<b>Congratulations!</b> You have demonstrated mastery of Model Storage and Registry Governance. You may proceed directly to the Runbook and skip the interactive setup labs.`;
+                  } else {
+                      finalScorePercentEl.className = 'score-text fail';
+                      finalMessageEl.innerHTML = `You're on your way, but there are a few architectural concepts we need to solidify. Please proceed to the Runbook and complete the interactive setup labs below to build your foundational skills.`;
+                  }
+
+                  resultsContainerEl.style.display = 'block';
+
+                  prevBtn.style.display = 'none';
+                  nextBtn.style.display = 'none';
+                  resultsBtn.style.display = 'none';
+                  restartBtn.style.display = 'inline-block';
+              }
+
+              function updateNavigation() {
+                  prevBtn.style.display = currentQuestionIndex > 0 ? 'inline-block' : 'none';
+                  
+                  const isLastQuestion = currentQuestionIndex === questions.length - 1;
+                  nextBtn.style.display = isLastQuestion ? 'none' : 'inline-block';
+                  resultsBtn.style.display = isLastQuestion ? 'inline-block' : 'none';
+                  restartBtn.style.display = 'none';
+
+                  const navContainer = document.getElementById('navigation-container');
+                  navContainer.style.justifyContent = currentQuestionIndex === 0 ? 'flex-end' : 'space-between';
+              }
+
+              answersContainerEl.addEventListener('click', handleAnswerClick);
+
+              nextBtn.addEventListener('click', () => {
+                  if (currentQuestionIndex < questions.length - 1) {
+                      currentQuestionIndex++;
+                      displayQuestion(currentQuestionIndex);
+                  }
+              });
+
+              prevBtn.addEventListener('click', () => {
+                  if (currentQuestionIndex > 0) {
+                      currentQuestionIndex--;
+                      displayQuestion(currentQuestionIndex);
+                  }
+              });
+
+              resultsBtn.addEventListener('click', () => {
+                  showResults();
+              });
+
+              restartBtn.addEventListener('click', () => {
+                  questions.forEach(q => q.firstAttemptCorrect = null);
+                  currentQuestionIndex = 0;
+                  displayQuestion(currentQuestionIndex);
+              });
+
+              displayQuestion(currentQuestionIndex);
+          }
+      } catch (err) {
+          document.body.innerHTML = `<p style="color:red; font-weight:bold;">Initialization Error: ${err.message}</p>`;
+      }
+    </script>
+  </body>
+</html>
