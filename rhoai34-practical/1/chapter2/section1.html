@@ -301,7 +301,7 @@
 </ol>
 </div>
 <div class="paragraph">
-<p><strong>Prerequisites:</strong> MaaS requires a provisioned <strong>PostgreSQL database (version 14+)</strong> to manage API key lifecycles — OpenShift AI does not provision this automatically. Additionally, <strong>User Workload Monitoring (UWM)</strong> must be enabled on the OpenShift cluster; without it, MaaS cannot collect usage metrics and the installation will show a <code>Degraded</code> status.</p>
+<p><strong>Prerequisites:</strong> MaaS requires a provisioned <strong>PostgreSQL database (version 14+)</strong> to manage API key lifecycles — OpenShift AI does not provision this automatically. The database credentials must be stored in a Kubernetes Secret named <code>maas-db-config</code> in the <code>models-as-a-service</code> namespace. Additionally, <strong>User Workload Monitoring (UWM)</strong> must be enabled on the OpenShift cluster; without it, MaaS cannot collect usage metrics and the installation will show a <code>Degraded</code> status.</p>
 </div>
 </div>
 </div>

@@ -270,7 +270,13 @@
 <p>For Agentic security, EvalHub integrates the <strong>garak</strong> framework to automatically run security vulnerability scans (like OWASP LLM Top 10 and AVID taxonomy).</p>
 </li>
 <li>
-<p>Crucially, EvalHub seamlessly integrates with <strong>MLflow</strong> (now natively managed in OpenShift AI 3.4), ensuring every evaluation run is tracked, versioned, and auditable for compliance.</p>
+<p>Crucially, EvalHub seamlessly integrates with <strong>MLflow</strong> (now natively managed in OpenShift AI 3.4), ensuring every evaluation run is tracked, versioned, and auditable for compliance. MLflow&#8217;s <strong>Prompt Management</strong> capability (GA in 3.4) lets teams version, compare, and audit prompt templates alongside model artifacts — essential for agentic workflows where the system prompt defines tool-calling behavior.</p>
+</li>
+<li>
+<p>Evaluation jobs are submitted as <strong><code>LMEvalJob</code></strong> custom resources, which define the model endpoint, benchmark suite, and compute requirements. The TrustyAI Operator watches for these CRs and orchestrates the evaluation pipeline.</p>
+</li>
+<li>
+<p>Beyond security scanning with garak, EvalHub supports quality evaluation of RAG pipelines using the <strong>RAGAS</strong> framework. RAGAS measures retrieval quality metrics (context precision, context recall, faithfulness, answer relevancy) to quantify whether a Llama Stack or custom RAG deployment is returning accurate, well-grounded answers — critical for production agentic applications that make decisions based on retrieved context.</p>
 </li>
 <li>
 <p><strong>Prerequisite:</strong> EvalHub requires an external PostgreSQL connection string stored as a Kubernetes Secret (<code>db-url</code>) to manage evaluation jobs.</p>

@@ -318,6 +318,35 @@
 </div>
 </div>
 <div class="sect1">
+<h2 id="_gateway_discovery_technology_preview"><a class="anchor" href="#_gateway_discovery_technology_preview"></a>Gateway Discovery (Technology Preview)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When deploying with llm-d, the OpenShift AI dashboard now provides a <strong>Gateway selector dropdown</strong> that auto-discovers available Kubernetes Gateway API resources in the cluster. This eliminates manual Gateway name entry and reduces misconfiguration risk during distributed inference setup — Platform Engineers configure the Gateways once, and the UI surfaces them automatically for every deployment.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_distributed_training_with_kubeflow_trainer"><a class="anchor" href="#_distributed_training_with_kubeflow_trainer"></a>Distributed Training with Kubeflow Trainer</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>While the primary focus of this module is inference scaling, Platform Engineers must also govern distributed <strong>training</strong> workloads that compete for the same GPU resources.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Kubeflow Trainer v2:</strong> OpenShift AI 3.4 includes the Kubeflow Training Operator v2, the standard for submitting distributed training jobs (PyTorchJob, fine-tuning, RLHF). The v1 API (<code>TFJob</code>, legacy <code>PyTorchJob</code> CRDs) is deprecated and will be removed in a future release — teams should migrate to the v2 <code>TrainingRuntime</code> / <code>ClusterTrainingRuntime</code> pattern.</p>
+</li>
+<li>
+<p><strong>JIT Checkpointing (GA):</strong> For long-running training jobs that span hours or days, GPU node preemption or spot instance reclamation can destroy hours of progress. JIT (Just-In-Time) Checkpointing automatically saves model state to persistent storage at configurable intervals, enabling training to resume from the last checkpoint after a disruption rather than restarting from epoch 0.</p>
+</li>
+<li>
+<p><strong>Kueue Integration:</strong> Kubeflow Trainer v2 jobs integrate natively with Kueue for GPU quota management — the same <code>ClusterQueue</code> / <code>LocalQueue</code> pattern used for inference scheduling applies to training workloads, preventing training jobs from starving production inference deployments.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_day_2_diagnostics_the_anti_pattern"><a class="anchor" href="#_day_2_diagnostics_the_anti_pattern"></a>Day-2 Diagnostics: The Anti-Pattern</h2>
 <div class="sectionbody">
 <div class="paragraph">

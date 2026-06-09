@@ -338,6 +338,15 @@
 <li>
 <p><strong>Custom Namespaces:</strong> If your organization requires custom namespaces for applications or workbenches instead of the defaults (e.g., <code>redhat-ods-applications</code>, <code>rhods-notebooks</code>), these namespaces must be created and labeled <strong>before</strong> installing the OpenShift AI Operator. Never rename default system namespaces.</p>
 </li>
+<li>
+<p><strong>Granular Workbench RBAC:</strong> Platform Engineers can assign fine-grained RBAC roles (<code>admin</code>, <code>edit</code>, <code>view</code>) on individual workbenches, enabling multi-tenant project namespaces where users see only their own environments. This replaces the legacy approach of one-namespace-per-team isolation.</p>
+</li>
+<li>
+<p><strong>Custom Component Lifecycle:</strong> When deploying custom dashboard components or integrating third-party tools, apply the <code>opendatahub.io/managed: true</code> annotation to the resource. This signals the operator to include the resource in its lifecycle management (upgrades, reconciliation).</p>
+</li>
+<li>
+<p><strong>Secure Supply Chain:</strong> For regulated environments, OpenShift AI 3.4 supports configuring workbench images to pull packages from the <strong>Red Hat Python Index</strong> — a curated, vulnerability-scanned subset of PyPI that ensures a secure software supply chain for data science notebooks.</p>
+</li>
 </ul>
 </div>
 <div style="page-break-after: always;"></div>
