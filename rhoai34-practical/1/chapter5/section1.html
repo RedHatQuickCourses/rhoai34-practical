@@ -3,8 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Interactive Labs: Building the Engine Room :: Building the AI Engine</title>
-    <meta name="description" content="Interactive UI click-paths for installing OpenShift AI 3.4.">
+    <title>Module 6 Runbook: Model Catalog, Registry, and Storage :: Building the AI Engine</title>
+    <link rel="prev" href="index.html">
+    <link rel="next" href="section2.html">
+    <meta name="description" content="Theoretical architecture and Anti-Pattern for the Model Registry and OCI Modelcars.">
     <meta name="generator" content="Antora 3.2.0-alpha.12">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <link rel="stylesheet" href="../../../_/css/vendor/tabs.css">
@@ -58,13 +60,13 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="index.html">Interactive Quiz</a>
+    <a class="nav-link" href="../chapter1/index.html">Interactive Quiz</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="section1.html">Runbook: Platform Setup</a>
+    <a class="nav-link" href="../chapter1/section1.html">Runbook: Platform Setup</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="section2.html">Labs: Building the Engine Room</a>
+    <a class="nav-link" href="../chapter1/section2.html">Labs: Building the Engine Room</a>
   </li>
 </ul>
   </li>
@@ -122,13 +124,13 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../chapter5/index.html">Interactive Quiz #5</a>
+    <a class="nav-link" href="index.html">Interactive Quiz #5</a>
 <ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../chapter5/section1.html">Runbook: Registry &amp; Modelcars</a>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="section1.html">Runbook: Registry &amp; Modelcars</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../chapter5/section2.html">Labs: Registry &amp; Modelcars</a>
+    <a class="nav-link" href="section2.html">Labs: Registry &amp; Modelcars</a>
   </li>
 </ul>
   </li>
@@ -218,7 +220,8 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">Building the AI Engine</a></li>
-    <li><a href="tabs-demo.html">Labs: Building the Engine Room</a></li>
+    <li><a href="index.html">Interactive Quiz #5</a></li>
+    <li><a href="section1.html">Runbook: Registry &amp; Modelcars</a></li>
   </ul>
 </nav>
 </div>
@@ -227,82 +230,120 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Interactive Labs: Building the Engine Room</h1>
+<h1 class="page">Module 6 Runbook: Model Catalog, Registry, and Storage</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>It is time to step into the Engine Room. In these interactive labs, you will execute the "Happy Path" to install the Operator, activate the centralized observability stack, and deploy a smoke-test model using the new Gateway API routing.</p>
+<p>If you passed the Diagnostic Gateway, use this page as your quick-reference job aid. If you are building your foundational skills, read this carefully before proceeding to the interactive labs.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_lab_1_operator_installation_core_setup"><a class="anchor" href="#_lab_1_operator_installation_core_setup"></a>Lab 1: Operator Installation &amp; Core Setup</h2>
+<h2 id="_model_catalog_vs_model_registry_governing_the_lifecycle"><a class="anchor" href="#_model_catalog_vs_model_registry_governing_the_lifecycle"></a>Model Catalog vs. Model Registry: Governing the Lifecycle</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>Goal:</strong> Install the OpenShift AI Operator and activate the core components using the <code>DataScienceCluster</code> resource.</p>
+<p>In a mature AI architecture, Platform Engineers must define clear boundaries between discovery and governance to prevent shadow AI assets.</p>
 </div>
-<div class="exampleblock">
-<div class="title">Example 1. Arcade: Install and Activate</div>
-<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p><strong>The Model Catalog (AI Hub):</strong> This is the entry point. It provides a curated library to discover, evaluate, and deploy third-party, pre-trained foundation models (like Red Hat validated Granite or Llama models).</p>
+</li>
+<li>
+<p><strong>The Model Registry:</strong> This is the System of Record. When your data scientists fine-tune those catalog models using their own data, the resulting artifact is pushed to the Model Registry. The Registry governs the metadata (training parameters, formats, versions, and deployment events) to ensure you always know exactly which version of a custom model is running in production.</p>
+</li>
+</ul>
+</div>
 <div class="paragraph">
-<p><strong>Guided Steps:</strong>
-1. In the OpenShift web console, log in as a cluster administrator.
-2. Navigate to <strong>Operators &#8594; OperatorHub</strong> and install <strong>Red Hat OpenShift AI</strong>.
-3. Navigate to <strong>Operators &#8594; Installed Operators</strong> and click the Operator.
-4. Click the <strong>Data Science Cluster</strong> tab, then click <strong>Create DataScienceCluster</strong>.
-5. Select <strong>YAML view</strong>. Change the <code>managementState</code> from <code>Removed</code> to <code>Managed</code> for the following core components: <code>kserve</code>, <code>kueue</code>, <code>mlflowoperator</code>, and <code>modelregistry</code>.
-6. Click <strong>Create</strong>.</p>
-</div>
-</div>
+<p><strong>(Note: Prior to promotion to the Registry, data scientists track their experimental training runs and evaluations logically using <strong>MLflow</strong>, which is now deployed as a natively managed component in 3.4).</strong></p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_lab_2_configuring_the_serving_environment_observability"><a class="anchor" href="#_lab_2_configuring_the_serving_environment_observability"></a>Lab 2: Configuring the Serving Environment (Observability)</h2>
+<h2 id="_deep_dive_storage_connection_types"><a class="anchor" href="#_deep_dive_storage_connection_types"></a>Deep Dive: Storage Connection Types</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>Goal:</strong> Activate the centralized observability stack to monitor AI health and user model metrics natively.</p>
+<p>How a model gets from storage into GPU memory is critical to stability and speed. In OpenShift AI 3.4, there are three primary connection patterns.</p>
 </div>
-<div class="exampleblock">
-<div class="title">Example 2. Arcade: Enable Observability</div>
-<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p><strong>URIs (Fragile):</strong> Direct HTTP/HTTPS links to a model file. <strong>Drawback:</strong> Extremely fragile and insecure for production. If the external server goes down, your deployment fails.</p>
+</li>
+<li>
+<p><strong>S3/Object Storage (Standard):</strong> The traditional method. Models are stored in S3 buckets. KServe uses an init-container to download the model into an emptyDir before the server starts. <strong>Drawback:</strong> S3 objects are highly mutable. A data scientist can overwrite a <code>.safetensors</code> file in the bucket, silently breaking the next pod restart.</p>
+</li>
+<li>
+<p><strong>OCI Containers / Modelcars (The Best Practice):</strong> A modern approach where model weights are layered into a standard Open Container Initiative (OCI) image (e.g., <code>oci://quay.io/myorg/granite-7b:v1</code>).</p>
+</li>
+</ul>
+</div>
 <div class="paragraph">
-<p><strong>Guided Steps:</strong>
-1. Navigate to <strong>Operators &#8594; Installed Operators &#8594; Red Hat OpenShift AI</strong>.
-2. Click the <strong>DSC Initialization</strong> tab and open the <code>default-dsci</code> instance.
-3. Select the <strong>YAML</strong> tab. Under <code>spec.monitoring</code>, set <code>managementState: Managed</code> to deploy the Prometheus and OpenTelemetry stack. Click <strong>Save</strong>.
-4. To enable the Dashboard UI, navigate to <strong>Home &#8594; API Explorer</strong> and search for <code>OdhDashboardConfig</code>.
-5. Open the <code>odh-dashboard-config</code> instance YAML. Under <code>spec.dashboardConfig</code>, add <code>observabilityDashboard: true</code> and click <strong>Save</strong>.</p>
-</div>
-</div>
+<p><strong>Benefits of OCI Modelcars:</strong>
+Modelcars provide immutable, container-native distribution. OCI images are protected by standard container registry RBAC and image pull secrets. Furthermore, Kubernetes node-level image caching drastically reduces model startup times because nodes don&#8217;t need to repeatedly re-download 50GB of weights from S3 over the network if the image is already pulled.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_lab_3_the_smoke_test"><a class="anchor" href="#_lab_3_the_smoke_test"></a>Lab 3: The Smoke Test</h2>
+<h2 id="_configuration_cheat_sheet_registering_storing_oci_models"><a class="anchor" href="#_configuration_cheat_sheet_registering_storing_oci_models"></a>Configuration Cheat Sheet: Registering &amp; Storing OCI Models</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>Goal:</strong> Deploy a test model using the UI to verify KServe RawDeployment and Gateway API routing are operational.</p>
+<p>Platform Engineers should mandate OCI distribution for production. OpenShift AI 3.4 makes this simple via the UI:</p>
 </div>
-<div class="exampleblock">
-<div class="title">Example 3. Arcade: Deploy Smoke Test</div>
-<div class="content">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Navigate to <strong>AI hub &#8594; Models &#8594; Registry</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Register model</strong>.</p>
+</li>
+<li>
+<p>Instead of just referencing an S3 bucket, select <strong>Register and store</strong> under Model location.</p>
+</li>
+<li>
+<p>Define the <strong>Model origin</strong> (the S3 bucket where the raw weights live).</p>
+</li>
+<li>
+<p>Define the <strong>Model destination</strong> (e.g., <code>quay.io/my-org/my-model:v1</code>) and provide credentials.</p>
+</li>
+<li>
+<p>Click <strong>Register</strong>. An asynchronous Kubernetes Job will download the weights, package them via <code>olot</code> (OCI Layers On Top) into a busybox ModelCar, push it to Quay, and register the immutable <code>oci://</code> artifact in the registry.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_day_2_diagnostics_the_anti_pattern"><a class="anchor" href="#_day_2_diagnostics_the_anti_pattern"></a>Day-2 Diagnostics: The Anti-Pattern</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p><strong>Guided Steps:</strong>
-1. Open the <strong>Red Hat OpenShift AI</strong> dashboard via the Application Launcher.
-2. Navigate to <strong>Data Science Projects</strong> and create a project named <code>smoke-test-project</code>.
-3. In the <strong>Deployments</strong> tab, click <strong>Deploy model</strong>.
-4. Fill out the wizard using the <strong>MLServer ServingRuntime</strong> and the <strong>Scikit-learn</strong> framework.
-5. <strong>Critical Step:</strong> Under the Model route section, check the box for <strong>"Make deployed models available through an external route"</strong> to trigger the Gateway API ingress.
-6. Click <strong>Deploy</strong> and wait for the status checkmark to turn green.</p>
-</div>
-</div>
+<p><strong>Can you spot the architectural flaw?</strong></p>
 </div>
 <div class="paragraph">
-<p><strong>Module Complete!</strong> You have successfully laid the foundation. You are now ready to govern this platform using Models-as-a-Service in Module 3.</p>
+<p><strong>The Scenario: The Mutated Weights Crisis</strong>
+A data scientist on the risk team deploys a critical fraud-detection model. To save time, instead of using a formal registry, they deploy the InferenceService by pasting a direct, public URI (<code><a href="https://external-storage.com/models/fraud-detection-v1.onnx" class="bare">https://external-storage.com/models/fraud-detection-v1.onnx</a></code>) into the deployment configuration.</p>
+</div>
+<div class="paragraph">
+<p>A month later, the inference endpoint starts producing wildly inaccurate garbage outputs. The Platform Engineer discovers that the data scientist uploaded an experimental, broken model to that exact same external URL, silently overwriting the original file. Because KServe pulled the new file upon pod restart, production broke with zero audit trail.</p>
+</div>
+<div class="paragraph">
+<p><strong>The Solution:</strong>
+Loading models from loose, mutable URIs or personal S3 buckets without version control is an operational Anti-Pattern. There is no immutability, no provenance, and no way to instantly roll back to a known-good state.</p>
+</div>
+<div class="paragraph">
+<p>The Platform Engineer must solve this natively in 3.4 by enforcing the <strong>Model Registry</strong> paired with <strong>OCI Modelcars</strong>. Instead of direct URIs, the data scientist registers their approved model. The Platform Engineer uses the <strong>Register and store</strong> workflow to transform the S3 weights into an immutable OCI Modelcar image pushed to the enterprise container registry. If a new version is created, it gets a new tag (<code>:v2</code>), ensuring the production <code>:v1</code> tag can never be silently overwritten.</p>
+</div>
+<div style="page-break-after: always;"></div>
+<div class="paragraph">
+<p><strong>Ready to build it? Proceed to the Interactive Labs.</strong></p>
 </div>
 </div>
 </div>
+<nav class="pagination">
+  <span class="prev"><a href="index.html">Interactive Quiz #5</a></span>
+  <span class="next"><a href="section2.html">Labs: Registry &amp; Modelcars</a></span>
+</nav>
 </article>
   </div>
 </main>

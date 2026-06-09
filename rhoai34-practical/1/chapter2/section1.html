@@ -123,6 +123,70 @@
   <li class="nav-item" data-depth="0">
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter5/index.html">Interactive Quiz #5</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter5/section1.html">Runbook: Registry &amp; Modelcars</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter5/section2.html">Labs: Registry &amp; Modelcars</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter6/index.html">Interactive Quiz #6</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter6/section1.html">Runbook: Hardware &amp; Performance</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter6/section2.html">Labs: Hardware Governance</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter7/index.html">Interactive Quiz #7</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter7/section1.html">Runbook: Llama Stack &amp; Studio</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter7/section2.html">Labs: Prototyping &amp; Studio</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../chapter8/index.html">Interactive Quiz #8</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter8/section1.html">Runbook: Telemetry &amp; Showback</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../chapter8/section2.html">Labs: Telemetry &amp; Showback</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
     <a class="nav-link" href="../appendix/appendix.html">Appendix</a>
   </li>
 </ul>
@@ -249,10 +313,20 @@
 Your company decides to experiment with OpenAI&#8217;s GPT-4o. To move fast, the Lead Platform Engineer creates a single enterprise OpenAI account, generates a root API key, and emails it to the 50 developers on the Analytics team. The developers embed this key directly into their application code (<code>Authorization: Bearer sk-openai-&#8230;&#8203;</code>).</p>
 </div>
 <div class="paragraph">
-<p><strong>Why this is an Anti-Pattern:</strong>
-* <strong>No Showback:</strong> Finance receives a single massive bill from OpenAI at the end of the month, with zero ability to determine which developer or application is responsible.
-* <strong>No Quota Enforcement:</strong> A runaway loop in a single developer&#8217;s code can exhaust the entire company&#8217;s provider-level token limit, taking down production applications for everyone.
-* <strong>Security Nightmare:</strong> If a developer accidentally commits the root key to a public GitHub repo, the Platform Engineer has to revoke the key at the provider level, instantly breaking all 50 applications simultaneously.</p>
+<p><strong>Why this is an Anti-Pattern:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>No Showback:</strong> Finance receives a single massive bill from OpenAI at the end of the month, with zero ability to determine which developer or application is responsible.</p>
+</li>
+<li>
+<p><strong>No Quota Enforcement:</strong> A runaway loop in a single developer&#8217;s code can exhaust the entire company&#8217;s provider-level token limit, taking down production applications for everyone.</p>
+</li>
+<li>
+<p><strong>Security Nightmare:</strong> If a developer accidentally commits the root key to a public GitHub repo, the Platform Engineer has to revoke the key at the provider level, instantly breaking all 50 applications simultaneously.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p><strong>The Solution:</strong>

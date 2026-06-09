@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+      /* --- Basic Styles --- */
+        :root {
+            --correct-color: #63993d;
+            --incorrect-color: #f0561d;
+            --intro-color: #111;
+            --next-btn-color: #0066cc;
+            --prev-btn-color: #383838;
+            --restart-btn-color: #ee0000;
+            --text-color: #111;
+        }
+
+        body {
+            font-family: 'Red Hat Display', sans-serif;
+            color: var(--text-color);
+            margin: 1.5em;
+        }
+
+        /* --- Quiz Components --- */
+        #quiz-intro {
+            color: var(--intro-color);
+            margin-bottom: 2em;
+            line-height: 1.6;
+            background-color: #f4f4f4;
+            padding: 1.5em;
+            border-left: 4px solid #ee0000;
+            border-radius: 4px;
+        }
+
+        #question-counter {
+            color: #383838;
+            margin-bottom: 1em;
+            font-weight: 700;
+        }
+
+        #question-container {
+            margin-bottom: 1.5em;
+        }
+
+        #question-text {
+            font-size: 1.25em;
+            font-weight: 700;
+            margin-bottom: 1em;
+        }
+
+        .answer-item {
+            margin-bottom: 1em;
+        }
+
+        .answer-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 0.75em;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            transition: border-color 0.3s;
+        }
+        .answer-label:hover {
+            border-color: #999;
+        }
+
+        .custom-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #555;
+            border-radius: 4px;
+            margin-right: 12px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .explanation {
+            display: none;
+            padding: 0.75em;
+            margin-top: 0.5em;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+        
+        .explanation a {
+            color: inherit;
+            text-decoration: underline;
+        }
+
+        /* --- State Styling --- */
+        .answer-item.answered.correct .answer-label,
+        .answer-item.answered.correct .explanation {
+            background-color: #f0f8ec;
+            border-color: var(--correct-color);
+            color: var(--correct-color);
+        }
+
+        .answer-item.answered.incorrect .answer-label,
+        .answer-item.answered.incorrect .explanation {
+            background-color: #fff0e9;
+            border-color: var(--incorrect-color);
+            color: var(--incorrect-color);
+        }
+
+        .answer-item.answered.correct .custom-checkbox {
+            border-color: var(--correct-color);
+            background-color: var(--correct-color);
+            color: white;
+        }
+
+        .answer-item.answered.incorrect .custom-checkbox {
+            border-color: var(--incorrect-color);
+            background-color: var(--incorrect-color);
+            color: white;
+        }
+
+        /* --- Results Screen --- */
+        #results-container {
+            display: none;
+            text-align: center;
+            padding: 2.5em;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            margin-bottom: 2em;
+        }
+
+        .score-text {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 0.2em;
+        }
+
+        .score-details {
+            font-size: 1.2em;
+            color: #555;
+            margin-bottom: 1.5em;
+        }
+
+        .pass { color: var(--correct-color); }
+        .fail { color: var(--incorrect-color); }
+
+        .results-message {
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        /* --- Navigation --- */
+        #navigation-container {
+            margin-top: 2em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-button {
+            border: none;
+            padding: 0.8em 1.5em;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            color: white;
+            transition: opacity 0.3s;
+        }
+
+        .nav-button:hover {
+            opacity: 0.85;
+        }
+
+        #prev-btn { background-color: var(--prev-btn-color); }
+        #next-btn { background-color: var(--next-btn-color); }
+        #results-btn { background-color: var(--correct-color); }
+        #restart-btn { background-color: var(--restart-btn-color); }
+    </style>
+  </head>
+  <body>
+    <div id="quiz-container">
+      <div id="quiz-intro"></div>
+      
+      <div id="results-container">
+          <div class="score-text" id="final-score-percent"></div>
+          <div class="score-details" id="final-score-breakdown"></div>
+          <div class="results-message" id="final-message"></div>
+      </div>
+
+      <div id="question-counter"></div>
+      <div id="question-container">
+        <p id="question-text"></p>
+        <div id="answers-container"></div>
+      </div>
+      
+      <div id="navigation-container">
+        <button id="prev-btn" class="nav-button" style="display: none;">Previous</button>
+        <button id="next-btn" class="nav-button" style="display: none;">Next</button>
+        <button id="results-btn" class="nav-button" style="display: none;">View Results</button>
+        <button id="restart-btn" class="nav-button" style="display: none;">Restart Gateway</button>
+      </div>
+    </div>
+    
+    <script>
+      const quizDataText = `<b>Module 7: Diagnostic Gateway.</b> <br><br>High-end A100 GPUs are being monopolized by idle notebooks, production models cannot schedule, and your infrastructure team is flying blind. Prove your ability to govern hardware accelerators, configure time-slicing, and gain visibility using OpenShift AI 3.4. <br><br><b>The 80% Rule:</b> Score 80% or higher to jump straight to the Runbook. If you score below 80%, you will proceed to the interactive labs to build these critical hardware governance skills.
+
+---
+Q1: In OpenShift AI 3.4, what is the primary purpose of adding Node Selectors and Tolerations directly into a Hardware Profile?
+
+A: To automatically install the NVIDIA GPU Operator on blank nodes.
+Incorrect: The GPU Operator must be installed via OperatorHub before hardware profiles are used.
+
+A: To ensure that workloads selecting that profile are targeted to specific nodes (like GPU nodes) and are permitted to schedule on nodes protected by specific taints, keeping other workloads off.
+Correct: Hardware profiles offer fine-grained control over resource allocation by defining specifications that include node selectors and tolerations. Taints and tolerations allow a node to control which pods should schedule on them, preventing CPU-only workloads from consuming expensive GPU nodes.
+
+A: To define the learning rate of the model.
+Incorrect: Hardware profiles manage infrastructure scheduling, not data science hyper-parameters.
+
+A: To restrict the OpenShift AI dashboard to cluster administrators.
+Incorrect: Dashboard access is controlled by OpenShift RBAC groups, not hardware profiles.
+---
+Q2: A data science team needs GPUs for lightweight data preprocessing and exploratory notebooks. Which GPU sharing technology is best suited for this, and why?
+
+A: Multi-Instance GPU (MIG), because it shares the same GPU memory without strict isolation.
+Incorrect: MIG provides strict physical isolation, not shared memory.
+
+A: GPU Time-slicing, because it shares the same GPU memory across workloads without strict isolation, which is ideal for lightweight tasks where full isolation is unnecessary.
+Correct: Time-slicing differs from MIG. Time-slicing enables multiple workloads to share a single physical GPU by dividing processing time, sharing the same memory without strict isolation, making it ideal for lightweight inference or notebooks.
+
+A: GPU Time-slicing, because it physically partitions the hardware memory.
+Incorrect: Time-slicing uses software concurrency, not physical hardware partitioning.
+
+A: MIG, because it relies on the CPU to offload memory.
+Incorrect: Neither technology relies on CPU offloading for sharing mechanism.
+---
+Q3: You want to monitor GPU temperatures and power usage across your cluster. How do you enable and expose the Data Center GPU Manager (DCGM) metrics to the observability stack?
+
+A: Install the DCGM Helm Chart manually.
+Incorrect: DCGM is natively integrated into the operator stack; manual Helm charts are not required.
+
+A: Set dcgmExporter: enabled: true in the ClusterPolicy custom resource managed by the NVIDIA GPU Operator.
+Correct: The NVIDIA GPU Operator manages the ClusterPolicy. To enable GPU telemetry, dcgmExporter must be set to enabled: true within the ClusterPolicy so that the Prometheus stack can scrape the metrics.
+
+A: Enable the disableKServeMetrics flag in OdhDashboardConfig.
+Incorrect: KServe metrics track HTTP requests, not underlying hardware telemetry.
+
+A: Add the dcgm-enabled=true label to the notebook pod.
+Incorrect: DCGM runs at the node level via a DaemonSet, not via per-pod labels.
+---
+Q4: How does a Platform Engineer prevent basic, CPU-only workloads from accidentally scheduling on expensive GPU nodes?
+
+A: By adding a taint (e.g., nvidia.com/gpu:NoSchedule) to the GPU machine pool and requiring GPU workloads to have a matching toleration in their Hardware Profile.
+Correct: Taints and tolerations allow a node to control which pods schedule on them. By tainting the GPU node, you prevent other workloads from running there. You then add the matching toleration to the Hardware Profile so authorized GPU workloads can schedule.
+
+A: By using Kueue to pause all CPU workloads.
+Incorrect: Kueue handles quota-based queuing, not strict taint/toleration node repelling.
+
+A: By setting disableCPU to true in the OdhDashboardConfig.
+Incorrect: This is not a valid OpenShift AI configuration.
+
+A: By deleting the CPU limit in the namespace.
+Incorrect: This would cause unbounded CPU usage, not prevent scheduling on GPU nodes.
+---
+Q5: What is the fundamental difference in responsibilities between the NVIDIA GPU Operator and OpenShift AI Hardware Profiles?
+
+A: They perform the exact same function.
+Incorrect: They operate at entirely different layers of the stack.
+
+A: Hardware profiles install the underlying device drivers, while the GPU Operator provides the UI.
+Incorrect: This is exactly backwards.
+
+A: The NVIDIA GPU Operator automates driver installation, device plugins, and node labeling. Hardware profiles are UI-selectable templates that package the resulting requests, limits, node selectors, and tolerations for the end-user.
+Correct: The GPU Operator simplifies GPU integration by automating driver installation and device plugin setup. Hardware profiles are custom resources for targeted scheduling that allow administrators to specify the exact resources needed for workloads like workbenches in the UI.
+
+A: The GPU Operator is only for AMD hardware.
+Incorrect: The NVIDIA GPU Operator is specifically for NVIDIA hardware.
+---
+Q6: You are reviewing Grafana metrics for a model serving deployment. Which Prometheus metric specifically indicates the percentage of time the NVIDIA GPU is actively processing tasks?
+
+A: DCGM_FI_DEV_POWER_USAGE
+Incorrect: This measures power draw in Watts, not active task processing time.
+
+A: vllm:gpu_cache_usage_perc
+Incorrect: This measures the vLLM specific KV cache block usage, not raw hardware processing time.
+
+A: DCGM_FI_DEV_GPU_UTIL
+Correct: The DCGM_FI_DEV_GPU_UTIL metric tracks the percentage of time the GPU is actively processing tasks, indicating GPU workload levels.
+
+A: container_cpu_usage_seconds_total
+Incorrect: This is a standard cAdvisor metric for CPU usage, not GPU.
+---
+Q7: When a data scientist selects a Hardware Profile during model deployment, how does OpenShift AI 3.4 intelligently suggest a serving runtime?
+
+A: By searching Hugging Face for model compatibility.
+Incorrect: It does not reach out to external model hubs to make runtime suggestions.
+
+A: By automatically matching the accelerator identifier defined in the selected Hardware Profile with the available serving runtime templates (e.g., matching NVIDIA GPUs to the vLLM NVIDIA GPU runtime).
+Correct: The system suggests a runtime by matching the accelerator defined in the user's selected hardware profile with available runtimes.
+
+A: By defaulting to the OpenVINO runtime for all profiles.
+Incorrect: OpenVINO is primarily for Intel CPUs/accelerators, not a universal default.
+
+A: It does not suggest runtimes; the user must guess.
+Incorrect: The UI includes a native auto-suggest feature to reduce user error.
+---
+Q8: You are expanding your OpenShift AI 3.4 footprint using AMD GPUs. Which node capacity label and workbench image type must you use to properly allocate these resources?
+
+A: nvidia.com/gpu and CUDA images
+Incorrect: CUDA and nvidia.com/gpu are exclusive to NVIDIA hardware.
+
+A: intel.com/gaudi and OpenVINO images
+Incorrect: Gaudi and OpenVINO are Intel technologies.
+
+A: amd.com/gpu and ROCm images
+Correct: AMD GPUs allocate resources using the amd.com/gpu label, and workloads must use ROCm workbench images (e.g., ROCm-PyTorch) which include the AMD ROCm platform libraries.
+
+A: amd.com/rocm and CUDA images
+Incorrect: ROCm and CUDA are competing, incompatible programming frameworks.
+---
+Q9: In previous versions of OpenShift AI, Platform Engineers used "Accelerator Profiles" and "Container Sizes" to manage hardware. What is their status in OpenShift AI 3.4?
+
+A: They are the primary method of scheduling.
+Incorrect: They have been superseded.
+
+A: They are deprecated and fully replaced by the more flexible and unified Hardware Profiles capability.
+Correct: Starting with OpenShift AI 3.0, Accelerator Profiles and the Container Size selector are deprecated and have been replaced by the more flexible and unified Hardware Profiles capability.
+
+A: They are required only for CPU workloads.
+Incorrect: They were previously used for all workloads but are now fully deprecated.
+
+A: They manage storage size.
+Incorrect: They managed compute and accelerators, not storage.
+---
+Q10: You want to configure GPU time-slicing to allow 4 notebook users to share a single GPU. How is this configured?
+
+A: By creating a time-slicing-config ConfigMap in the nvidia-gpu-operator namespace and referencing it in the gpu-cluster-policy ClusterPolicy.
+Correct: To enable time slicing, you create a ConfigMap named time-slicing-config in the nvidia-gpu-operator namespace with the replicas: 4 configuration, and then update the gpu-cluster-policy to reference this ConfigMap.
+
+A: By setting replicas: 4 in the HardwareProfile custom resource.
+Incorrect: Hardware profiles request the slices; they do not configure the node-level splitting.
+
+A: By configuring workerSpec.tensorParallelSize: 4 in the InferenceService.
+Incorrect: Tensor parallelism splits a model across multiple GPUs, it does not slice one GPU into many.
+
+A: By enabling KServe RawDeployment mode.
+Incorrect: RawDeployment controls network ingress routing, not physical hardware slicing.`;
+
+      // --- PARSING LOGIC ---
+      function parseQuizData(text) {
+          try {
+              const parts = text.split('---');
+              const intro = parts.shift().trim();
+              
+              const questions = parts.filter(p => p.trim() !== '').map((part) => {
+                  const lines = part.trim().split('\n').map(l => l.trim()).filter(l => l !== '');
+                  if (lines.length === 0) return null;
+
+                  const questionLine = lines.shift();
+                  const questionText = questionLine.replace(/^Q\d+:\s*/, '').trim();
+                  
+                  const answers = [];
+                  let currentAnswer = null;
+
+                  for (const line of lines) {
+                      if (line.startsWith('A:')) {
+                          if (currentAnswer) {
+                              answers.push(currentAnswer);
+                          }
+                          currentAnswer = { text: line.substring(2).trim(), isCorrect: false, explanation: '' };
+                      } else if (line.startsWith('Correct:')) {
+                          if(currentAnswer) {
+                              currentAnswer.isCorrect = true;
+                              currentAnswer.explanation = line.substring(8).trim();
+                          }
+                      } else if (line.startsWith('Incorrect:')) {
+                           if(currentAnswer) {
+                              currentAnswer.isCorrect = false;
+                              currentAnswer.explanation = line.substring(10).trim();
+                          }
+                      } else {
+                          if (currentAnswer) {
+                              currentAnswer.explanation += ' ' + line;
+                          }
+                      }
+                  }
+                  if (currentAnswer) {
+                      answers.push(currentAnswer);
+                  }
+                  
+                  return { question: questionText, answers: answers, firstAttemptCorrect: null };
+              }).filter(q => q !== null);
+
+              return { intro, questions };
+          } catch (e) {
+              console.error("Failed to parse quiz data:", e);
+              return { intro: "<span style='color:red;'>Fatal Parsing Error. Check developer console.</span>", questions: [] };
+          }
+      }
+
+      // --- QUIZ APPLICATION LOGIC ---
+      try {
+          const { intro, questions } = parseQuizData(quizDataText);
+          let currentQuestionIndex = 0;
+
+          const introEl = document.getElementById('quiz-intro');
+          const questionCounterEl = document.getElementById('question-counter');
+          const questionTextEl = document.getElementById('question-text');
+          const answersContainerEl = document.getElementById('answers-container');
+          
+          const resultsContainerEl = document.getElementById('results-container');
+          const finalScorePercentEl = document.getElementById('final-score-percent');
+          const finalScoreBreakdownEl = document.getElementById('final-score-breakdown');
+          const finalMessageEl = document.getElementById('final-message');
+
+          const nextBtn = document.getElementById('next-btn');
+          const prevBtn = document.getElementById('prev-btn');
+          const resultsBtn = document.getElementById('results-btn');
+          const restartBtn = document.getElementById('restart-btn');
+
+          introEl.innerHTML = intro;
+
+          if (!questions || questions.length === 0) {
+              questionTextEl.innerHTML = "<span style='color:red;'>No questions were loaded. Ensure the data format is correct.</span>";
+          } else {
+              function displayQuestion(index) {
+                  const question = questions[index];
+                  questionCounterEl.style.display = 'block';
+                  questionContainerEl = document.getElementById('question-container');
+                  questionContainerEl.style.display = 'block';
+                  resultsContainerEl.style.display = 'none';
+
+                  questionCounterEl.textContent = `Question ${index + 1} of ${questions.length}`;
+                  questionTextEl.textContent = question.question;
+                  answersContainerEl.innerHTML = '';
+
+                  question.answers.forEach((answer, answerIndex) => {
+                      const answerItem = document.createElement('div');
+                      answerItem.className = 'answer-item';
+                      
+                      answerItem.innerHTML = `
+                          <div class="answer-label" data-index="${answerIndex}">
+                              <span class="custom-checkbox"></span>
+                              <span class="answer-text">${answer.text}</span>
+                          </div>
+                          <div class="explanation">${answer.explanation}</div>
+                      `;
+                      answersContainerEl.appendChild(answerItem);
+                  });
+                  
+                  updateNavigation();
+              }
+              
+              function handleAnswerClick(event) {
+                  const label = event.target.closest('.answer-label');
+                  if (!label) return;
+
+                  const answerItem = label.parentElement;
+                  const explanation = answerItem.querySelector('.explanation');
+                  const checkbox = label.querySelector('.custom-checkbox');
+
+                  const isAnswered = answerItem.classList.contains('answered');
+
+                  if (isAnswered) {
+                       answerItem.classList.remove('answered', 'correct', 'incorrect');
+                       explanation.style.display = 'none';
+                       checkbox.textContent = '';
+                  } else {
+                      const answerIndex = parseInt(label.dataset.index);
+                      const answer = questions[currentQuestionIndex].answers[answerIndex];
+                      
+                      if (questions[currentQuestionIndex].firstAttemptCorrect === null) {
+                          questions[currentQuestionIndex].firstAttemptCorrect = answer.isCorrect;
+                      }
+
+                      answerItem.classList.add('answered');
+                      explanation.style.display = 'block';
+
+                      if (answer.isCorrect) {
+                          answerItem.classList.add('correct');
+                          checkbox.innerHTML = '&#10003;'; 
+                      } else {
+                          answerItem.classList.add('incorrect');
+                          checkbox.innerHTML = '&#10007;'; 
+                      }
+                  }
+              }
+
+              function showResults() {
+                  document.getElementById('question-counter').style.display = 'none';
+                  document.getElementById('question-container').style.display = 'none';
+                  
+                  const correctCount = questions.filter(q => q.firstAttemptCorrect === true).length;
+                  const wrongCount = questions.filter(q => q.firstAttemptCorrect === false).length;
+                  const skippedCount = questions.length - correctCount - wrongCount;
+                  const percentage = Math.round((correctCount / questions.length) * 100);
+
+                  finalScorePercentEl.textContent = `${percentage}%`;
+                  finalScoreBreakdownEl.textContent = `${correctCount} Correct | ${wrongCount} Incorrect | ${skippedCount} Skipped`;
+
+                  if (percentage >= 80) {
+                      finalScorePercentEl.className = 'score-text pass';
+                      finalMessageEl.innerHTML = `<b>Congratulations!</b> You have demonstrated mastery of Hardware Profiles and GPU Performance. You may proceed directly to the Runbook and skip the interactive setup labs.`;
+                  } else {
+                      finalScorePercentEl.className = 'score-text fail';
+                      finalMessageEl.innerHTML = `You're on your way, but there are a few architectural concepts we need to solidify. Please proceed to the Runbook and complete the interactive setup labs below to build your foundational skills.`;
+                  }
+
+                  resultsContainerEl.style.display = 'block';
+
+                  prevBtn.style.display = 'none';
+                  nextBtn.style.display = 'none';
+                  resultsBtn.style.display = 'none';
+                  restartBtn.style.display = 'inline-block';
+              }
+
+              function updateNavigation() {
+                  prevBtn.style.display = currentQuestionIndex > 0 ? 'inline-block' : 'none';
+                  
+                  const isLastQuestion = currentQuestionIndex === questions.length - 1;
+                  nextBtn.style.display = isLastQuestion ? 'none' : 'inline-block';
+                  resultsBtn.style.display = isLastQuestion ? 'inline-block' : 'none';
+                  restartBtn.style.display = 'none';
+
+                  const navContainer = document.getElementById('navigation-container');
+                  navContainer.style.justifyContent = currentQuestionIndex === 0 ? 'flex-end' : 'space-between';
+              }
+
+              answersContainerEl.addEventListener('click', handleAnswerClick);
+
+              nextBtn.addEventListener('click', () => {
+                  if (currentQuestionIndex < questions.length - 1) {
+                      currentQuestionIndex++;
+                      displayQuestion(currentQuestionIndex);
+                  }
+              });
+
+              prevBtn.addEventListener('click', () => {
+                  if (currentQuestionIndex > 0) {
+                      currentQuestionIndex--;
+                      displayQuestion(currentQuestionIndex);
+                  }
+              });
+
+              resultsBtn.addEventListener('click', () => {
+                  showResults();
+              });
+
+              restartBtn.addEventListener('click', () => {
+                  questions.forEach(q => q.firstAttemptCorrect = null);
+                  currentQuestionIndex = 0;
+                  displayQuestion(currentQuestionIndex);
+              });
+
+              displayQuestion(currentQuestionIndex);
+          }
+      } catch (err) {
+          document.body.innerHTML = `<p style="color:red; font-weight:bold;">Initialization Error: ${err.message}</p>`;
+      }
+    </script>
+  </body>
+</html>

@@ -3,8 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Interactive Labs: Building the Engine Room :: Building the AI Engine</title>
-    <meta name="description" content="Interactive UI click-paths for installing OpenShift AI 3.4.">
+    <title>Interactive Labs: Enabling Rapid Prototyping (Llama Stack, Gen AI Studio, &amp; AI Hub) :: Building the AI Engine</title>
+    <link rel="prev" href="section1.html">
+    <link rel="next" href="../chapter8/index.html">
+    <meta name="description" content="Hands-on walk-throughs for finding validated models, uploading RAG datasets, and authorizing agentic MCP servers.">
     <meta name="generator" content="Antora 3.2.0-alpha.12">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <link rel="stylesheet" href="../../../_/css/vendor/tabs.css">
@@ -58,13 +60,13 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="index.html">Interactive Quiz</a>
+    <a class="nav-link" href="../chapter1/index.html">Interactive Quiz</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="section1.html">Runbook: Platform Setup</a>
+    <a class="nav-link" href="../chapter1/section1.html">Runbook: Platform Setup</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="section2.html">Labs: Building the Engine Room</a>
+    <a class="nav-link" href="../chapter1/section2.html">Labs: Building the Engine Room</a>
   </li>
 </ul>
   </li>
@@ -154,13 +156,13 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../chapter7/index.html">Interactive Quiz #7</a>
+    <a class="nav-link" href="index.html">Interactive Quiz #7</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../chapter7/section1.html">Runbook: Llama Stack &amp; Studio</a>
+    <a class="nav-link" href="section1.html">Runbook: Llama Stack &amp; Studio</a>
   </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../chapter7/section2.html">Labs: Prototyping &amp; Studio</a>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="section2.html">Labs: Prototyping &amp; Studio</a>
   </li>
 </ul>
   </li>
@@ -218,7 +220,8 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">Building the AI Engine</a></li>
-    <li><a href="tabs-demo.html">Labs: Building the Engine Room</a></li>
+    <li><a href="index.html">Interactive Quiz #7</a></li>
+    <li><a href="section2.html">Labs: Prototyping &amp; Studio</a></li>
   </ul>
 </nav>
 </div>
@@ -227,82 +230,87 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Interactive Labs: Building the Engine Room</h1>
+<h1 class="page">Interactive Labs: Enabling Rapid Prototyping (Llama Stack, Gen AI Studio, &amp; AI Hub)</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>It is time to step into the Engine Room. In these interactive labs, you will execute the "Happy Path" to install the Operator, activate the centralized observability stack, and deploy a smoke-test model using the new Gateway API routing.</p>
+<p>In these interactive labs, you will trace the prototyping lifecycle: discovering optimized configurations within the AI Hub, utilizing the Gen AI Playground to validate a RAG document search flow, and authorizing an active tool calling server via the Model Context Protocol.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_lab_1_operator_installation_core_setup"><a class="anchor" href="#_lab_1_operator_installation_core_setup"></a>Lab 1: Operator Installation &amp; Core Setup</h2>
+<h2 id="_lab_1_discovering_ai_assets_in_the_hub"><a class="anchor" href="#_lab_1_discovering_ai_assets_in_the_hub"></a>Lab 1: Discovering AI Assets in the Hub</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>Goal:</strong> Install the OpenShift AI Operator and activate the core components using the <code>DataScienceCluster</code> resource.</p>
+<p><strong>Goal:</strong> Navigate the centralized Model Catalog to evaluate validated foundational assets and capture optimized baseline deployment settings.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Example 1. Arcade: Install and Activate</div>
+<div class="title">Example 1. Arcade: Explore AI Hub Catalog</div>
 <div class="content">
 <div class="paragraph">
 <p><strong>Guided Steps:</strong>
-1. In the OpenShift web console, log in as a cluster administrator.
-2. Navigate to <strong>Operators &#8594; OperatorHub</strong> and install <strong>Red Hat OpenShift AI</strong>.
-3. Navigate to <strong>Operators &#8594; Installed Operators</strong> and click the Operator.
-4. Click the <strong>Data Science Cluster</strong> tab, then click <strong>Create DataScienceCluster</strong>.
-5. Select <strong>YAML view</strong>. Change the <code>managementState</code> from <code>Removed</code> to <code>Managed</code> for the following core components: <code>kserve</code>, <code>kueue</code>, <code>mlflowoperator</code>, and <code>modelregistry</code>.
-6. Click <strong>Create</strong>.</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_lab_2_configuring_the_serving_environment_observability"><a class="anchor" href="#_lab_2_configuring_the_serving_environment_observability"></a>Lab 2: Configuring the Serving Environment (Observability)</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p><strong>Goal:</strong> Activate the centralized observability stack to monitor AI health and user model metrics natively.</p>
-</div>
-<div class="exampleblock">
-<div class="title">Example 2. Arcade: Enable Observability</div>
-<div class="content">
-<div class="paragraph">
-<p><strong>Guided Steps:</strong>
-1. Navigate to <strong>Operators &#8594; Installed Operators &#8594; Red Hat OpenShift AI</strong>.
-2. Click the <strong>DSC Initialization</strong> tab and open the <code>default-dsci</code> instance.
-3. Select the <strong>YAML</strong> tab. Under <code>spec.monitoring</code>, set <code>managementState: Managed</code> to deploy the Prometheus and OpenTelemetry stack. Click <strong>Save</strong>.
-4. To enable the Dashboard UI, navigate to <strong>Home &#8594; API Explorer</strong> and search for <code>OdhDashboardConfig</code>.
-5. Open the <code>odh-dashboard-config</code> instance YAML. Under <code>spec.dashboardConfig</code>, add <code>observabilityDashboard: true</code> and click <strong>Save</strong>.</p>
+1. Log in to the OpenShift AI dashboard using your engineer credentials.
+2. In the primary left navigation menu, expand <strong>AI hub</strong> and select <strong>Catalog</strong>.
+3. Filter the curated view by clicking <strong>Red Hat AI models</strong> on the main menu bar to isolate supported foundation distributions.
+4. Locate and click on the <strong>granite-3.1-8b-instruct</strong> model card.
+5. Select the <strong>Performance Insights</strong> tab to review validated benchmark data across varying underlying hardware profiles.
+6. Return to the main <strong>Readme</strong> view, locate the <strong>Recommended Configurations</strong> YAML configuration block, and copy the explicitly recommended CLI tool flags (e.g., <code>--enable-auto-tool-choice</code>).</p>
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_lab_3_the_smoke_test"><a class="anchor" href="#_lab_3_the_smoke_test"></a>Lab 3: The Smoke Test</h2>
+<h2 id="_lab_2_testing_rag_in_the_playground"><a class="anchor" href="#_lab_2_testing_rag_in_the_playground"></a>Lab 2: Testing RAG in the Playground</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>Goal:</strong> Deploy a test model using the UI to verify KServe RawDeployment and Gateway API routing are operational.</p>
+<p><strong>Goal:</strong> Verify a model&#8217;s operational context retrieval and documentation citing capabilities within a safe, code-free interface.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Example 3. Arcade: Deploy Smoke Test</div>
+<div class="title">Example 2. Arcade: Validate Document RAG Flows</div>
 <div class="content">
 <div class="paragraph">
 <p><strong>Guided Steps:</strong>
-1. Open the <strong>Red Hat OpenShift AI</strong> dashboard via the Application Launcher.
-2. Navigate to <strong>Data Science Projects</strong> and create a project named <code>smoke-test-project</code>.
-3. In the <strong>Deployments</strong> tab, click <strong>Deploy model</strong>.
-4. Fill out the wizard using the <strong>MLServer ServingRuntime</strong> and the <strong>Scikit-learn</strong> framework.
-5. <strong>Critical Step:</strong> Under the Model route section, check the box for <strong>"Make deployed models available through an external route"</strong> to trigger the Gateway API ingress.
-6. Click <strong>Deploy</strong> and wait for the status checkmark to turn green.</p>
+1. From the left dashboard navigation tree, expand <strong>Gen AI studio</strong> and select <strong>Playground</strong>.
+2. Locate the central dropdown selector in the main chat header panel and choose your deployed foundation model.
+3. In the left-hand configuration inspector block, select the <strong>Knowledge</strong> customization tab.
+4. Click <strong>Upload files</strong>, browse your local path, and submit a sample reference dataset PDF (ensure size is under <code>10MB</code>).
+5. Toggle into the adjacent <strong>Prompt</strong> configuration panel and insert system baseline rules instructing the model to leverage its external indexing functions (e.g., <code>You MUST use the knowledge_search tool to obtain updated info.</code>).
+6. Enter an explicit query into the main user chat field that targets information contained only within the file. Verify that the model accurately pulls from the context window and provides a proper reference citation.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_lab_3_enabling_and_testing_mcp_tools"><a class="anchor" href="#_lab_3_enabling_and_testing_mcp_tools"></a>Lab 3: Enabling and Testing MCP Tools</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Goal:</strong> Authorize and validate a live external tool interface using a pre-staged Model Context Protocol (MCP) server configuration.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 3. Arcade: Validate MCP Tooling</div>
+<div class="content">
+<div class="paragraph">
+<p><strong>Guided Steps:</strong>
+1. Open the <strong>Gen AI studio &#8594; Playground</strong> workspace panel.
+2. Ensure you have loaded a modern model variant possessing active, verified tool-calling capabilities.
+3. In the left-hand parameters view panel, click down into the dedicated <strong>MCP</strong> tool tab.
+4. Review the structural list of configured platform servers, locate your target connector instance (e.g., <code>GitHub</code> or <code>Confluent</code>), and click the <strong>Auth</strong> padlock icon to secure your active tool session with an integration token.
+5. In the primary chat console input line, prompt the model to perform an environment action utilizing that connection (e.g., <code>Query the latest pull requests from my repository</code>).
+6. Observe the backend execution to verify that the model successfully translates the text prompt into a structured MCP tool call, queries the external data point, and structures the response cleanly back to the chat window.</p>
 </div>
 </div>
 </div>
 <div class="paragraph">
-<p><strong>Module Complete!</strong> You have successfully laid the foundation. You are now ready to govern this platform using Models-as-a-Service in Module 3.</p>
+<p><strong>Course Complete!</strong> You have constructed the AI Engine Room from the ground up—architecting operator fabrics, scaling high-density inference pipelines, governing accelerator hardware, and standardizing rapid RAG prototyping surfaces for your enterprise development teams.</p>
 </div>
 </div>
 </div>
+<nav class="pagination">
+  <span class="prev"><a href="section1.html">Runbook: Llama Stack &amp; Studio</a></span>
+  <span class="next"><a href="../chapter8/index.html">Interactive Quiz #8</a></span>
+</nav>
 </article>
   </div>
 </main>

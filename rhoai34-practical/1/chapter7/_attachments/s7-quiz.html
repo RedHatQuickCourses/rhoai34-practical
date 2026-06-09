@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+      /* --- Basic Styles --- */
+        :root {
+            --correct-color: #63993d;
+            --incorrect-color: #f0561d;
+            --intro-color: #111;
+            --next-btn-color: #0066cc;
+            --prev-btn-color: #383838;
+            --restart-btn-color: #ee0000;
+            --text-color: #111;
+        }
+
+        body {
+            font-family: 'Red Hat Display', sans-serif;
+            color: var(--text-color);
+            margin: 1.5em;
+        }
+
+        /* --- Quiz Components --- */
+        #quiz-intro {
+            color: var(--intro-color);
+            margin-bottom: 2em;
+            line-height: 1.6;
+            background-color: #f4f4f4;
+            padding: 1.5em;
+            border-left: 4px solid #ee0000;
+            border-radius: 4px;
+        }
+
+        #question-counter {
+            color: #383838;
+            margin-bottom: 1em;
+            font-weight: 700;
+        }
+
+        #question-container {
+            margin-bottom: 1.5em;
+        }
+
+        #question-text {
+            font-size: 1.25em;
+            font-weight: 700;
+            margin-bottom: 1em;
+        }
+
+        .answer-item {
+            margin-bottom: 1em;
+        }
+
+        .answer-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 0.75em;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            transition: border-color 0.3s;
+        }
+        .answer-label:hover {
+            border-color: #999;
+        }
+
+        .custom-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #555;
+            border-radius: 4px;
+            margin-right: 12px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .explanation {
+            display: none;
+            padding: 0.75em;
+            margin-top: 0.5em;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+        
+        .explanation a {
+            color: inherit;
+            text-decoration: underline;
+        }
+
+        /* --- State Styling --- */
+        .answer-item.answered.correct .answer-label,
+        .answer-item.answered.correct .explanation {
+            background-color: #f0f8ec;
+            border-color: var(--correct-color);
+            color: var(--correct-color);
+        }
+
+        .answer-item.answered.incorrect .answer-label,
+        .answer-item.answered.incorrect .explanation {
+            background-color: #fff0e9;
+            border-color: var(--incorrect-color);
+            color: var(--incorrect-color);
+        }
+
+        .answer-item.answered.correct .custom-checkbox {
+            border-color: var(--correct-color);
+            background-color: var(--correct-color);
+            color: white;
+        }
+
+        .answer-item.answered.incorrect .custom-checkbox {
+            border-color: var(--incorrect-color);
+            background-color: var(--incorrect-color);
+            color: white;
+        }
+
+        /* --- Results Screen --- */
+        #results-container {
+            display: none;
+            text-align: center;
+            padding: 2.5em;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            margin-bottom: 2em;
+        }
+
+        .score-text {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 0.2em;
+        }
+
+        .score-details {
+            font-size: 1.2em;
+            color: #555;
+            margin-bottom: 1.5em;
+        }
+
+        .pass { color: var(--correct-color); }
+        .fail { color: var(--incorrect-color); }
+
+        .results-message {
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        /* --- Navigation --- */
+        #navigation-container {
+            margin-top: 2em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-button {
+            border: none;
+            padding: 0.8em 1.5em;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            color: white;
+            transition: opacity 0.3s;
+        }
+
+        .nav-button:hover {
+            opacity: 0.85;
+        }
+
+        #prev-btn { background-color: var(--prev-btn-color); }
+        #next-btn { background-color: var(--next-btn-color); }
+        #results-btn { background-color: var(--correct-color); }
+        #restart-btn { background-color: var(--restart-btn-color); }
+    </style>
+  </head>
+  <body>
+    <div id="quiz-container">
+      <div id="quiz-intro"></div>
+      
+      <div id="results-container">
+          <div class="score-text" id="final-score-percent"></div>
+          <div class="score-details" id="final-score-breakdown"></div>
+          <div class="results-message" id="final-message"></div>
+      </div>
+
+      <div id="question-counter"></div>
+      <div id="question-container">
+        <p id="question-text"></p>
+        <div id="answers-container"></div>
+      </div>
+      
+      <div id="navigation-container">
+        <button id="prev-btn" class="nav-button" style="display: none;">Previous</button>
+        <button id="next-btn" class="nav-button" style="display: none;">Next</button>
+        <button id="results-btn" class="nav-button" style="display: none;">View Results</button>
+        <button id="restart-btn" class="nav-button" style="display: none;">Restart Gateway</button>
+      </div>
+    </div>
+    
+    <script>
+      const quizDataText = `<b>Module 8: Diagnostic Gateway.</b> <br><br>Developers are wasting weeks writing custom LangChain code to wire together disparate LLM endpoints, embedding models, and vector databases just to build a basic Retrieval-Augmented Generation (RAG) prototype. Prove you know how to leverage Llama Stack, the AI Hub, and the Gen AI Playground in OpenShift AI 3.4 to give them a unified, code-free prototyping experience. <br><br><b>The 80% Rule:</b> Score 80% or higher to jump straight to the Runbook. If you score below 80%, you will proceed to the interactive labs.
+
+---
+Q1: What is the architectural purpose of the Llama Stack Operator and the LlamaStackDistribution custom resource in OpenShift AI 3.4?
+
+A: They provide a distributed training framework replacing the Kubeflow Training Operator.
+Incorrect: Training workflows are still handled by the Training Operator, not Llama Stack.
+
+A: The Operator manages the lifecycle of the Llama Stack server, while the LlamaStackDistribution CR declares the runtime configuration, including model providers, embedding settings, vector storage, and metadata persistence.
+Correct: The Llama Stack Operator manages server deployment, and the LlamaStackDistribution custom resource acts as the declarative configuration file where platform engineers define the backend providers (like Milvus or PostgreSQL) and model endpoints for the stack.
+
+A: They are exclusively used for managing persistent volume claims (PVCs) for GPU nodes.
+Incorrect: PVCs are managed by the standard Kubernetes storage subsystem and storage classes.
+
+A: They act as a hyperparameter tuning engine for generative AI models.
+Incorrect: Hyperparameter tuning is usually handled by KubeFlow Katib.
+---
+Q2: How does a LlamaStackDistribution simplify the developer experience for building agentic and RAG applications compared to a standalone vLLM route?
+
+A: It natively generates synthetic data to train new models.
+Incorrect: Llama Stack is an orchestration and serving layer, not a training data generator.
+
+A: It runs the LLM entirely on the CPU to save GPU costs.
+Incorrect: vLLM under Llama Stack still typically relies on GPU accelerators for performant serving.
+
+A: A standalone vLLM route only provides inference, whereas Llama Stack exposes a unified OpenAI-compatible API (like /v1/responses) that combines inference, embedding generation, and vector database retrieval into a single endpoint.
+Correct: Instead of developers writing complex code to manage separate inference, embedding, and vector database APIs, Llama Stack provides a single unified API surface. Using the Responses API with the file_search tool natively handles the RAG pipeline.
+
+A: It allows developers to bypass authentication requirements.
+Incorrect: It unifies the surface but does not remove security guardrails.
+---
+Q3: When deploying a production-grade Llama Stack Distribution backed by a remote Milvus vector database, which of the following is required for metadata storage?
+
+A: An embedded SQLite database.
+Incorrect: SQLite is acceptable for local development but is not intended for production-grade scale.
+
+A: A persistent volume claim mounted directly to the vLLM pod.
+Incorrect: vLLM handles model weights and layers, not application state metadata.
+
+A: A PostgreSQL instance to store vector store metadata, file references, and configuration state.
+Correct: Production-grade Llama Stack deployments default to and require PostgreSQL for metadata persistence. Milvus manages the vector indexes and similarity search, while PostgreSQL durably stores the Llama Stack metadata and file references.
+
+A: An embedded FAISS index.
+Incorrect: FAISS is an in-memory vector store, not a relational metadata repository.
+---
+Q4: A developer wants to quickly test an LLM's response to a specific prompt without writing any Python code. What native UI should they use?
+
+A: The OpenShift Web Console's Pod terminal.
+Incorrect: Text prompting via standard Linux pod standard input is not a developer-friendly UI playground.
+
+A: The Gen AI Playground, which provides an interactive, chat-style environment to prototype and evaluate foundation models, custom models, and RAG workflows.
+Correct: The Generative AI (Gen AI) Playground is an interactive dashboard environment where users can test prompts, adjust model parameters, and interact with documents or MCP servers without writing application code.
+
+A: The MLflow tracking server.
+Incorrect: MLflow is utilized for tracking experiment metrics and artifacts, not chat prototyping.
+
+A: A Jupyter notebook with the kfp SDK.
+Incorrect: This would require writing explicit Python code, which breaks the code-free constraint.
+---
+Q5: As a Developer Preview feature in 3.4, how do Platform Engineers expose pre-existing, read-only vector databases directly to the Gen AI Playground so developers can query them?
+
+A: By exposing the database on port 8080.
+Incorrect: Port configuration alone does not register the service to the dashboard user interface.
+
+A: By declaring vector stores through ConfigMaps containing connection details, collection names, and optional metadata, which then appear under RAG / Knowledge Sources in the Playground.
+Correct: Platform engineers can declare vector stores using ConfigMaps. These stores then automatically populate in the Playground's Knowledge tab, allowing users to route queries through Llama Stack RAG primitives without manual ingestion.
+
+A: By configuring a Data Connection in the OpenShift AI project settings.
+Incorrect: Data Connections link S3/object storage buckets, not live transactional vector databases.
+
+A: By hardcoding the credentials into the Llama Stack Operator source code.
+Incorrect: Hardcoding configuration inside an immutable operator image violates core GitOps and security design principles.
+---
+Q6: What is the primary purpose of the AI Hub model catalog for a Platform Engineer?
+
+A: To execute distributed PyTorch training jobs.
+Incorrect: PyTorch environments are initiated in Workbenches or Training Jobs, not via a catalog directory.
+
+A: To provide a central repository where teams can discover curated, validated models and view their performance benchmarks on specific hardware configurations before deployment.
+Correct: The model catalog provides a curated library of models where users can discover and evaluate models. Validated models include performance benchmarks to help engineers compare metrics and determine the most suitable hardware deployment options.
+
+A: To act as a centralized Git repository for Jupyter notebooks.
+Incorrect: Git providers like GitLab or GitHub manage code repositories.
+
+A: To manage Red Hat OpenShift Service Mesh networking rules.
+Incorrect: Service Mesh behavior is governed by Istio Custom Resources (VirtualServices, Gateways).
+---
+Q7: How can an AI Engineer quickly test an external tool, such as querying a GitHub repository or Confluent Kafka stream, using the Gen AI Playground?
+
+A: By executing a bash script inside the playground interface.
+Incorrect: The Playground chatbot UI restricts execution to user prompts, not arbitrary bash logic.
+
+A: By downloading the MCP server source code and running it locally.
+Incorrect: Local workstation execution does not bridge the tool runtime to the cluster control plane.
+
+A: By navigating to the MCP tab in the settings panel, authorizing access to the configured Model Context Protocol (MCP) server, and interacting with its tools directly in the chat.
+Correct: In the Gen AI Playground, users can navigate to the MCP tab, authorize the pre-configured MCP server, and immediately begin testing tool-calling capabilities interactively.
+
+A: The playground does not support external tool calling.
+Incorrect: Tool calling via the Model Context Protocol is an explicit major workflow component.
+---
+Q8: You are connecting a remote PostgreSQL database with the pgvector extension to a LlamaStackDistribution to act as a vector store. How are the connection details passed to the Llama Stack deployment?
+
+A: They are hardcoded into the DataScienceCluster CR.
+Incorrect: The DSC manages global operator cluster components, not specific data source credentials.
+
+A: They are passed as environment variables (e.g., PGVECTOR_HOST, PGVECTOR_PASSWORD) sourced from a Kubernetes Secret referenced in the LlamaStackDistribution containerSpec.
+Correct: Remote vector database configurations, like pgvector, are enabled by passing the required connection details (host, port, DB name, credentials) via environment variables sourced from a Secret within the LlamaStackDistribution specification.
+
+A: They are automatically discovered via OpenShift Service Mesh.
+Incorrect: Service Mesh transparently routes traffic but cannot magically auto-discover database schema variables or login credentials.
+
+A: They must be passed as URL query parameters in every API request.
+Incorrect: This is highly insecure and represents an anti-pattern for restful payload requests.
+---
+Q9: In order to utilize the Llama Stack API endpoints natively with standard OpenAI Python SDKs, what must a developer append to the Llama Stack service route in their base_url?
+
+A: /api/llama
+Incorrect: This does not match standard REST paths exposed by standard endpoint serving layers.
+
+A: /v1alpha/inference
+Incorrect: Llama Stack relies on GA stable routing schemas for its OpenAI alignment layer.
+
+A: /v1
+Correct: To successfully route requests to the OpenAI-compatible API surface exposed by Llama Stack, the base_url must include the /v1 path suffix (e.g., http://llama-stack-service:8321/v1).
+
+A: /openai
+Incorrect: The path suffix is aligned directly with the API version number.
+---
+Q10: You want to deploy an inline vector store for a lightweight development RAG workflow. Which of the following is an in-process vector store supported by Llama Stack that does not require deploying an external database service?
+
+A: Remote Milvus.
+Incorrect: Milvus is a standalone distributed distributed service operating over external pods.
+
+A: Qdrant.
+Incorrect: Qdrant runs as a distinct application database entity.
+
+A: PostgreSQL pgvector.
+Incorrect: pgvector requires an active running relational instance of PostgreSQL.
+
+A: FAISS.
+Correct: Inline FAISS uses the Facebook AI Similarity Search library to provide a fast, in-process vector store that runs inside the Llama Stack server container, ideal for lightweight experimentation without needing a separate vector database service.`;
+
+      // --- PARSING LOGIC ---
+      function parseQuizData(text) {
+          try {
+              const parts = text.split('---');
+              const intro = parts.shift().trim();
+              
+              const questions = parts.filter(p => p.trim() !== '').map((part) => {
+                  const lines = part.trim().split('\n').map(l => l.trim()).filter(l => l !== '');
+                  if (lines.length === 0) return null;
+
+                  const questionLine = lines.shift();
+                  const questionText = questionLine.replace(/^Q\d+:\s*/, '').trim();
+                  
+                  const answers = [];
+                  let currentAnswer = null;
+
+                  for (const line of lines) {
+                      if (line.startsWith('A:')) {
+                          if (currentAnswer) {
+                              answers.push(currentAnswer);
+                          }
+                          currentAnswer = { text: line.substring(2).trim(), isCorrect: false, explanation: '' };
+                      } else if (line.startsWith('Correct:')) {
+                          if(currentAnswer) {
+                              currentAnswer.isCorrect = true;
+                              currentAnswer.explanation = line.substring(8).trim();
+                          }
+                      } else if (line.startsWith('Incorrect:')) {
+                           if(currentAnswer) {
+                              currentAnswer.isCorrect = false;
+                              currentAnswer.explanation = line.substring(10).trim();
+                          }
+                      } else {
+                          if (currentAnswer) {
+                              currentAnswer.explanation += ' ' + line;
+                          }
+                      }
+                  }
+                  if (currentAnswer) {
+                      answers.push(currentAnswer);
+                  }
+                  
+                  return { question: questionText, answers: answers, firstAttemptCorrect: null };
+              }).filter(q => q !== null);
+
+              return { intro, questions };
+          } catch (e) {
+              console.error("Failed to parse quiz data:", e);
+              return { intro: "<span style='color:red;'>Fatal Parsing Error. Check developer console.</span>", questions: [] };
+          }
+      }
+
+      // --- QUIZ APPLICATION LOGIC ---
+      try {
+          const { intro, questions } = parseQuizData(quizDataText);
+          let currentQuestionIndex = 0;
+
+          const introEl = document.getElementById('quiz-intro');
+          const questionCounterEl = document.getElementById('question-counter');
+          const questionTextEl = document.getElementById('question-text');
+          const answersContainerEl = document.getElementById('answers-container');
+          
+          const resultsContainerEl = document.getElementById('results-container');
+          const finalScorePercentEl = document.getElementById('final-score-percent');
+          const finalScoreBreakdownEl = document.getElementById('final-score-breakdown');
+          const finalMessageEl = document.getElementById('final-message');
+
+          const nextBtn = document.getElementById('next-btn');
+          const prevBtn = document.getElementById('prev-btn');
+          const resultsBtn = document.getElementById('results-btn');
+          const restartBtn = document.getElementById('restart-btn');
+
+          introEl.innerHTML = intro;
+
+          if (!questions || questions.length === 0) {
+              questionTextEl.innerHTML = "<span style='color:red;'>No questions were loaded. Ensure the data format is correct.</span>";
+          } else {
+              function displayQuestion(index) {
+                  const question = questions[index];
+                  questionCounterEl.style.display = 'block';
+                  questionContainerEl = document.getElementById('question-container');
+                  questionContainerEl.style.display = 'block';
+                  resultsContainerEl.style.display = 'none';
+
+                  questionCounterEl.textContent = `Question ${index + 1} of ${questions.length}`;
+                  questionTextEl.textContent = question.question;
+                  answersContainerEl.innerHTML = '';
+
+                  question.answers.forEach((answer, answerIndex) => {
+                      const answerItem = document.createElement('div');
+                      answerItem.className = 'answer-item';
+                      
+                      answerItem.innerHTML = `
+                          <div class="answer-label" data-index="${answerIndex}">
+                              <span class="custom-checkbox"></span>
+                              <span class="answer-text">${answer.text}</span>
+                          </div>
+                          <div class="explanation">${answer.explanation}</div>
+                      `;
+                      answersContainerEl.appendChild(answerItem);
+                  });
+                  
+                  updateNavigation();
+              }
+              
+              function handleAnswerClick(event) {
+                  const label = event.target.closest('.answer-label');
+                  if (!label) return;
+
+                  const answerItem = label.parentElement;
+                  const explanation = answerItem.querySelector('.explanation');
+                  const checkbox = label.querySelector('.custom-checkbox');
+
+                  const isAnswered = answerItem.classList.contains('answered');
+
+                  if (isAnswered) {
+                       answerItem.classList.remove('answered', 'correct', 'incorrect');
+                       explanation.style.display = 'none';
+                       checkbox.textContent = '';
+                  } else {
+                      const answerIndex = parseInt(label.dataset.index);
+                      const answer = questions[currentQuestionIndex].answers[answerIndex];
+                      
+                      if (questions[currentQuestionIndex].firstAttemptCorrect === null) {
+                          questions[currentQuestionIndex].firstAttemptCorrect = answer.isCorrect;
+                      }
+
+                      answerItem.classList.add('answered');
+                      explanation.style.display = 'block';
+
+                      if (answer.isCorrect) {
+                          answerItem.classList.add('correct');
+                          checkbox.innerHTML = '&#10003;'; 
+                      } else {
+                          answerItem.classList.add('incorrect');
+                          checkbox.innerHTML = '&#10007;'; 
+                      }
+                  }
+              }
+
+              function showResults() {
+                  document.getElementById('question-counter').style.display = 'none';
+                  document.getElementById('question-container').style.display = 'none';
+                  
+                  const correctCount = questions.filter(q => q.firstAttemptCorrect === true).length;
+                  const wrongCount = questions.filter(q => q.firstAttemptCorrect === false).length;
+                  const skippedCount = questions.length - correctCount - wrongCount;
+                  const percentage = Math.round((correctCount / questions.length) * 100);
+
+                  finalScorePercentEl.textContent = `${percentage}%`;
+                  finalScoreBreakdownEl.textContent = `${correctCount} Correct | ${wrongCount} Incorrect | ${skippedCount} Skipped`;
+
+                  if (percentage >= 80) {
+                      finalScorePercentEl.className = 'score-text pass';
+                      finalMessageEl.innerHTML = `<b>Congratulations!</b> You have mastered Llama Stack configurations, the AI Hub, and Gen AI Studio topologies. You are cleared to proceed straight to the summary Runbook.`;
+                  } else {
+                      finalScorePercentEl.className = 'score-text fail';
+                      finalMessageEl.innerHTML = `You have some lingering gaps regarding unified API abstraction or metadata layers. Please read the Runbook carefully and complete the hands-on labs below.`;
+                  }
+
+                  resultsContainerEl.style.display = 'block';
+
+                  prevBtn.style.display = 'none';
+                  nextBtn.style.display = 'none';
+                  resultsBtn.style.display = 'none';
+                  restartBtn.style.display = 'inline-block';
+              }
+
+              function updateNavigation() {
+                  prevBtn.style.display = currentQuestionIndex > 0 ? 'inline-block' : 'none';
+                  
+                  const isLastQuestion = currentQuestionIndex === questions.length - 1;
+                  nextBtn.style.display = isLastQuestion ? 'none' : 'inline-block';
+                  resultsBtn.style.display = isLastQuestion ? 'inline-block' : 'none';
+                  restartBtn.style.display = 'none';
+
+                  const navContainer = document.getElementById('navigation-container');
+                  navContainer.style.justifyContent = currentQuestionIndex === 0 ? 'flex-end' : 'space-between';
+              }
+
+              answersContainerEl.addEventListener('click', handleAnswerClick);
+
+              nextBtn.addEventListener('click', () => {
+                  if (currentQuestionIndex < questions.length - 1) {
+                      currentQuestionIndex++;
+                      displayQuestion(currentQuestionIndex);
+                  }
+              });
+
+              prevBtn.addEventListener('click', () => {
+                  if (currentQuestionIndex > 0) {
+                      currentQuestionIndex--;
+                      displayQuestion(currentQuestionIndex);
+                  }
+              });
+
+              resultsBtn.addEventListener('click', () => {
+                  showResults();
+              });
+
+              restartBtn.addEventListener('click', () => {
+                  questions.forEach(q => q.firstAttemptCorrect = null);
+                  currentQuestionIndex = 0;
+                  displayQuestion(currentQuestionIndex);
+              });
+
+              displayQuestion(currentQuestionIndex);
+          }
+      } catch (err) {
+          document.body.innerHTML = `<p style="color:red; font-weight:bold;">Initialization Error: ${err.message}</p>`;
+      }
+    </script>
+  </body>
+</html>

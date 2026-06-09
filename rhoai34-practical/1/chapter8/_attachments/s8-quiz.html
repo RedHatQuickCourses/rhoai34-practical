@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+      /* --- Basic Styles --- */
+        :root {
+            --correct-color: #63993d;
+            --incorrect-color: #f0561d;
+            --intro-color: #111;
+            --next-btn-color: #0066cc;
+            --prev-btn-color: #383838;
+            --restart-btn-color: #ee0000;
+            --text-color: #111;
+        }
+
+        body {
+            font-family: 'Red Hat Display', sans-serif;
+            color: var(--text-color);
+            margin: 1.5em;
+        }
+
+        /* --- Quiz Components --- */
+        #quiz-intro {
+            color: var(--intro-color);
+            margin-bottom: 2em;
+            line-height: 1.6;
+            background-color: #f4f4f4;
+            padding: 1.5em;
+            border-left: 4px solid #ee0000;
+            border-radius: 4px;
+        }
+
+        #question-counter {
+            color: #383838;
+            margin-bottom: 1em;
+            font-weight: 700;
+        }
+
+        #question-container {
+            margin-bottom: 1.5em;
+        }
+
+        #question-text {
+            font-size: 1.25em;
+            font-weight: 700;
+            margin-bottom: 1em;
+        }
+
+        .answer-item {
+            margin-bottom: 1em;
+        }
+
+        .answer-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 0.75em;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            transition: border-color 0.3s;
+        }
+        .answer-label:hover {
+            border-color: #999;
+        }
+
+        .custom-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #555;
+            border-radius: 4px;
+            margin-right: 12px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .explanation {
+            display: none;
+            padding: 0.75em;
+            margin-top: 0.5em;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+        
+        .explanation a {
+            color: inherit;
+            text-decoration: underline;
+        }
+
+        /* --- State Styling --- */
+        .answer-item.answered.correct .answer-label,
+        .answer-item.answered.correct .explanation {
+            background-color: #f0f8ec;
+            border-color: var(--correct-color);
+            color: var(--correct-color);
+        }
+
+        .answer-item.answered.incorrect .answer-label,
+        .answer-item.answered.incorrect .explanation {
+            background-color: #fff0e9;
+            border-color: var(--incorrect-color);
+            color: var(--incorrect-color);
+        }
+
+        .answer-item.answered.correct .custom-checkbox {
+            border-color: var(--correct-color);
+            background-color: var(--correct-color);
+            color: white;
+        }
+
+        .answer-item.answered.incorrect .custom-checkbox {
+            border-color: var(--incorrect-color);
+            background-color: var(--incorrect-color);
+            color: white;
+        }
+
+        /* --- Results Screen --- */
+        #results-container {
+            display: none;
+            text-align: center;
+            padding: 2.5em;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            margin-bottom: 2em;
+        }
+
+        .score-text {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 0.2em;
+        }
+
+        .score-details {
+            font-size: 1.2em;
+            color: #555;
+            margin-bottom: 1.5em;
+        }
+
+        .pass { color: var(--correct-color); }
+        .fail { color: var(--incorrect-color); }
+
+        .results-message {
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        /* --- Navigation --- */
+        #navigation-container {
+            margin-top: 2em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-button {
+            border: none;
+            padding: 0.8em 1.5em;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            color: white;
+            transition: opacity 0.3s;
+        }
+
+        .nav-button:hover {
+            opacity: 0.85;
+        }
+
+        #prev-btn { background-color: var(--prev-btn-color); }
+        #next-btn { background-color: var(--next-btn-color); }
+        #results-btn { background-color: var(--correct-color); }
+        #restart-btn { background-color: var(--restart-btn-color); }
+    </style>
+  </head>
+  <body>
+    <div id="quiz-container">
+      <div id="quiz-intro"></div>
+      
+      <div id="results-container">
+          <div class="score-text" id="final-score-percent"></div>
+          <div class="score-details" id="final-score-breakdown"></div>
+          <div class="results-message" id="final-message"></div>
+      </div>
+
+      <div id="question-counter"></div>
+      <div id="question-container">
+        <p id="question-text"></p>
+        <div id="answers-container"></div>
+      </div>
+      
+      <div id="navigation-container">
+        <button id="prev-btn" class="nav-button" style="display: none;">Previous</button>
+        <button id="next-btn" class="nav-button" style="display: none;">Next</button>
+        <button id="results-btn" class="nav-button" style="display: none;">View Results</button>
+        <button id="restart-btn" class="nav-button" style="display: none;">Restart Gateway</button>
+      </div>
+    </div>
+    
+    <script>
+      const quizDataText = `<b>Module 9: Diagnostic Gateway.</b> <br><br>To move beyond basic node pinging and build a multi-tenant, enterprise-grade telemetry and showback system, you must understand the full OpenShift AI 3.4 observability stack. Prove your knowledge to skip the lab. <br><br><b>The 80% Rule:</b> Score 80% or higher to jump straight to the Runbook. If you score below 80%, you will proceed to the interactive labs.
+
+---
+Q1: After enabling the centralized observability stack, you notice that Prometheus is not scraping metrics from a newly deployed custom model server. How do you instruct the User Workload Monitoring (UWM) stack to scrape these custom metrics?
+
+A: Register the model's route in the OdhDashboardConfig custom resource.
+Incorrect: The OdhDashboardConfig controls the UI display, not the underlying Prometheus scraper.
+
+A: Apply the monitoring.opendatahub.io/scrape: 'true' label to the pod template in the workload's deployment configuration.
+Correct: The monitoring system relies on the monitoring.opendatahub.io/scrape='true' label to identify which user pods Prometheus should automatically scrape for metrics.
+
+A: Deploy a dedicated Thanos sidecar in the user's project namespace.
+Incorrect: This is unnecessary; the centralized OpenTelemetry Collector handles ingestion.
+
+A: Restart the kserve-controller-manager pod.
+Incorrect: Restarting controllers will not dynamically force Prometheus to discover unlabelled pods.
+---
+Q2: You are investigating a performance issue where inference is slow, but CPU usage is high. Which DCGM (Data Center GPU Manager) metric will quickly tell you the percentage of time the GPU is actually processing tasks, identifying a potential CPU bottleneck?
+
+A: DCGM_FI_DEV_POWER_USAGE
+Incorrect: Power usage indicates energy draw, not necessarily the active task processing ratio.
+
+A: DCGM_FI_DEV_GPU_TEMP
+Incorrect: Temperature monitors thermal throttling, but not compute utilization.
+
+A: DCGM_FI_DEV_GPU_UTIL
+Correct: The DCGM_FI_DEV_GPU_UTIL metric tracks the percentage of time the GPU is actively processing tasks. If CPU throttling is high but GPU utilization is low, the CPU is unable to keep up with the GPU's processing demands.
+
+A: container_cpu_cfs_throttled_seconds_total
+Incorrect: This is a CPU cgroups metric, not a DCGM GPU metric.
+---
+Q3: When monitoring vLLM performance to ensure a responsive chat experience, which metric tracks the average time taken to generate each subsequent output token after the initial response?
+
+A: vllm:time_to_first_token_seconds_bucket (TTFT)
+Incorrect: TTFT measures the initial latency before the first token appears, not subsequent tokens.
+
+A: vllm:time_per_output_token_seconds_count (TPOT / ITL)
+Correct: The time_per_output_token_seconds (TPOT or Inter-Token Latency) measures the efficiency of generating response tokens, which is critical for smooth streaming in real-time chat applications.
+
+A: vllm:num_requests_waiting
+Incorrect: This measures the queue depth, not the latency of active generation.
+
+A: vllm:gpu_cache_usage_perc
+Incorrect: This tracks KV cache memory usage, not token latency timing.
+---
+Q4: Finance has requested a monthly "showback" report detailing token consumption for the Marketing department. How do you natively generate this cost allocation data in OpenShift AI 3.4?
+
+A: Parse the vLLM uvicorn access logs and write a Python script to count tokens.
+Incorrect: This is a fragile anti-pattern that bypasses native platform capabilities.
+
+A: Use the Models-as-a-Service (MaaS) observability dashboard to view token consumption by subscription and export the data as a CSV.
+Correct: The MaaS observability dashboard tracks token consumption, request counts, and rate-limit violations at the subscription level, which can be exported in CSV format for cost attribution and showback reporting to finance teams.
+
+A: Query the container_memory_usage_bytes metric for the Marketing namespace.
+Incorrect: Memory usage does not equate to LLM token consumption volume.
+
+A: Export the cluster audit log from kube-apiserver/audit.log.
+Incorrect: The API server audit log tracks Kubernetes administrative actions, not LLM inference payload sizes.
+---
+Q5: Why is enabling User Workload Monitoring (UWM) a strict prerequisite for deploying Models-as-a-Service (MaaS)?
+
+A: UWM automatically restricts developers from accessing the OpenShift console.
+Incorrect: Monitoring does not enforce RBAC or UI access control.
+
+A: UWM provisions the PostgreSQL database required for API keys.
+Incorrect: PostgreSQL provisioning is independent of the monitoring stack.
+
+A: Without UWM enabled, MaaS cannot collect and expose usage metrics (token consumption, rate limiting) from Limitador and Kuadrant, causing the MaaS installation to show a Degraded status.
+Correct: User Workload Monitoring is required for MaaS to collect and expose usage metrics. Without it, the MaaS installation shows a Degraded status and cannot track API consumption.
+
+A: UWM is required to deploy Llama Stack distributions.
+Incorrect: While recommended, it is not a hard architectural dependency for Llama Stack itself.
+---
+Q6: You want to monitor the global resource sharing efficiencies of your distributed workloads across all tenants. Where do you find a summarized view of CPU and Memory consumption explicitly for distributed workloads in a project?
+
+A: Navigate to Observe & monitor -> Workload metrics in the OpenShift AI dashboard.
+Correct: The Observe & monitor -> Workload metrics page provides specific project-level metrics showing the number of CPU cores and GiB of memory currently being used by all distributed workloads in the selected project.
+
+A: Check the kserve-controller-manager logs.
+Incorrect: Controller logs manage pod state, they do not provide an aggregated UI for tenant-level compute reporting.
+
+A: View the Models-as-a-Service (MaaS) API keys page.
+Incorrect: MaaS tracks token consumption for serving, not distributed training compute limits.
+
+A: Query the nvidia-smi command from a terminal.
+Incorrect: This provides raw physical node data, not namespace-aggregated distributed workload views.
+---
+Q7: In OpenShift AI 3.4, what component acts as the standardized data ingestion layer to collect and export telemetry data (traces and metrics) before they reach Prometheus or external tools?
+
+A: OpenShift Service Mesh
+Incorrect: Service Mesh handles network routing and mTLS, not telemetry aggregation exporting.
+
+A: OpenTelemetry Collector (OTC)
+Correct: The centralized observability stack includes the Red Hat build of OpenTelemetry, which deploys the OpenTelemetry Collector (OTC) for standardized data ingestion and exporting of telemetry data.
+
+A: KServe RawDeployment
+Incorrect: RawDeployment is an ingress routing mode, not an observability tool.
+
+A: Authorino
+Incorrect: Authorino handles authentication policies, not telemetry data.
+---
+Q8: When configuring metrics-based autoscaling for an LLM using the Workload Variant Autoscaler (WVA), which specific metrics act as the core saturation signals to trigger scaling?
+
+A: CPU utilization exceeding 80%.
+Incorrect: LLMs are memory and GPU bound, making CPU scaling highly inaccurate.
+
+A: Memory utilization exceeding 90%.
+Incorrect: Memory footprint is static once weights load; it does not indicate request saturation accurately.
+
+A: vllm:kv_cache_usage_perc (spare KV cache capacity) and vllm:num_requests_waiting (spare queue capacity).
+Correct: Traditional CPU/Memory scaling is ineffective for LLMs. The WVA computes token-level demand and scales based on specific saturation signals like average spare KV cache capacity (kvSpareTrigger) and spare queue capacity (queueSpareTrigger).
+
+A: HTTP 500 Error rates.
+Incorrect: Scaling should proactively prevent errors, not reactively trigger based on dropped requests.
+---
+Q9: What happens to the inference system when vllm:gpu_cache_usage_perc hits 100%?
+
+A: The GPU automatically provisions more physical VRAM from the CPU.
+Incorrect: GPU VRAM is a hard physical limit; it cannot dynamically pull standard RAM.
+
+A: The model is archived automatically.
+Incorrect: The system does not archive running models based on memory pressure.
+
+A: The KV cache is saturated; the system cannot process new incoming requests efficiently, and vllm:num_requests_waiting (the queue) will begin to increase.
+Correct: The vllm:gpu_cache_usage_perc metric tracks the percentage of GPU memory used by the KV cache. When it is full, new requests cannot be processed and are queued, driving up the vllm:num_requests_waiting metric.
+
+A: The vLLM pod deletes itself to save costs.
+Incorrect: Pods do not autodelete on memory saturation; they will eventually OOM-kill if pushed beyond limits.
+---
+Q10: How do you configure OpenShift AI to forward its operational metrics to an existing enterprise observability tool (like an external Splunk, Datadog, or centralized Prometheus)?
+
+A: By editing the spec.monitoring.metrics.exporters field in the DataScienceClusterInitialization (DSCI) custom resource.
+Correct: You can export metrics to an external observability platform by defining exporters in the .spec.monitoring.metrics.exporters field of the DSCI custom resource, which automatically configures the OpenTelemetry Collector to forward the metrics.
+
+A: By creating a standard Kubernetes Route exposing port 9090.
+Incorrect: You do not expose the internal Prometheus port to external networks; you use an exporter push model.
+
+A: You cannot export metrics; they must be viewed inside OpenShift.
+Incorrect: OpenShift AI natively supports exporting telemetry.
+
+A: By updating the MLflow custom resource.
+Incorrect: MLflow tracks model training metrics, not infrastructure platform metrics.`;
+
+      // --- PARSING LOGIC ---
+      function parseQuizData(text) {
+          try {
+              const parts = text.split('---');
+              const intro = parts.shift().trim();
+              
+              const questions = parts.filter(p => p.trim() !== '').map((part) => {
+                  const lines = part.trim().split('\n').map(l => l.trim()).filter(l => l !== '');
+                  if (lines.length === 0) return null;
+
+                  const questionLine = lines.shift();
+                  const questionText = questionLine.replace(/^Q\d+:\s*/, '').trim();
+                  
+                  const answers = [];
+                  let currentAnswer = null;
+
+                  for (const line of lines) {
+                      if (line.startsWith('A:')) {
+                          if (currentAnswer) {
+                              answers.push(currentAnswer);
+                          }
+                          currentAnswer = { text: line.substring(2).trim(), isCorrect: false, explanation: '' };
+                      } else if (line.startsWith('Correct:')) {
+                          if(currentAnswer) {
+                              currentAnswer.isCorrect = true;
+                              currentAnswer.explanation = line.substring(8).trim();
+                          }
+                      } else if (line.startsWith('Incorrect:')) {
+                           if(currentAnswer) {
+                              currentAnswer.isCorrect = false;
+                              currentAnswer.explanation = line.substring(10).trim();
+                          }
+                      } else {
+                          if (currentAnswer) {
+                              currentAnswer.explanation += ' ' + line;
+                          }
+                      }
+                  }
+                  if (currentAnswer) {
+                      answers.push(currentAnswer);
+                  }
+                  
+                  return { question: questionText, answers: answers, firstAttemptCorrect: null };
+              }).filter(q => q !== null);
+
+              return { intro, questions };
+          } catch (e) {
+              console.error("Failed to parse quiz data:", e);
+              return { intro: "<span style='color:red;'>Fatal Parsing Error. Check developer console.</span>", questions: [] };
+          }
+      }
+
+      // --- QUIZ APPLICATION LOGIC ---
+      try {
+          const { intro, questions } = parseQuizData(quizDataText);
+          let currentQuestionIndex = 0;
+
+          const introEl = document.getElementById('quiz-intro');
+          const questionCounterEl = document.getElementById('question-counter');
+          const questionTextEl = document.getElementById('question-text');
+          const answersContainerEl = document.getElementById('answers-container');
+          
+          const resultsContainerEl = document.getElementById('results-container');
+          const finalScorePercentEl = document.getElementById('final-score-percent');
+          const finalScoreBreakdownEl = document.getElementById('final-score-breakdown');
+          const finalMessageEl = document.getElementById('final-message');
+
+          const nextBtn = document.getElementById('next-btn');
+          const prevBtn = document.getElementById('prev-btn');
+          const resultsBtn = document.getElementById('results-btn');
+          const restartBtn = document.getElementById('restart-btn');
+
+          introEl.innerHTML = intro;
+
+          if (!questions || questions.length === 0) {
+              questionTextEl.innerHTML = "<span style='color:red;'>No questions were loaded. Ensure the data format is correct.</span>";
+          } else {
+              function displayQuestion(index) {
+                  const question = questions[index];
+                  questionCounterEl.style.display = 'block';
+                  questionContainerEl = document.getElementById('question-container');
+                  questionContainerEl.style.display = 'block';
+                  resultsContainerEl.style.display = 'none';
+
+                  questionCounterEl.textContent = `Question ${index + 1} of ${questions.length}`;
+                  questionTextEl.textContent = question.question;
+                  answersContainerEl.innerHTML = '';
+
+                  question.answers.forEach((answer, answerIndex) => {
+                      const answerItem = document.createElement('div');
+                      answerItem.className = 'answer-item';
+                      
+                      answerItem.innerHTML = `
+                          <div class="answer-label" data-index="${answerIndex}">
+                              <span class="custom-checkbox"></span>
+                              <span class="answer-text">${answer.text}</span>
+                          </div>
+                          <div class="explanation">${answer.explanation}</div>
+                      `;
+                      answersContainerEl.appendChild(answerItem);
+                  });
+                  
+                  updateNavigation();
+              }
+              
+              function handleAnswerClick(event) {
+                  const label = event.target.closest('.answer-label');
+                  if (!label) return;
+
+                  const answerItem = label.parentElement;
+                  const explanation = answerItem.querySelector('.explanation');
+                  const checkbox = label.querySelector('.custom-checkbox');
+
+                  const isAnswered = answerItem.classList.contains('answered');
+
+                  if (isAnswered) {
+                       answerItem.classList.remove('answered', 'correct', 'incorrect');
+                       explanation.style.display = 'none';
+                       checkbox.textContent = '';
+                  } else {
+                      const answerIndex = parseInt(label.dataset.index);
+                      const answer = questions[currentQuestionIndex].answers[answerIndex];
+                      
+                      if (questions[currentQuestionIndex].firstAttemptCorrect === null) {
+                          questions[currentQuestionIndex].firstAttemptCorrect = answer.isCorrect;
+                      }
+
+                      answerItem.classList.add('answered');
+                      explanation.style.display = 'block';
+
+                      if (answer.isCorrect) {
+                          answerItem.classList.add('correct');
+                          checkbox.innerHTML = '&#10003;'; 
+                      } else {
+                          answerItem.classList.add('incorrect');
+                          checkbox.innerHTML = '&#10007;'; 
+                      }
+                  }
+              }
+
+              function showResults() {
+                  document.getElementById('question-counter').style.display = 'none';
+                  document.getElementById('question-container').style.display = 'none';
+                  
+                  const correctCount = questions.filter(q => q.firstAttemptCorrect === true).length;
+                  const wrongCount = questions.filter(q => q.firstAttemptCorrect === false).length;
+                  const skippedCount = questions.length - correctCount - wrongCount;
+                  const percentage = Math.round((correctCount / questions.length) * 100);
+
+                  finalScorePercentEl.textContent = `${percentage}%`;
+                  finalScoreBreakdownEl.textContent = `${correctCount} Correct | ${wrongCount} Incorrect | ${skippedCount} Skipped`;
+
+                  if (percentage >= 80) {
+                      finalScorePercentEl.className = 'score-text pass';
+                      finalMessageEl.innerHTML = `<b>Congratulations!</b> You have mastered Observability and Showback. You are cleared to proceed straight to the summary Runbook.`;
+                  } else {
+                      finalScorePercentEl.className = 'score-text fail';
+                      finalMessageEl.innerHTML = `You have some lingering gaps regarding the full telemetry flow or saturation scaling. Please read the Runbook carefully and complete the hands-on labs below.`;
+                  }
+
+                  resultsContainerEl.style.display = 'block';
+
+                  prevBtn.style.display = 'none';
+                  nextBtn.style.display = 'none';
+                  resultsBtn.style.display = 'none';
+                  restartBtn.style.display = 'inline-block';
+              }
+
+              function updateNavigation() {
+                  prevBtn.style.display = currentQuestionIndex > 0 ? 'inline-block' : 'none';
+                  
+                  const isLastQuestion = currentQuestionIndex === questions.length - 1;
+                  nextBtn.style.display = isLastQuestion ? 'none' : 'inline-block';
+                  resultsBtn.style.display = isLastQuestion ? 'inline-block' : 'none';
+                  restartBtn.style.display = 'none';
+
+                  const navContainer = document.getElementById('navigation-container');
+                  navContainer.style.justifyContent = currentQuestionIndex === 0 ? 'flex-end' : 'space-between';
+              }
+
+              answersContainerEl.addEventListener('click', handleAnswerClick);
+
+              nextBtn.addEventListener('click', () => {
+                  if (currentQuestionIndex < questions.length - 1) {
+                      currentQuestionIndex++;
+                      displayQuestion(currentQuestionIndex);
+                  }
+              });
+
+              prevBtn.addEventListener('click', () => {
+                  if (currentQuestionIndex > 0) {
+                      currentQuestionIndex--;
+                      displayQuestion(currentQuestionIndex);
+                  }
+              });
+
+              resultsBtn.addEventListener('click', () => {
+                  showResults();
+              });
+
+              restartBtn.addEventListener('click', () => {
+                  questions.forEach(q => q.firstAttemptCorrect = null);
+                  currentQuestionIndex = 0;
+                  displayQuestion(currentQuestionIndex);
+              });
+
+              displayQuestion(currentQuestionIndex);
+          }
+      } catch (err) {
+          document.body.innerHTML = `<p style="color:red; font-weight:bold;">Initialization Error: ${err.message}</p>`;
+      }
+    </script>
+  </body>
+</html>

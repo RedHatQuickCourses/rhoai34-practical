@@ -3,8 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Interactive Labs: Building the Engine Room :: Building the AI Engine</title>
-    <meta name="description" content="Interactive UI click-paths for installing OpenShift AI 3.4.">
+    <title>Module 9 Runbook: Observability, Monitoring, &amp; Platform Showback :: Building the AI Engine</title>
+    <link rel="prev" href="index.html">
+    <link rel="next" href="section2.html">
+    <meta name="description" content="Theoretical architecture for the OpenShift AI Telemetry flow, vLLM metrics, and Financial Showback.">
     <meta name="generator" content="Antora 3.2.0-alpha.12">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <link rel="stylesheet" href="../../../_/css/vendor/tabs.css">
@@ -58,13 +60,13 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="index.html">Interactive Quiz</a>
+    <a class="nav-link" href="../chapter1/index.html">Interactive Quiz</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="section1.html">Runbook: Platform Setup</a>
+    <a class="nav-link" href="../chapter1/section1.html">Runbook: Platform Setup</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="section2.html">Labs: Building the Engine Room</a>
+    <a class="nav-link" href="../chapter1/section2.html">Labs: Building the Engine Room</a>
   </li>
 </ul>
   </li>
@@ -170,13 +172,13 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../chapter8/index.html">Interactive Quiz #8</a>
+    <a class="nav-link" href="index.html">Interactive Quiz #8</a>
 <ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../chapter8/section1.html">Runbook: Telemetry &amp; Showback</a>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="section1.html">Runbook: Telemetry &amp; Showback</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../chapter8/section2.html">Labs: Telemetry &amp; Showback</a>
+    <a class="nav-link" href="section2.html">Labs: Telemetry &amp; Showback</a>
   </li>
 </ul>
   </li>
@@ -218,7 +220,8 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">Building the AI Engine</a></li>
-    <li><a href="tabs-demo.html">Labs: Building the Engine Room</a></li>
+    <li><a href="index.html">Interactive Quiz #8</a></li>
+    <li><a href="section1.html">Runbook: Telemetry &amp; Showback</a></li>
   </ul>
 </nav>
 </div>
@@ -227,82 +230,106 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Interactive Labs: Building the Engine Room</h1>
+<h1 class="page">Module 9 Runbook: Observability, Monitoring, &amp; Platform Showback</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>It is time to step into the Engine Room. In these interactive labs, you will execute the "Happy Path" to install the Operator, activate the centralized observability stack, and deploy a smoke-test model using the new Gateway API routing.</p>
+<p>If you passed the Diagnostic Gateway, use this page as your quick-reference job aid. If you are building your foundational skills, read this carefully before proceeding to the interactive labs.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_lab_1_operator_installation_core_setup"><a class="anchor" href="#_lab_1_operator_installation_core_setup"></a>Lab 1: Operator Installation &amp; Core Setup</h2>
+<h2 id="_the_full_stack_telemetry_flow"><a class="anchor" href="#_the_full_stack_telemetry_flow"></a>The Full Stack Telemetry Flow</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>Goal:</strong> Install the OpenShift AI Operator and activate the core components using the <code>DataScienceCluster</code> resource.</p>
+<p>Enterprise observability is not just about checking if a pod is running; it is about tracking the entire AI pipeline.
+In OpenShift AI 3.4, the telemetry flow operates across distinct layers:</p>
 </div>
-<div class="exampleblock">
-<div class="title">Example 1. Arcade: Install and Activate</div>
-<div class="content">
-<div class="paragraph">
-<p><strong>Guided Steps:</strong>
-1. In the OpenShift web console, log in as a cluster administrator.
-2. Navigate to <strong>Operators &#8594; OperatorHub</strong> and install <strong>Red Hat OpenShift AI</strong>.
-3. Navigate to <strong>Operators &#8594; Installed Operators</strong> and click the Operator.
-4. Click the <strong>Data Science Cluster</strong> tab, then click <strong>Create DataScienceCluster</strong>.
-5. Select <strong>YAML view</strong>. Change the <code>managementState</code> from <code>Removed</code> to <code>Managed</code> for the following core components: <code>kserve</code>, <code>kueue</code>, <code>mlflowoperator</code>, and <code>modelregistry</code>.
-6. Click <strong>Create</strong>.</p>
-</div>
-</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Hardware Telemetry:</strong> Begins at the hardware level with the Data Center GPU Manager (DCGM) exposing raw accelerator metrics (like <code>DCGM_FI_DEV_GPU_UTIL</code>).</p>
+</li>
+<li>
+<p><strong>Application Telemetry:</strong> The runtime engines (like vLLM) emit application-specific metrics (like <code>vllm:time_to_first_token</code>).</p>
+</li>
+<li>
+<p><strong>Ingestion Layer:</strong> These metrics are scraped by <strong>User Workload Monitoring (UWM)</strong>—which must be explicitly enabled on the cluster. The data flows into the <strong>OpenTelemetry Collector (OTC)</strong>, which acts as the standardized ingestion layer.</p>
+</li>
+<li>
+<p><strong>Storage &amp; Visualization:</strong> From OTC, the data is routed into the dedicated OpenShift AI Prometheus instance (for metrics) and Tempo (for distributed tracing). Platform Engineers visualize this aggregated data in centralized Grafana dashboards, or use the <code>DSCI</code> resource to export it to external SIEM tools.</p>
+</li>
+</ol>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_lab_2_configuring_the_serving_environment_observability"><a class="anchor" href="#_lab_2_configuring_the_serving_environment_observability"></a>Lab 2: Configuring the Serving Environment (Observability)</h2>
+<h2 id="_model_performance_telemetry_ttft_itl_and_saturation"><a class="anchor" href="#_model_performance_telemetry_ttft_itl_and_saturation"></a>Model Performance Telemetry: TTFT, ITL, and Saturation</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>Goal:</strong> Activate the centralized observability stack to monitor AI health and user model metrics natively.</p>
+<p>Platform Engineers must monitor specific LLM metrics to gauge user experience and trigger autoscaling, rather than relying on generic CPU monitoring:</p>
 </div>
-<div class="exampleblock">
-<div class="title">Example 2. Arcade: Enable Observability</div>
-<div class="content">
-<div class="paragraph">
-<p><strong>Guided Steps:</strong>
-1. Navigate to <strong>Operators &#8594; Installed Operators &#8594; Red Hat OpenShift AI</strong>.
-2. Click the <strong>DSC Initialization</strong> tab and open the <code>default-dsci</code> instance.
-3. Select the <strong>YAML</strong> tab. Under <code>spec.monitoring</code>, set <code>managementState: Managed</code> to deploy the Prometheus and OpenTelemetry stack. Click <strong>Save</strong>.
-4. To enable the Dashboard UI, navigate to <strong>Home &#8594; API Explorer</strong> and search for <code>OdhDashboardConfig</code>.
-5. Open the <code>odh-dashboard-config</code> instance YAML. Under <code>spec.dashboardConfig</code>, add <code>observabilityDashboard: true</code> and click <strong>Save</strong>.</p>
-</div>
-</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Time-To-First-Token (TTFT):</strong> Measures the latency from when a user sends a prompt to when the first word appears. High TTFT usually indicates an overloaded queue.</p>
+</li>
+<li>
+<p><strong>Time-Per-Output-Token (TPOT / ITL):</strong> Measures the inter-token latency (how fast the text streams). If this slows down, the GPU is likely struggling with compute or memory bandwidth.</p>
+</li>
+<li>
+<p><strong>KV Cache Saturation:</strong> LLMs store attention keys/values in the GPU&#8217;s KV Cache (<code>vllm:gpu_cache_usage_perc</code>). If the KV cache hits 100%, the model cannot accept new requests. The system queues them (<code>vllm:num_requests_waiting</code>). The new 3.4 Workload Variant Autoscaler (WVA) watches these exact saturation metrics to intelligently trigger horizontal pod autoscaling before the queue gets too long.</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_lab_3_the_smoke_test"><a class="anchor" href="#_lab_3_the_smoke_test"></a>Lab 3: The Smoke Test</h2>
+<h2 id="_usage_tracking_showback_frameworks"><a class="anchor" href="#_usage_tracking_showback_frameworks"></a>Usage Tracking &amp; Showback Frameworks</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>Goal:</strong> Deploy a test model using the UI to verify KServe RawDeployment and Gateway API routing are operational.</p>
-</div>
-<div class="exampleblock">
-<div class="title">Example 3. Arcade: Deploy Smoke Test</div>
-<div class="content">
-<div class="paragraph">
-<p><strong>Guided Steps:</strong>
-1. Open the <strong>Red Hat OpenShift AI</strong> dashboard via the Application Launcher.
-2. Navigate to <strong>Data Science Projects</strong> and create a project named <code>smoke-test-project</code>.
-3. In the <strong>Deployments</strong> tab, click <strong>Deploy model</strong>.
-4. Fill out the wizard using the <strong>MLServer ServingRuntime</strong> and the <strong>Scikit-learn</strong> framework.
-5. <strong>Critical Step:</strong> Under the Model route section, check the box for <strong>"Make deployed models available through an external route"</strong> to trigger the Gateway API ingress.
-6. Click <strong>Deploy</strong> and wait for the status checkmark to turn green.</p>
-</div>
-</div>
+<p>Spiraling cloud costs are a major risk in generative AI. OpenShift AI 3.4 solves this with the Models-as-a-Service (MaaS) Observability Dashboard.</p>
 </div>
 <div class="paragraph">
-<p><strong>Module Complete!</strong> You have successfully laid the foundation. You are now ready to govern this platform using Models-as-a-Service in Module 3.</p>
+<p>By enabling telemetry on the MaaS <code>Tenant</code> custom resource, the MaaS API gateway (backed by Kuadrant and Limitador) actively tracks every single inference request. The dashboard aggregates this data, allowing the Platform Engineer to see exactly how many tokens were consumed by specific users, groups, or Subscriptions.</p>
+</div>
+<div class="paragraph">
+<p>This data can be exported as a CSV file to provide Finance with an enterprise-grade "Showback" report, attributing specific LLM API costs directly to the business units consuming them.</p>
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_day_2_diagnostics_the_anti_pattern"><a class="anchor" href="#_day_2_diagnostics_the_anti_pattern"></a>Day-2 Diagnostics: The Anti-Pattern</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Can you spot the architectural flaw?</strong></p>
+</div>
+<div class="paragraph">
+<p><strong>The Scenario: The CPU Scaling Trap</strong>
+A Platform Engineer deploys a massive 70B parameter LLM for the customer support team. To handle traffic spikes, they configure a standard Kubernetes Horizontal Pod Autoscaler (HPA) to scale the model replicas whenever CPU utilization exceeds 80%. They also write a custom sidecar Python script to parse the raw text logs of the pod to count tokens for financial showback.
+During peak hours, user requests start timing out with 500 errors. The engineer checks the cluster and sees that the HPA never triggered a scale-up because the CPU was only at 30%.</p>
+</div>
+<div class="paragraph">
+<p><strong>Why this is an Anti-Pattern:</strong>
+* <strong>Scaling Anti-Pattern:</strong> LLM inference is fundamentally GPU and Memory-bound, not CPU-bound. The GPU&#8217;s KV Cache filled up to 100%, causing the queue to overflow and drop requests, all while the CPU remained mostly idle. Standard CPU-based HPA is useless for LLMs.
+* <strong>Showback Anti-Pattern:</strong> Parsing raw pod logs to count tokens is fragile, misses cached requests, and puts massive unnecessary load on the logging infrastructure.</p>
+</div>
+<div class="paragraph">
+<p><strong>The Solution:</strong>
+In OpenShift AI 3.4, the Platform Engineer must use the native AI telemetry architecture.
+* <strong>For Scaling:</strong> They deploy the model using the <strong>Workload Variant Autoscaler (WVA)</strong>. The WVA scales based on actual LLM saturation signals—specifically the <code>vllm:kv_cache_usage_perc</code> and <code>vllm:num_requests_waiting</code> metrics.
+* <strong>For Showback:</strong> They enable <strong>MaaS Telemetry</strong>. The MaaS API Gateway natively tracks exact token counts and feeds the data directly into the MaaS Observability Dashboard for a clean, CSV-exportable showback report.</p>
+</div>
+<div style="page-break-after: always;"></div>
+<div class="paragraph">
+<p><strong>Ready to build it? Proceed to the Interactive Labs.</strong></p>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="index.html">Interactive Quiz #8</a></span>
+  <span class="next"><a href="section2.html">Labs: Telemetry &amp; Showback</a></span>
+</nav>
 </article>
   </div>
 </main>

@@ -3,8 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Interactive Labs: Building the Engine Room :: Building the AI Engine</title>
-    <meta name="description" content="Interactive UI click-paths for installing OpenShift AI 3.4.">
+    <title>Module 7 Runbook: Hardware Profiles &amp; GPU Performance :: Building the AI Engine</title>
+    <link rel="prev" href="index.html">
+    <link rel="next" href="section2.html">
+    <meta name="description" content="Theoretical architecture for Hardware Profiles, MIG vs. Time-slicing, and DCGM Observability.">
     <meta name="generator" content="Antora 3.2.0-alpha.12">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <link rel="stylesheet" href="../../../_/css/vendor/tabs.css">
@@ -58,13 +60,13 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="index.html">Interactive Quiz</a>
+    <a class="nav-link" href="../chapter1/index.html">Interactive Quiz</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="section1.html">Runbook: Platform Setup</a>
+    <a class="nav-link" href="../chapter1/section1.html">Runbook: Platform Setup</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="section2.html">Labs: Building the Engine Room</a>
+    <a class="nav-link" href="../chapter1/section2.html">Labs: Building the Engine Room</a>
   </li>
 </ul>
   </li>
@@ -138,13 +140,13 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../chapter6/index.html">Interactive Quiz #6</a>
+    <a class="nav-link" href="index.html">Interactive Quiz #6</a>
 <ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../chapter6/section1.html">Runbook: Hardware &amp; Performance</a>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="section1.html">Runbook: Hardware &amp; Performance</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../chapter6/section2.html">Labs: Hardware Governance</a>
+    <a class="nav-link" href="section2.html">Labs: Hardware Governance</a>
   </li>
 </ul>
   </li>
@@ -218,7 +220,8 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">Building the AI Engine</a></li>
-    <li><a href="tabs-demo.html">Labs: Building the Engine Room</a></li>
+    <li><a href="index.html">Interactive Quiz #6</a></li>
+    <li><a href="section1.html">Runbook: Hardware &amp; Performance</a></li>
   </ul>
 </nav>
 </div>
@@ -227,82 +230,92 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Interactive Labs: Building the Engine Room</h1>
+<h1 class="page">Module 7 Runbook: Hardware Profiles &amp; GPU Performance</h1>
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>It is time to step into the Engine Room. In these interactive labs, you will execute the "Happy Path" to install the Operator, activate the centralized observability stack, and deploy a smoke-test model using the new Gateway API routing.</p>
+<p>If you passed the Diagnostic Gateway, use this page as your quick-reference job aid. If you are building your foundational skills, read this carefully before proceeding to the interactive labs.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_lab_1_operator_installation_core_setup"><a class="anchor" href="#_lab_1_operator_installation_core_setup"></a>Lab 1: Operator Installation &amp; Core Setup</h2>
+<h2 id="_the_hierarchy_of_hardware_governance"><a class="anchor" href="#_the_hierarchy_of_hardware_governance"></a>The Hierarchy of Hardware Governance</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>Goal:</strong> Install the OpenShift AI Operator and activate the core components using the <code>DataScienceCluster</code> resource.</p>
+<p>In OpenShift AI 3.4, hardware is governed in a strict, layered hierarchy to keep physical drivers abstracted away from end users.</p>
 </div>
-<div class="exampleblock">
-<div class="title">Example 1. Arcade: Install and Activate</div>
-<div class="content">
-<div class="paragraph">
-<p><strong>Guided Steps:</strong>
-1. In the OpenShift web console, log in as a cluster administrator.
-2. Navigate to <strong>Operators &#8594; OperatorHub</strong> and install <strong>Red Hat OpenShift AI</strong>.
-3. Navigate to <strong>Operators &#8594; Installed Operators</strong> and click the Operator.
-4. Click the <strong>Data Science Cluster</strong> tab, then click <strong>Create DataScienceCluster</strong>.
-5. Select <strong>YAML view</strong>. Change the <code>managementState</code> from <code>Removed</code> to <code>Managed</code> for the following core components: <code>kserve</code>, <code>kueue</code>, <code>mlflowoperator</code>, and <code>modelregistry</code>.
-6. Click <strong>Create</strong>.</p>
-</div>
-</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>The GPU Operator:</strong> Whether NVIDIA, AMD, or Intel Gaudi, the lowest level is the Operator. It manages the physical hardware driver, device plugins, and node labeling.</p>
+</li>
+<li>
+<p><strong>Hardware Profiles:</strong> <strong>(Note: In 3.4, legacy "Accelerator Profiles" and "Container Sizes" are deprecated).</strong> The modern governance layer is the Hardware Profile. This is a custom resource (CR) that packages everything the end-user needs into a single UI dropdown. A Hardware Profile defines the specific hardware identifiers, exact CPU/Memory limits, and critically, the <strong>Node Selectors and Tolerations</strong> required to bypass taints and route the workload to the correct node.</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_lab_2_configuring_the_serving_environment_observability"><a class="anchor" href="#_lab_2_configuring_the_serving_environment_observability"></a>Lab 2: Configuring the Serving Environment (Observability)</h2>
+<h2 id="_gpu_resource_sharing_mig_vs_time_slicing"><a class="anchor" href="#_gpu_resource_sharing_mig_vs_time_slicing"></a>GPU Resource Sharing: MIG vs. Time-slicing</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>Goal:</strong> Activate the centralized observability stack to monitor AI health and user model metrics natively.</p>
+<p>A Platform Engineer must choose how to divide expensive GPUs based on the workload:</p>
 </div>
-<div class="exampleblock">
-<div class="title">Example 2. Arcade: Enable Observability</div>
-<div class="content">
-<div class="paragraph">
-<p><strong>Guided Steps:</strong>
-1. Navigate to <strong>Operators &#8594; Installed Operators &#8594; Red Hat OpenShift AI</strong>.
-2. Click the <strong>DSC Initialization</strong> tab and open the <code>default-dsci</code> instance.
-3. Select the <strong>YAML</strong> tab. Under <code>spec.monitoring</code>, set <code>managementState: Managed</code> to deploy the Prometheus and OpenTelemetry stack. Click <strong>Save</strong>.
-4. To enable the Dashboard UI, navigate to <strong>Home &#8594; API Explorer</strong> and search for <code>OdhDashboardConfig</code>.
-5. Open the <code>odh-dashboard-config</code> instance YAML. Under <code>spec.dashboardConfig</code>, add <code>observabilityDashboard: true</code> and click <strong>Save</strong>.</p>
-</div>
-</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Multi-Instance GPU (MIG):</strong> Physically partitions the hardware. MIG provides strict memory and fault isolation. <strong>Use case:</strong> Multi-tenant production model serving where latency and security boundaries are critical.</p>
+</li>
+<li>
+<p><strong>GPU Time-slicing:</strong> Uses software to divide processing time into short, alternating slots. All workloads share the same GPU memory without strict isolation. <strong>Use case:</strong> Lightweight exploratory Jupyter notebooks and data preprocessing where full GPU isolation is unnecessary and maximizing concurrent users is the goal.</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_lab_3_the_smoke_test"><a class="anchor" href="#_lab_3_the_smoke_test"></a>Lab 3: The Smoke Test</h2>
+<h2 id="_the_observability_flow_dcgm"><a class="anchor" href="#_the_observability_flow_dcgm"></a>The Observability Flow (DCGM)</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><strong>Goal:</strong> Deploy a test model using the UI to verify KServe RawDeployment and Gateway API routing are operational.</p>
+<p>To prevent flying blind, the infrastructure team relies on the Data Center GPU Manager (DCGM).
+1. The Platform Engineer enables the <code>dcgmExporter</code> inside the NVIDIA ClusterPolicy.
+2. The exporter exposes hardware metrics (e.g., <code>DCGM_FI_DEV_GPU_UTIL</code> for utilization, <code>DCGM_FI_DEV_GPU_TEMP</code> for temperature).
+3. The centralized OpenShift AI Prometheus stack scrapes these endpoints.
+4. Administrators visualize them in Grafana or the OpenShift dashboard to identify idle GPUs or CPU-GPU bottlenecks (e.g., high CPU throttling with low GPU utilization).</p>
 </div>
-<div class="exampleblock">
-<div class="title">Example 3. Arcade: Deploy Smoke Test</div>
-<div class="content">
+</div>
+</div>
+<div class="sect1">
+<h2 id="_day_2_diagnostics_the_anti_pattern"><a class="anchor" href="#_day_2_diagnostics_the_anti_pattern"></a>Day-2 Diagnostics: The Anti-Pattern</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p><strong>Guided Steps:</strong>
-1. Open the <strong>Red Hat OpenShift AI</strong> dashboard via the Application Launcher.
-2. Navigate to <strong>Data Science Projects</strong> and create a project named <code>smoke-test-project</code>.
-3. In the <strong>Deployments</strong> tab, click <strong>Deploy model</strong>.
-4. Fill out the wizard using the <strong>MLServer ServingRuntime</strong> and the <strong>Scikit-learn</strong> framework.
-5. <strong>Critical Step:</strong> Under the Model route section, check the box for <strong>"Make deployed models available through an external route"</strong> to trigger the Gateway API ingress.
-6. Click <strong>Deploy</strong> and wait for the status checkmark to turn green.</p>
-</div>
-</div>
+<p><strong>Can you spot the architectural flaw?</strong></p>
 </div>
 <div class="paragraph">
-<p><strong>Module Complete!</strong> You have successfully laid the foundation. You are now ready to govern this platform using Models-as-a-Service in Module 3.</p>
+<p><strong>The Scenario: The Weekend GPU Hoarder</strong>
+A data scientist needs to do some basic exploratory data analysis using Pandas and simple scikit-learn models in a Jupyter notebook. In the OpenShift AI deployment wizard, they simply select "GPU Node" from the dropdown. The cluster provisions their pod and hands them a full, dedicated 80GB NVIDIA A100 GPU. They leave the notebook running over the weekend while they are away. Meanwhile, a critical LLM deployment fails because it cannot schedule due to <code>Insufficient quota for nvidia.com/gpu</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Why this is an Anti-Pattern:</strong>
+Assigning a full, dedicated premium GPU to a lightweight exploratory environment wastes thousands of dollars of compute capacity. Notebooks are highly interactive and often sit idle while users type or read code.</p>
+</div>
+<div class="paragraph">
+<p><strong>The Solution:</strong>
+* <strong>Configure GPU Time-Slicing:</strong> The engineer modifies the NVIDIA GPU Operator by creating a <code>time-slicing-config</code> ConfigMap with <code>replicas: 10</code>. This allows up to 10 lightweight notebook pods to share the memory and compute of a single physical GPU concurrently.
+* <strong>Create Distinct Hardware Profiles:</strong> The engineer creates a Hardware Profile named "Shared Exploratory GPU" configured with a limit of <code>nvidia.com/gpu: 1</code> (which now represents 1 slice).
+* <strong>Apply Taints and Tolerations:</strong> To ensure production models get dedicated hardware, the engineer taints the A100 nodes. They create a "Production A100 GPU" Hardware Profile that contains the specific Tolerations to bypass that taint, ensuring the A100s are reserved strictly for InferenceServices.</p>
+</div>
+<div style="page-break-after: always;"></div>
+<div class="paragraph">
+<p><strong>Ready to build it? Proceed to the Interactive Labs.</strong></p>
 </div>
 </div>
 </div>
+<nav class="pagination">
+  <span class="prev"><a href="index.html">Interactive Quiz #6</a></span>
+  <span class="next"><a href="section2.html">Labs: Hardware Governance</a></span>
+</nav>
 </article>
   </div>
 </main>
