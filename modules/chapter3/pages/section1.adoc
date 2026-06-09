@@ -36,6 +36,16 @@ Traditional Kubernetes HPA scales on CPU utilization — which is useless for LL
 
 These signals ensure new replicas are provisioned *before* users experience 500 errors or timeouts — not after.
 
+== Gateway Discovery (Technology Preview)
+When deploying with llm-d, the OpenShift AI dashboard now provides a **Gateway selector dropdown** that auto-discovers available Kubernetes Gateway API resources in the cluster. This eliminates manual Gateway name entry and reduces misconfiguration risk during distributed inference setup — Platform Engineers configure the Gateways once, and the UI surfaces them automatically for every deployment.
+
+== Distributed Training with Kubeflow Trainer
+While the primary focus of this module is inference scaling, Platform Engineers must also govern distributed *training* workloads that compete for the same GPU resources.
+
+* **Kubeflow Trainer v2:** OpenShift AI 3.4 includes the Kubeflow Training Operator v2, the standard for submitting distributed training jobs (PyTorchJob, fine-tuning, RLHF). The v1 API (`TFJob`, legacy `PyTorchJob` CRDs) is deprecated and will be removed in a future release — teams should migrate to the v2 `TrainingRuntime` / `ClusterTrainingRuntime` pattern.
+* **JIT Checkpointing (GA):** For long-running training jobs that span hours or days, GPU node preemption or spot instance reclamation can destroy hours of progress. JIT (Just-In-Time) Checkpointing automatically saves model state to persistent storage at configurable intervals, enabling training to resume from the last checkpoint after a disruption rather than restarting from epoch 0.
+* **Kueue Integration:** Kubeflow Trainer v2 jobs integrate natively with Kueue for GPU quota management — the same `ClusterQueue` / `LocalQueue` pattern used for inference scheduling applies to training workloads, preventing training jobs from starving production inference deployments.
+
 == Day-2 Diagnostics: The Anti-Pattern
 *Can you spot the architectural flaw?*
 

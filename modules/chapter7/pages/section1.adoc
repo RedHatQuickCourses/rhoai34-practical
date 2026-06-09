@@ -29,6 +29,9 @@ As a Developer Preview feature in 3.4, Platform Engineers can expose pre-existin
 
 This pattern is significant for organizational enablement: Platform Engineers provision the vector infrastructure once, declare it via ConfigMaps, and every developer on the platform can immediately prototype RAG applications through the Playground UI — no LangChain code, no infrastructure tickets, no custom wiring.
 
+== AutoRAG (Technology Preview)
+For teams scaling beyond manual RAG configuration, OpenShift AI 3.4 introduces **AutoRAG** — an automated pipeline that evaluates multiple retrieval strategies (chunking sizes, embedding models, reranking approaches) against a ground-truth dataset and recommends the optimal RAG configuration. This reduces the trial-and-error cycle of RAG tuning from weeks to hours, enabling Platform Engineers to offer production-ready RAG endpoints as a self-service capability rather than a bespoke engineering project.
+
 == Day-2 Diagnostics: The Anti-Pattern
 *Can you spot the architectural flaw?*
 

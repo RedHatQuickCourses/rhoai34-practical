@@ -42,6 +42,9 @@ As a Platform Engineer, you will be expected to know these specific configuratio
 * **Monitoring User Workloads:** Activating the observability stack in the DSCI monitors the *platform*. To ensure Prometheus automatically scrapes metrics from a data scientist's custom model pod, you must apply the `monitoring.opendatahub.io/scrape=true` label to their workload.
 * **Prerequisites for `llm-d`:** If you plan to use Distributed Inference (`llm-d`), the OpenShift AI operator alone is not enough. You must pre-install the **cert-manager Operator**, the **Red Hat Connectivity Link Operator** (for gateway routing), and the **Leader Worker Set Operator** (to manage the multi-node pod topology).
 * **Custom Namespaces:** If your organization requires custom namespaces for applications or workbenches instead of the defaults (e.g., `redhat-ods-applications`, `rhods-notebooks`), these namespaces must be created and labeled *before* installing the OpenShift AI Operator. Never rename default system namespaces.
+* **Granular Workbench RBAC:** Platform Engineers can assign fine-grained RBAC roles (`admin`, `edit`, `view`) on individual workbenches, enabling multi-tenant project namespaces where users see only their own environments. This replaces the legacy approach of one-namespace-per-team isolation.
+* **Custom Component Lifecycle:** When deploying custom dashboard components or integrating third-party tools, apply the `opendatahub.io/managed: true` annotation to the resource. This signals the operator to include the resource in its lifecycle management (upgrades, reconciliation).
+* **Secure Supply Chain:** For regulated environments, OpenShift AI 3.4 supports configuring workbench images to pull packages from the **Red Hat Python Index** — a curated, vulnerability-scanned subset of PyPI that ensures a secure software supply chain for data science notebooks.
 
 <<<
 *Ready to build it? Proceed to the Interactive Labs.*

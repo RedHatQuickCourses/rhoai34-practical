@@ -29,7 +29,7 @@ To provision access for a new team, a Platform Engineer completes these exact st
 3. **Create the Authorization Policy:** Check the "Create matching authorization policy" box during Subscription creation, or manually create a `MaaSAuthPolicy` matching the Group to the Model.
 4. **Inform the Developer:** Instruct developers to navigate to **Gen AI studio -> API keys** to generate their scoped, self-service tokens.
 
-*Prerequisites:* MaaS requires a provisioned **PostgreSQL database (version 14+)** to manage API key lifecycles — OpenShift AI does not provision this automatically. Additionally, **User Workload Monitoring (UWM)** must be enabled on the OpenShift cluster; without it, MaaS cannot collect usage metrics and the installation will show a `Degraded` status.
+*Prerequisites:* MaaS requires a provisioned **PostgreSQL database (version 14+)** to manage API key lifecycles — OpenShift AI does not provision this automatically. The database credentials must be stored in a Kubernetes Secret named `maas-db-config` in the `models-as-a-service` namespace. Additionally, **User Workload Monitoring (UWM)** must be enabled on the OpenShift cluster; without it, MaaS cannot collect usage metrics and the installation will show a `Degraded` status.
 
 == Day-2 Diagnostics: The Anti-Pattern
 *Can you spot the architectural flaw?*
