@@ -26,6 +26,7 @@ OpenShift AI 3.4 provides highly specialized runtimes out-of-the-box. Selecting 
 * **vLLM ServingRuntime:** The standard for serving Single-Node Large Language Models on NVIDIA/AMD GPUs. It uses advanced techniques like PagedAttention and continuous batching.
 * **Distributed Inference (`llm-d`):** Used when an LLM is too large to fit into the memory of a single GPU. It spans model weights across multiple nodes/GPUs using Ray and the Leader Worker Set operator.
 * **MLServer ServingRuntime:** Now GA in 3.4, this is the designated runtime for classical, structured-data machine learning models built with Scikit-Learn, XGBoost, and LightGBM.
+* **Automatic Runtime Suggestion:** When deploying via the UI, OpenShift AI analyzes the selected model framework (e.g., ONNX, SafeTensors) and matches it against the accelerator identifier defined in the chosen Hardware Profile. This allows the system to automatically suggest the optimal serving runtime, reducing manual configuration errors.
 
 == Day-2 Diagnostics: The Anti-Pattern
 *Can you spot the architectural flaw?*

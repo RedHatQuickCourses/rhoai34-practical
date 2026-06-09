@@ -9,20 +9,32 @@ A common misconception is that standard Kubernetes autoscaling or adding more Po
 
 If a data science team attempts to load a 70-Billion parameter model at 16-bit precision, the model weights alone require approximately 140GB of VRAM. If your cluster only has standard GPUs with 24GB to 80GB of VRAM, the model cannot physically fit on a single device. 
 
-**Distributed Inference with `llm-d`** solves this by applying Tensor Parallelism and Pipeline Parallelism. Instead of duplicating the entire model per pod, `llm-d` leverages the Red Hat **Leader Worker Set (LWS) Operator** (which officially replaces Ray in 3.4 for vLLM workloads) to slice the model's layers and distribute them across multiple GPUs and nodes.
+**Distributed Inference with `llm-d`** solves this by applying Tensor Parallelism and Pipeline Parallelism. Instead of duplicating the entire model per pod, `llm-d` leverages the Red Hat **Leader Worker Set (LWS) Operator** (which officially replaces Ray in 3.4 for vLLM workloads) to slice the model's layers and distribute them across multiple GPUs and nodes. The key configuration fields are `workerSpec.tensorParallelSize` (which determines how many GPUs on a single node share the sharded model weights) and `pipelineParallelSize` (which handles the inter-node split across multiple machines).
 
 == Kueue: The GPU Traffic Cop
 Without Kueue, if ten data scientists simultaneously request a 4-GPU distributed inference deployment on an 8-GPU cluster, Kubernetes will attempt to schedule all of them, resulting in `InsufficientQuota` crashes or deadlocks. 
 
 Kueue acts as a centralized traffic cop. It uses a **ClusterQueue** to define the global limits of your hardware (e.g., maximum 8 GPUs total) and **LocalQueues** in user namespaces that point to the ClusterQueue. If resources are full, Kueue gracefully holds the new workloads in a "Pending" state in the LocalQueue until the required GPUs are freed up.
 
+Enforcement is strict: when a namespace is labeled with `kueue.openshift.io/managed=true`, a **validating admission webhook** automatically rejects any supported workload that lacks the `kueue.x-k8s.io/queue-name` label. This guarantees no GPU workload can bypass the queue, even if a developer attempts to create a raw Pod directly.
+
 == Configuration Cheat Sheet: Preparing for Distributed Models
 1. **Install Prerequisites:** Install the independent Red Hat build of Kueue Operator, Node Feature Discovery, NVIDIA GPU Operator, and the Leader Worker Set Operator.
 2. **Enable Kueue:** In the DataScienceCluster CR, set `spec.components.kueue.managementState` to `Unmanaged` (as the embedded Kueue component is deprecated in 3.4). 
 3. **Define Quotas:** Create a `ResourceFlavor` (defining the node types) and a `ClusterQueue` (defining the total GPU limits).
 4. **Create the Local Queue:** In the target project namespace, create a `LocalQueue` that references the `ClusterQueue`. 
-5. **Create a Hardware Profile:** In the OpenShift AI Dashboard (**Settings -> Hardware profiles**), create a profile with the required GPUs. Under "Workload allocation strategy", select **Local queue** and input your LocalQueue name.
+5. **Create a Hardware Profile:** In the OpenShift AI Dashboard (**Settings -> Hardware profiles**), create a profile with the required GPUs. Under "Workload allocation strategy", select **Local queue** and input your LocalQueue name. When a data scientist selects this profile during deployment, the system also automatically suggests a compatible serving runtime by matching the profile's accelerator identifier against available runtime templates.
 6. **Deploy:** Data scientists select `Distributed inference with llm-d` as the serving runtime and apply the new Hardware Profile during deployment.
+
+_(For advanced llm-d performance tuning — EPP optimization, prefill/decode routing, and multi-node NCCL configuration — see the supplemental rhoai3-llmd deep-dive content.)_
+
+== Intelligent Autoscaling: The Workload Variant Autoscaler (WVA)
+Traditional Kubernetes HPA scales on CPU utilization — which is useless for LLMs because inference is fundamentally GPU and memory-bound. The 3.4 **Workload Variant Autoscaler (WVA)** uses inference-specific saturation signals to make proactive scaling decisions:
+
+* **Spare KV Cache Capacity (`kvSpareTrigger`):** Scales up when average spare KV cache capacity falls below a threshold, meaning the GPU cannot store more attention context for concurrent requests.
+* **Spare Queue Capacity (`queueSpareTrigger`):** Scales up when the average spare request queue capacity drops, meaning the model is falling behind on incoming prompts.
+
+These signals ensure new replicas are provisioned *before* users experience 500 errors or timeouts — not after.
 
 == Day-2 Diagnostics: The Anti-Pattern
 *Can you spot the architectural flaw?*

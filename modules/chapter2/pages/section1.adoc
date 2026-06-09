@@ -17,7 +17,7 @@ The MaaS Gateway acts as a proxy using a **Two-Tier Authentication** pattern:
 Access in MaaS 3.4 is decoupled into distinct layers to provide maximum GitOps flexibility:
 
 * **OpenShift User Groups:** Defines the user's identity (e.g., `data-scientists`, `ml-engineers`).
-* **MaaS Subscriptions (`MaaSSubscription`):** Maps a User Group to specific models and enforces strict token quotas (e.g., 500k tokens per hour). If a user belongs to multiple groups, the Subscription with the highest Priority dictates their default limits `[Source: Red Hat OpenShift AI Self-Managed-3.4-Govern LLM access with Models-as-a-Service - Priority levels]`.
+* **MaaS Subscriptions (`MaaSSubscription`):** Maps a User Group to specific models and enforces strict token quotas (e.g., 500k tokens per hour). If a user belongs to multiple groups, the system automatically selects the Subscription with the highest numeric Priority Level (e.g., Priority 10 takes precedence over Priority 0) when generating an API key without explicit subscription selection `[Source: Red Hat OpenShift AI Self-Managed-3.4-Govern LLM access with Models-as-a-Service - Priority levels]`.
 * **Authorization Policies (`MaaSAuthPolicy`):** Grants the User Group the actual network permission to pass through the API Gateway `[Source: Red Hat OpenShift AI Self-Managed-3.4-Govern LLM access with Models-as-a-Service - Models-as-a-Service authorization policies]`.
 * **API Keys:** Developers generate their own self-service keys scoped to their Subscription `[Source: Red Hat OpenShift AI Self-Managed-3.4-Govern LLM access with Models-as-a-Service - Self-service API key management]`.
 
@@ -45,6 +45,16 @@ Your company decides to experiment with OpenAI's GPT-4o. To move fast, the Lead 
 The Platform Engineer should use the OpenShift AI 3.4 `ExternalModel` custom resource. The root OpenAI API key is stored securely in a Kubernetes Secret inside the cluster. Developers never see it. Instead, developers generate their own temporary or permanent MaaS API keys via the OpenShift AI dashboard and send requests to the centralized OpenShift AI Gateway. 
 
 The Gateway enforces their specific Subscription token limit (preventing runaway code), logs their exact usage for Finance's showback reports in the Observability Dashboard, and safely proxies the request to OpenAI. If a developer's MaaS key leaks, the Admin can simply click "Revoke" on that specific key without affecting the other 49 developers.
+
+== API Key Lifecycle & Governance
+MaaS API keys carry a critical security implication: group membership is captured as a *snapshot* at the moment the key is created. If a contractor or employee is later removed from their OIDC group, their previously generated API keys continue to function until they expire or are manually revoked by an administrator. Platform Engineers must build a revocation checklist into their offboarding runbook.
+
+To enforce organizational key hygiene, administrators configure the global maximum expiration for all generated API keys in the `Tenant` custom resource at `spec.apiKeys.maxExpirationDays` (e.g., 90 days). This prevents developers from creating permanent keys that become long-lived security liabilities.
+
+_(For advanced multi-tenant governance patterns — preemption policies, cross-subscription fairness, and enterprise-scale rollout playbooks — see the supplemental rhoai3-mass2 deep-dive content.)_
+
+== Enabling Self-Service at Scale
+The MaaS architecture directly enables a self-service AI platform. Developers generate their own API keys, select their own subscriptions, and prototype in the Playground — all without filing a ticket. The Platform Engineer's role shifts from "gatekeeper" to "guardrail designer." Finance gets showback reports. Security gets audit trails. Developers get velocity. This is the core value proposition when presenting MaaS to organizational leadership.
 
 <<<
 *Ready to build it? Proceed to the Interactive Labs.*

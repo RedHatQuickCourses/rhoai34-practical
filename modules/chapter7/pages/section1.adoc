@@ -7,7 +7,7 @@ If you passed the Diagnostic Gateway, use this page as your quick-reference job 
 == Llama Stack vs. Standalone vLLM
 A standalone vLLM deployment only provides a raw inference endpoint. If developers want to build a Retrieval-Augmented Generation (RAG) application, they are forced to write complex "glue code" using external frameworks like LangChain. This forces developers to manually handle document chunking, generate embeddings, orchestrate similarity searches against vector stores, and format context windows.
 
-Deploying a `LlamaStackDistribution` abstracts this complexity entirely. Llama Stack unifies the inference engine, embedding models, and vector storage (e.g., Milvus, pgvector, or inline FAISS) behind a single OpenAI-compatible API layer. Using the Llama Stack `/v1/responses` API, developers pass their queries using the built-in `file_search` tool, allowing the platform engine to handle RAG data-retrieval routing natively.
+Deploying a `LlamaStackDistribution` abstracts this complexity entirely. Llama Stack unifies the inference engine, embedding models, and vector storage behind a single OpenAI-compatible API layer. For lightweight development and experimentation, Llama Stack supports **inline FAISS** — an in-process, in-memory vector store that runs inside the Llama Stack server container itself with no external database required. For production, Platform Engineers should deploy a dedicated remote vector database like Milvus or PostgreSQL with pgvector. Using the Llama Stack `/v1/responses` API, developers pass their queries using the built-in `file_search` tool, allowing the platform engine to handle RAG data-retrieval routing natively.
 
 == The Discovery & Validation Stack
 OpenShift AI 3.4 organizes rapid prototyping into two distinct administrative zones:
@@ -23,6 +23,11 @@ To stand up an enterprise-grade prototyping environment, a Platform Engineer orc
 3. **Deploy Core Models:** Run your target foundation LLM via vLLM and deploy an explicit text embedding model (e.g., `nomic-embed-text`).
 4. **Assemble Credentials:** Collect endpoints and access tokens into a localized Kubernetes `Secret`.
 5. **Instantiate Distribution:** Apply the `LlamaStackDistribution` Custom Resource mapping backend engine variables directly to the corresponding Secret targets.
+
+== Developer Preview: Exposing Vector Databases to the Playground
+As a Developer Preview feature in 3.4, Platform Engineers can expose pre-existing, read-only vector databases directly to the Gen AI Playground. This is achieved by declaring vector stores through **ConfigMaps** containing connection details, collection names, and optional metadata. These declared stores automatically appear under **RAG / Knowledge Sources** in the Playground interface, enabling developers to route queries through Llama Stack RAG primitives without performing manual data ingestion or writing custom code.
+
+This pattern is significant for organizational enablement: Platform Engineers provision the vector infrastructure once, declare it via ConfigMaps, and every developer on the platform can immediately prototype RAG applications through the Playground UI — no LangChain code, no infrastructure tickets, no custom wiring.
 
 == Day-2 Diagnostics: The Anti-Pattern
 *Can you spot the architectural flaw?*

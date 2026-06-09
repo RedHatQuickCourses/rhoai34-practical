@@ -8,13 +8,23 @@ If you passed the Diagnostic Gateway, use this page as your quick-reference job 
 In OpenShift AI 3.4, hardware is governed in a strict, layered hierarchy to keep physical drivers abstracted away from end users.
 
 * **The GPU Operator:** Whether NVIDIA, AMD, or Intel Gaudi, the lowest level is the Operator. It manages the physical hardware driver, device plugins, and node labeling.
-* **Hardware Profiles:** *(Note: In 3.4, legacy "Accelerator Profiles" and "Container Sizes" are deprecated).* The modern governance layer is the Hardware Profile. This is a custom resource (CR) that packages everything the end-user needs into a single UI dropdown. A Hardware Profile defines the specific hardware identifiers, exact CPU/Memory limits, and critically, the **Node Selectors and Tolerations** required to bypass taints and route the workload to the correct node.
+* **Hardware Profiles:** *(Note: Legacy "Accelerator Profiles" and "Container Sizes" were deprecated starting with OpenShift AI 3.0 and are fully replaced by unified Hardware Profiles in 3.4).* The modern governance layer is the Hardware Profile. This is a custom resource (CR) that packages everything the end-user needs into a single UI dropdown. A Hardware Profile defines the specific hardware identifiers, exact CPU/Memory limits, and critically, the **Node Selectors and Tolerations** required to bypass taints and route the workload to the correct node. When a data scientist selects a Hardware Profile during deployment, the system matches the profile's accelerator identifier against available runtime templates to automatically suggest a compatible serving runtime.
 
 == GPU Resource Sharing: MIG vs. Time-slicing
 A Platform Engineer must choose how to divide expensive GPUs based on the workload:
 
 * **Multi-Instance GPU (MIG):** Physically partitions the hardware. MIG provides strict memory and fault isolation. *Use case:* Multi-tenant production model serving where latency and security boundaries are critical.
 * **GPU Time-slicing:** Uses software to divide processing time into short, alternating slots. All workloads share the same GPU memory without strict isolation. *Use case:* Lightweight exploratory Jupyter notebooks and data preprocessing where full GPU isolation is unnecessary and maximizing concurrent users is the goal.
+
+== Multi-Vendor GPU Support
+OpenShift AI 3.4 is not exclusively tied to NVIDIA hardware. When expanding to alternative accelerators, Platform Engineers must use the correct resource labels and compatible software stacks:
+
+* **AMD GPUs:** Use the `amd.com/gpu` resource label (not `nvidia.com/gpu`) in Hardware Profiles. Deploy workbench images built with the **ROCm** platform libraries (e.g., ROCm-PyTorch) rather than CUDA images, as ROCm and CUDA are incompatible GPU programming frameworks.
+* **Intel Gaudi Accelerators:** Use the `habana.ai/gaudi` resource label and deploy the dedicated Intel Gaudi operator stack.
+
+Hardware Profiles abstract this vendor complexity from end-users — a data scientist simply selects "AMD GPU Profile" from the dropdown without needing to understand the underlying driver differences.
+
+_(For detailed MIG partition strategies and advanced Kueue preemption policies for multi-team GPU fair-sharing, see the supplemental rhoai3-gpu-aas and rhoai3-hwprofiles deep-dive content.)_
 
 == The Observability Flow (DCGM)
 To prevent flying blind, the infrastructure team relies on the Data Center GPU Manager (DCGM).
@@ -36,6 +46,8 @@ Assigning a full, dedicated premium GPU to a lightweight exploratory environment
 * **Configure GPU Time-Slicing:** The engineer modifies the NVIDIA GPU Operator by creating a `time-slicing-config` ConfigMap with `replicas: 10`. This allows up to 10 lightweight notebook pods to share the memory and compute of a single physical GPU concurrently.
 * **Create Distinct Hardware Profiles:** The engineer creates a Hardware Profile named "Shared Exploratory GPU" configured with a limit of `nvidia.com/gpu: 1` (which now represents 1 slice).
 * **Apply Taints and Tolerations:** To ensure production models get dedicated hardware, the engineer taints the A100 nodes. They create a "Production A100 GPU" Hardware Profile that contains the specific Tolerations to bypass that taint, ensuring the A100s are reserved strictly for InferenceServices.
+
+This pattern directly enables a self-service GPU platform: exploratory users get immediate access to shared slices without filing tickets, while production workloads get guaranteed dedicated hardware. The Platform Engineer designs the profiles once; hundreds of users consume them through the UI.
 
 <<<
 *Ready to build it? Proceed to the Interactive Labs.*

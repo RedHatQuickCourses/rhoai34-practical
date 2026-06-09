@@ -11,7 +11,7 @@ In OpenShift AI 3.4, the telemetry flow operates across distinct layers:
 1. **Hardware Telemetry:** Begins at the hardware level with the Data Center GPU Manager (DCGM) exposing raw accelerator metrics (like `DCGM_FI_DEV_GPU_UTIL`). 
 2. **Application Telemetry:** The runtime engines (like vLLM) emit application-specific metrics (like `vllm:time_to_first_token`).
 3. **Ingestion Layer:** These metrics are scraped by **User Workload Monitoring (UWM)**—which must be explicitly enabled on the cluster. The data flows into the **OpenTelemetry Collector (OTC)**, which acts as the standardized ingestion layer. 
-4. **Storage & Visualization:** From OTC, the data is routed into the dedicated OpenShift AI Prometheus instance (for metrics) and Tempo (for distributed tracing). Platform Engineers visualize this aggregated data in centralized Grafana dashboards, or use the `DSCI` resource to export it to external SIEM tools.
+4. **Storage & Visualization:** From OTC, the data is routed into the dedicated OpenShift AI Prometheus instance (for metrics) and Tempo (for distributed tracing). Platform Engineers visualize this aggregated data in centralized Grafana dashboards. To export metrics to an existing enterprise observability tool (such as Splunk, Datadog, or an external Prometheus), Platform Engineers configure the `spec.monitoring.metrics.exporters` field in the **DataScienceClusterInitialization (DSCI)** custom resource, which automatically configures the OpenTelemetry Collector to forward metrics to external destinations.
 
 == Model Performance Telemetry: TTFT, ITL, and Saturation
 Platform Engineers must monitor specific LLM metrics to gauge user experience and trigger autoscaling, rather than relying on generic CPU monitoring:
@@ -26,6 +26,16 @@ Spiraling cloud costs are a major risk in generative AI. OpenShift AI 3.4 solves
 By enabling telemetry on the MaaS `Tenant` custom resource, the MaaS API gateway (backed by Kuadrant and Limitador) actively tracks every single inference request. The dashboard aggregates this data, allowing the Platform Engineer to see exactly how many tokens were consumed by specific users, groups, or Subscriptions. 
 
 This data can be exported as a CSV file to provide Finance with an enterprise-grade "Showback" report, attributing specific LLM API costs directly to the business units consuming them.
+
+For monitoring distributed workload resource consumption (CPU and memory usage across distributed training and inference jobs), navigate to **Observe & monitor -> Workload metrics** in the OpenShift AI dashboard. This view provides project-level aggregation of distributed workload resource usage across all tenants.
+
+== From Showback to Business Value
+Showback is the starting point, not the end state. Organizations progressing along the AI platform maturity curve should plan for:
+
+* **Showback to Chargeback transition:** Moving from "visibility into costs" to "actual cost allocation to business units" using the CSV export data as input to FinOps tooling.
+* **Platform success metrics:** Track developer adoption rate (active API keys / total developers), time-to-first-inference (from onboarding to first successful API call), and model deployment velocity (models promoted from registry to production per sprint).
+
+These metrics demonstrate platform value to leadership and justify continued investment in the self-service AI infrastructure. _(See supplemental rhoai3-deploy and rhoai3-validate content for ROI calculation formulas and platform maturity models.)_
 
 == Day-2 Diagnostics: The Anti-Pattern
 *Can you spot the architectural flaw?*

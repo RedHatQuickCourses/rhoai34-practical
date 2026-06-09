@@ -16,7 +16,7 @@ In a mature AI architecture, Platform Engineers must define clear boundaries bet
 How a model gets from storage into GPU memory is critical to stability and speed. In OpenShift AI 3.4, there are three primary connection patterns. 
 
 * **URIs (Fragile):** Direct HTTP/HTTPS links to a model file. *Drawback:* Extremely fragile and insecure for production. If the external server goes down, your deployment fails.
-* **S3/Object Storage (Standard):** The traditional method. Models are stored in S3 buckets. KServe uses an init-container to download the model into an emptyDir before the server starts. *Drawback:* S3 objects are highly mutable. A data scientist can overwrite a `.safetensors` file in the bucket, silently breaking the next pod restart.
+* **S3/Object Storage (Standard):** The traditional method. Models are stored in S3 buckets. KServe uses an init-container to download the model into an emptyDir before the server starts. In 3.4, the Connections API requires S3 connection Secrets to carry the annotation `opendatahub.io/connection-type-protocol: "s3"` to be correctly identified and validated by system components. *Drawback:* S3 objects are highly mutable. A data scientist can overwrite a `.safetensors` file in the bucket, silently breaking the next pod restart.
 * **OCI Containers / Modelcars (The Best Practice):** A modern approach where model weights are layered into a standard Open Container Initiative (OCI) image (e.g., `oci://quay.io/myorg/granite-7b:v1`).
 
 **Benefits of OCI Modelcars:**
@@ -31,6 +31,12 @@ Platform Engineers should mandate OCI distribution for production. OpenShift AI 
 4. Define the **Model origin** (the S3 bucket where the raw weights live).
 5. Define the **Model destination** (e.g., `quay.io/my-org/my-model:v1`) and provide credentials.
 6. Click **Register**. An asynchronous Kubernetes Job will download the weights, package them via `olot` (OCI Layers On Top) into a busybox ModelCar, push it to Quay, and register the immutable `oci://` artifact in the registry.
+* **SSL Troubleshooting:** If the `kserve-storage-initializer` container fails to download model weights from S3 with an SSL verification error, set the `S3_VERIFY_SSL` environment variable to `false` in the connection configuration, or inject the proper custom CA bundle via the DSCI's trusted CA configuration. This is common with self-signed certificates on internal MinIO or Ceph deployments.
+
+== Deploying from the Registry: Smart Connection Handling
+When deploying a model directly from the Model Registry UI, the system automatically scans the target project for existing Data Connections. If a single matching connection is found, it is auto-selected. If no match exists, the model location data from the registry is auto-filled to create a new connection. This eliminates the need for developers to manually configure S3 secrets during deployment — another step toward true self-service model consumption.
+
+_(For advanced storage anti-patterns — network saturation from large model pulls, egress cost optimization, and OCI caching strategies — see the supplemental rhoai3-storage deep-dive content.)_
 
 == Day-2 Diagnostics: The Anti-Pattern
 *Can you spot the architectural flaw?*

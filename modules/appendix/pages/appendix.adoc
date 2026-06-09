@@ -1,6 +1,16 @@
 = Appendix
 
-FIXME: Content for Appendix...
+== Supplemental Deep-Dive Resources
+The chapter runbooks reference companion repositories that provide advanced deep-dive content for specific topics. These resources extend your foundational knowledge into specialized domains:
+
+* **rhoai3-mass2** — Advanced MaaS multi-tenant governance patterns, preemption policies, cross-subscription fairness, and enterprise-scale rollout playbooks.
+* **rhoai3-llmd** — llm-d distributed inference tuning: EPP optimization, prefill/decode routing, and multi-node NCCL configuration.
+* **rhoai3-validate** — TrustyAI Guardrails Orchestrator implementation, garak red-teaming deep-dives, compound AI systems, and ROI calculation formulas.
+* **rhoai3-gpu-aas** — MIG partition strategies (1g.5gb, 2g.10gb, 3g.20gb tables) and detailed GPU sharing configurations.
+* **rhoai3-hwprofiles** — Advanced Kueue preemption policies and fair-share scheduling for multi-team GPU governance.
+* **rhoai3-storage** — Storage performance anti-patterns, OCI caching strategies, egress cost optimization, and large model pull networking.
+* **rhoai3-deploy** — Cost modeling, platform maturity models, business case formulas, and vLLM performance tuning guides.
+* **rhoai3-journey** — End-to-end learning path covering Phases 0-4 (Operators through Compound AI Systems and autonomous agent patterns).
 
 == Resources
 
