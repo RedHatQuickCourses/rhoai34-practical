@@ -29,6 +29,8 @@ To provision access for a new team, a Platform Engineer completes these exact st
 3. **Create the Authorization Policy:** Check the "Create matching authorization policy" box during Subscription creation, or manually create a `MaaSAuthPolicy` matching the Group to the Model.
 4. **Inform the Developer:** Instruct developers to navigate to **Gen AI studio -> API keys** to generate their scoped, self-service tokens.
 
+*Prerequisites:* MaaS requires a provisioned **PostgreSQL database (version 14+)** to manage API key lifecycles — OpenShift AI does not provision this automatically. Additionally, **User Workload Monitoring (UWM)** must be enabled on the OpenShift cluster; without it, MaaS cannot collect usage metrics and the installation will show a `Degraded` status.
+
 == Day-2 Diagnostics: The Anti-Pattern
 *Can you spot the architectural flaw?*
 
@@ -49,7 +51,7 @@ The Gateway enforces their specific Subscription token limit (preventing runaway
 == API Key Lifecycle & Governance
 MaaS API keys carry a critical security implication: group membership is captured as a *snapshot* at the moment the key is created. If a contractor or employee is later removed from their OIDC group, their previously generated API keys continue to function until they expire or are manually revoked by an administrator. Platform Engineers must build a revocation checklist into their offboarding runbook.
 
-To enforce organizational key hygiene, administrators configure the global maximum expiration for all generated API keys in the `Tenant` custom resource at `spec.apiKeys.maxExpirationDays` (e.g., 90 days). This prevents developers from creating permanent keys that become long-lived security liabilities.
+To enforce organizational key hygiene, administrators configure the global maximum expiration for all generated API keys in the `Tenant` custom resource at `spec.apiKeys.maxExpirationDays` (e.g., 90 days). This prevents developers from creating permanent keys that become long-lived security liabilities. The `Tenant` CR is also where Platform Engineers configure global MaaS settings including telemetry options for showback (covered in detail in Module 9) and Gateway references.
 
 _(For advanced multi-tenant governance patterns — preemption policies, cross-subscription fairness, and enterprise-scale rollout playbooks — see the supplemental rhoai3-mass2 deep-dive content.)_
 

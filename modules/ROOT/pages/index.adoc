@@ -104,23 +104,6 @@ The CIO's mandate has landed as 8 open tickets in your IT support queue. Each mo
 | xref:chapter8:section1.adoc[Module 9]
 |===
 
-== Diagnostic Gateway: Knowledge Check
-
-Before you step into the AI Engine Room to close these tickets, let's verify your core understanding.
-
-.Test Your Knowledge
-****
-*Scenario:* Your Finance department is demanding an LLM cost showback report by Friday to identify which development team is spending the most on AI inference.
-
-*Question:* Which OpenShift AI 3.4 feature allows you to natively track token consumption and generate showback reports for specific user groups?
-
-* A) EvalHub
-* B) Models-as-a-Service (MaaS)
-* C) Model Registry
-* D) AutoRAG
-
-*(Answer: B — Models-as-a-Service allows you to centrally manage subscriptions, token rate limits, and view unified observability dashboards for financial showback.)*
-****
 
 == Ready to Start Building?
 

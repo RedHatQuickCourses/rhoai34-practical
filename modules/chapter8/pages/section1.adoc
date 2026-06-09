@@ -10,7 +10,7 @@ In OpenShift AI 3.4, the telemetry flow operates across distinct layers:
 
 1. **Hardware Telemetry:** Begins at the hardware level with the Data Center GPU Manager (DCGM) exposing raw accelerator metrics (like `DCGM_FI_DEV_GPU_UTIL`). 
 2. **Application Telemetry:** The runtime engines (like vLLM) emit application-specific metrics (like `vllm:time_to_first_token`).
-3. **Ingestion Layer:** These metrics are scraped by **User Workload Monitoring (UWM)**—which must be explicitly enabled on the cluster. The data flows into the **OpenTelemetry Collector (OTC)**, which acts as the standardized ingestion layer. 
+3. **Ingestion Layer:** These metrics are scraped by **User Workload Monitoring (UWM)**—which must be explicitly enabled on the cluster. For custom model pods deployed by data scientists, the `monitoring.opendatahub.io/scrape: 'true'` label must be applied to the pod template to enable Prometheus scraping. The data flows into the **OpenTelemetry Collector (OTC)**, which acts as the standardized ingestion layer. 
 4. **Storage & Visualization:** From OTC, the data is routed into the dedicated OpenShift AI Prometheus instance (for metrics) and Tempo (for distributed tracing). Platform Engineers visualize this aggregated data in centralized Grafana dashboards. To export metrics to an existing enterprise observability tool (such as Splunk, Datadog, or an external Prometheus), Platform Engineers configure the `spec.monitoring.metrics.exporters` field in the **DataScienceClusterInitialization (DSCI)** custom resource, which automatically configures the OpenTelemetry Collector to forward metrics to external destinations.
 
 == Model Performance Telemetry: TTFT, ITL, and Saturation
@@ -23,7 +23,7 @@ Platform Engineers must monitor specific LLM metrics to gauge user experience an
 == Usage Tracking & Showback Frameworks
 Spiraling cloud costs are a major risk in generative AI. OpenShift AI 3.4 solves this with the Models-as-a-Service (MaaS) Observability Dashboard.
 
-By enabling telemetry on the MaaS `Tenant` custom resource, the MaaS API gateway (backed by Kuadrant and Limitador) actively tracks every single inference request. The dashboard aggregates this data, allowing the Platform Engineer to see exactly how many tokens were consumed by specific users, groups, or Subscriptions. 
+By enabling telemetry on the MaaS `Tenant` custom resource — specifically setting `spec.telemetry.enabled: true` and `captureModelUsage: true` on the `default-tenant` in the `models-as-a-service` namespace — the MaaS API gateway (backed by Kuadrant and Limitador) actively tracks every single inference request. The dashboard aggregates this data, allowing the Platform Engineer to see exactly how many tokens were consumed by specific users, groups, or Subscriptions. 
 
 This data can be exported as a CSV file to provide Finance with an enterprise-grade "Showback" report, attributing specific LLM API costs directly to the business units consuming them.
 

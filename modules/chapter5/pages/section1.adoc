@@ -8,7 +8,7 @@ If you passed the Diagnostic Gateway, use this page as your quick-reference job 
 In a mature AI architecture, Platform Engineers must define clear boundaries between discovery and governance to prevent shadow AI assets.
 
 * **The Model Catalog (AI Hub):** This is the entry point. It provides a curated library to discover, evaluate, and deploy third-party, pre-trained foundation models (like Red Hat validated Granite or Llama models). 
-* **The Model Registry:** This is the System of Record. When your data scientists fine-tune those catalog models using their own data, the resulting artifact is pushed to the Model Registry. The Registry governs the metadata (training parameters, formats, versions, and deployment events) to ensure you always know exactly which version of a custom model is running in production.
+* **The Model Registry:** This is the System of Record. When your data scientists fine-tune those catalog models using their own data, the resulting artifact is pushed to the Model Registry. The Registry governs the metadata (training parameters, formats, versions, and deployment events) to ensure you always know exactly which version of a custom model is running in production. *Prerequisite:* Deploying a production-grade Model Registry requires configuring access to an external **MySQL (5.x/8.x)** or **PostgreSQL (16.x+)** database for metadata storage.
 
 *(Note: Prior to promotion to the Registry, data scientists track their experimental training runs and evaluations logically using **MLflow**, which is now deployed as a natively managed component in 3.4).*
 

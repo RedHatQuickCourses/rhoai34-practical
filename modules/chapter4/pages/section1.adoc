@@ -20,6 +20,7 @@ Deploying an Agentic model without empirical safety data is a guaranteed CISO bl
 
  * For Agentic security, EvalHub integrates the **garak** framework to automatically run security vulnerability scans (like OWASP LLM Top 10 and AVID taxonomy).
  * Crucially, EvalHub seamlessly integrates with **MLflow** (now natively managed in OpenShift AI 3.4), ensuring every evaluation run is tracked, versioned, and auditable for compliance.
+ * *Prerequisite:* EvalHub requires an external PostgreSQL connection string stored as a Kubernetes Secret (`db-url`) to manage evaluation jobs.
 
 == Configuration Cheat Sheet: Secure Agentic Deployment
 1. **Vetting the Model:** Go to **AI hub -> Catalog**, check the **Tool calling** filter, and copy the validated CLI deployment arguments (e.g., `--enable-auto-tool-choice`).
@@ -28,7 +29,7 @@ Deploying an Agentic model without empirical safety data is a guaranteed CISO bl
 4. **Testing Safely:** Instruct developers to open the **Gen AI Playground**, click the **MCP** tab, securely authorize the server with a session token, and test the agent interactively. For immediate safety testing during prototyping, developers can enable **Prompt Guard** directly in the Playground interface to detect prompt injection and jailbreak attempts against their agentic prompts before committing code.
 
 == Production Safety: Beyond Playground Guardrails
-Prompt Guard in the Playground is a developer-facing safety net for prototyping. For production agentic deployments, organizations should evaluate the **TrustyAI Guardrails Orchestrator** — an input sanitization pipeline that intercepts inference requests at the platform level to detect toxicity, PII exposure, and injection attacks *before* they consume GPU cycles. This ensures safety enforcement operates continuously inside the agent loop, not only during manual testing.
+Prompt Guard in the Playground is a developer-facing safety net for prototyping. For production agentic deployments, organizations should evaluate the **TrustyAI Guardrails Orchestrator** — an input sanitization pipeline that intercepts inference requests at the platform level to detect toxicity, PII exposure, and injection attacks *before* they consume GPU cycles. Two concrete implementations are available via the TrustyAI Operator: **NeMo Guardrails** and the **IBM FMS Guardrails Orchestrator**, which deploy safety models such as HAP (Hate, Abuse, Profanity) detectors to actively block inappropriate interactions. This ensures safety enforcement operates continuously inside the agent loop, not only during manual testing.
 
 This layered approach — MCP Catalog vetting -> Playground Prompt Guard -> Production Guardrails Orchestrator — provides the defense-in-depth narrative required to gain CISO approval for production agentic deployments. _(See supplemental rhoai3-validate content for TrustyAI Guardrails Orchestrator implementation details.)_
 
