@@ -1,7 +1,5 @@
-= Chapter 2
+= Interactive Quiz #2
 
-In this section, we cover... FIXME
-
-
-- Add or remove section entries in the `antora.yaml` file as needed.
-- Ensure you create or delete the corresponding directory for the chapter accordingly.
+++++
+<iframe type="text/javascript" src='_attachments/s2-quiz.html' style="width: 1024px; height: 800px" allowfullscreen webkitallowfullscreen mozAllowFullScreen allow="autoplay *; fullscreen *; encrypted-media *" frameborder="0"></iframe>
+++++

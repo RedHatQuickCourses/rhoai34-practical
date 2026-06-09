@@ -1,6 +1,49 @@
-= Section 1
+= Module 3 Runbook: Governing Access with Models-as-a-Service
+:navtitle: Runbook: MaaS & Observability
+:description: Theoretical architecture, cheat sheet, and Anti-Pattern for MaaS.
 
-* Create multiple copies of this section as needed.
-* Remove any unnecessary sections or chapter pages.
-* Customize the section as appropriate.
-* Ensure that each page contains a manageable amount of content.
+If you passed the Diagnostic Gateway, use this page as your quick-reference job aid. If you are building your foundational skills, read this carefully before proceeding to the interactive labs.
+
+== The Centralized Gateway vs. Direct Static API Keys
+In traditional "Shadow AI" environments, developers bypass IT by directly requesting and embedding vendor API keys (like OpenAI or AWS Bedrock) into their source code. This is a massive vulnerability: if a key leaks, there is no way to instantly restrict access, and the enterprise has zero visibility into which team is driving up the cloud bill.
+
+**Models-as-a-Service (MaaS)** solves this using the MaaS API Gateway (backed by Kuadrant and Red Hat Connectivity Link). Instead of handing out the root provider keys, the Platform Engineer stores the root provider key in a secure Kubernetes Secret and registers an `ExternalModel` resource. 
+
+The MaaS Gateway acts as a proxy using a **Two-Tier Authentication** pattern:
+1. Users authenticate to the Gateway using scoped, self-service MaaS API Keys. 
+2. The Gateway tracks their token consumption against their assigned quota, applies rate limits, and then securely injects the root provider key into the outbound request `[Source: Red Hat OpenShift AI Self-Managed-3.4-Govern LLM access with Models-as-a-Service - Two-tier authentication]`.
+
+== The Architecture of Access: Groups, Subscriptions, and Keys
+Access in MaaS 3.4 is decoupled into distinct layers to provide maximum GitOps flexibility:
+
+* **OpenShift User Groups:** Defines the user's identity (e.g., `data-scientists`, `ml-engineers`).
+* **MaaS Subscriptions (`MaaSSubscription`):** Maps a User Group to specific models and enforces strict token quotas (e.g., 500k tokens per hour). If a user belongs to multiple groups, the Subscription with the highest Priority dictates their default limits `[Source: Red Hat OpenShift AI Self-Managed-3.4-Govern LLM access with Models-as-a-Service - Priority levels]`.
+* **Authorization Policies (`MaaSAuthPolicy`):** Grants the User Group the actual network permission to pass through the API Gateway `[Source: Red Hat OpenShift AI Self-Managed-3.4-Govern LLM access with Models-as-a-Service - Models-as-a-Service authorization policies]`.
+* **API Keys:** Developers generate their own self-service keys scoped to their Subscription `[Source: Red Hat OpenShift AI Self-Managed-3.4-Govern LLM access with Models-as-a-Service - Self-service API key management]`.
+
+== Configuration Cheat Sheet: Granting a New Team Access
+To provision access for a new team, a Platform Engineer completes these exact steps:
+
+1. **Publish the Model:** Create a `MaaSModelRef` (for internal models) or an `ExternalModel` (for external APIs like OpenAI) to register the endpoint.
+2. **Create the Subscription:** Navigate to **Settings -> Subscriptions**. Assign the OpenShift User Group, select the model, and define the Token Rate Limit (e.g., 1,000,000 / 1h).
+3. **Create the Authorization Policy:** Check the "Create matching authorization policy" box during Subscription creation, or manually create a `MaaSAuthPolicy` matching the Group to the Model.
+4. **Inform the Developer:** Instruct developers to navigate to **Gen AI studio -> API keys** to generate their scoped, self-service tokens.
+
+== Day-2 Diagnostics: The Anti-Pattern
+*Can you spot the architectural flaw?*
+
+**The Scenario: The Shadow AI Key Leak**
+Your company decides to experiment with OpenAI's GPT-4o. To move fast, the Lead Platform Engineer creates a single enterprise OpenAI account, generates a root API key, and emails it to the 50 developers on the Analytics team. The developers embed this key directly into their application code (`Authorization: Bearer sk-openai-...`).
+
+**Why this is an Anti-Pattern:**
+* **No Showback:** Finance receives a single massive bill from OpenAI at the end of the month, with zero ability to determine which developer or application is responsible.
+* **No Quota Enforcement:** A runaway loop in a single developer's code can exhaust the entire company's provider-level token limit, taking down production applications for everyone.
+* **Security Nightmare:** If a developer accidentally commits the root key to a public GitHub repo, the Platform Engineer has to revoke the key at the provider level, instantly breaking all 50 applications simultaneously.
+
+**The Solution:**
+The Platform Engineer should use the OpenShift AI 3.4 `ExternalModel` custom resource. The root OpenAI API key is stored securely in a Kubernetes Secret inside the cluster. Developers never see it. Instead, developers generate their own temporary or permanent MaaS API keys via the OpenShift AI dashboard and send requests to the centralized OpenShift AI Gateway. 
+
+The Gateway enforces their specific Subscription token limit (preventing runaway code), logs their exact usage for Finance's showback reports in the Observability Dashboard, and safely proxies the request to OpenAI. If a developer's MaaS key leaks, the Admin can simply click "Revoke" on that specific key without affecting the other 49 developers.
+
+<<<
+*Ready to build it? Proceed to the Interactive Labs.*

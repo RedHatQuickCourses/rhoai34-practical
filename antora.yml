@@ -1,5 +1,5 @@
-name: REPLACEREPONAME
-title: FIXME Course Title
+name: rhoai34-practical
+title: Building the AI Engine
 version: 1
 nav:
 - modules/ROOT/nav.adoc
@@ -7,4 +7,5 @@ nav:
 - modules/chapter1/nav.adoc
 - modules/chapter2/nav.adoc
 - modules/chapter3/nav.adoc
+- modules/chapter4/nav.adoc
 - modules/appendix/nav.adoc

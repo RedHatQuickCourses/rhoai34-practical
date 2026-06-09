@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+      /* --- Basic Styles --- */
+        :root {
+            --correct-color: #63993d;
+            --incorrect-color: #f0561d;
+            --intro-color: #111;
+            --next-btn-color: #0066cc;
+            --prev-btn-color: #383838;
+            --restart-btn-color: #ee0000;
+            --text-color: #111;
+        }
+
+        body {
+            font-family: 'Red Hat Display', sans-serif;
+            color: var(--text-color);
+            margin: 1.5em;
+        }
+
+        /* --- Quiz Components --- */
+        #quiz-intro {
+            color: var(--intro-color);
+            margin-bottom: 2em;
+            line-height: 1.6;
+            background-color: #f4f4f4;
+            padding: 1.5em;
+            border-left: 4px solid #ee0000;
+            border-radius: 4px;
+        }
+
+        #question-counter {
+            color: #383838;
+            margin-bottom: 1em;
+            font-weight: 700;
+        }
+
+        #question-container {
+            margin-bottom: 1.5em;
+        }
+
+        #question-text {
+            font-size: 1.25em;
+            font-weight: 700;
+            margin-bottom: 1em;
+        }
+
+        .answer-item {
+            margin-bottom: 1em;
+        }
+
+        .answer-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 0.75em;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            transition: border-color 0.3s;
+        }
+        .answer-label:hover {
+            border-color: #999;
+        }
+
+        .custom-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #555;
+            border-radius: 4px;
+            margin-right: 12px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .explanation {
+            display: none;
+            padding: 0.75em;
+            margin-top: 0.5em;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+        
+        .explanation a {
+            color: inherit;
+            text-decoration: underline;
+        }
+
+        /* --- State Styling --- */
+        .answer-item.answered.correct .answer-label,
+        .answer-item.answered.correct .explanation {
+            background-color: #f0f8ec;
+            border-color: var(--correct-color);
+            color: var(--correct-color);
+        }
+
+        .answer-item.answered.incorrect .answer-label,
+        .answer-item.answered.incorrect .explanation {
+            background-color: #fff0e9;
+            border-color: var(--incorrect-color);
+            color: var(--incorrect-color);
+        }
+
+        .answer-item.answered.correct .custom-checkbox {
+            border-color: var(--correct-color);
+            background-color: var(--correct-color);
+            color: white;
+        }
+
+        .answer-item.answered.incorrect .custom-checkbox {
+            border-color: var(--incorrect-color);
+            background-color: var(--incorrect-color);
+            color: white;
+        }
+
+        /* --- Results Screen --- */
+        #results-container {
+            display: none;
+            text-align: center;
+            padding: 2.5em;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            margin-bottom: 2em;
+        }
+
+        .score-text {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 0.2em;
+        }
+
+        .score-details {
+            font-size: 1.2em;
+            color: #555;
+            margin-bottom: 1.5em;
+        }
+
+        .pass { color: var(--correct-color); }
+        .fail { color: var(--incorrect-color); }
+
+        .results-message {
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        /* --- Navigation --- */
+        #navigation-container {
+            margin-top: 2em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-button {
+            border: none;
+            padding: 0.8em 1.5em;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            color: white;
+            transition: opacity 0.3s;
+        }
+
+        .nav-button:hover {
+            opacity: 0.85;
+        }
+
+        #prev-btn { background-color: var(--prev-btn-color); }
+        #next-btn { background-color: var(--next-btn-color); }
+        #results-btn { background-color: var(--correct-color); }
+        #restart-btn { background-color: var(--restart-btn-color); }
+    </style>
+  </head>
+  <body>
+    <div id="quiz-container">
+      <div id="quiz-intro"></div>
+      
+      <div id="results-container">
+          <div class="score-text" id="final-score-percent"></div>
+          <div class="score-details" id="final-score-breakdown"></div>
+          <div class="results-message" id="final-message"></div>
+      </div>
+
+      <div id="question-counter"></div>
+      <div id="question-container">
+        <p id="question-text"></p>
+        <div id="answers-container"></div>
+      </div>
+      
+      <div id="navigation-container">
+        <button id="prev-btn" class="nav-button" style="display: none;">Previous</button>
+        <button id="next-btn" class="nav-button" style="display: none;">Next</button>
+        <button id="results-btn" class="nav-button" style="display: none;">View Results</button>
+        <button id="restart-btn" class="nav-button" style="display: none;">Restart Gateway</button>
+      </div>
+    </div>
+    
+    <script>
+      const quizDataText = `<b>Module 3: Diagnostic Gateway.</b> <br><br>Finance is demanding accountability for LLM API costs, and developers need self-service access. Prove you know how to architect the solution using Models-as-a-Service (MaaS) in OpenShift AI 3.4. <br><br><b>The 80% Rule:</b> Score 80% or higher to jump straight to the Runbook. If you score below 80%, you will proceed to the interactive labs to build these critical access control skills.
+
+---
+Q1: In OpenShift AI 3.4, the method for managing quotas for model serving has fundamentally changed. What replaced the legacy 3.3 "tier-based" system?
+
+A: The AppWrapper Quota System
+Incorrect: AppWrapper is used for distributed compute management (Kueue), not model serving API quotas.
+
+A: The MaaSSubscription custom resource model
+Correct: In OpenShift AI 3.4, MaaS uses a subscription-based model for quota management, managed via the MaaSSubscription custom resource. This replaces the tier-based model, providing enhanced flexibility allowing users to belong to multiple subscriptions.
+
+A: KServe ResourceFlavors
+Incorrect: ResourceFlavors are Kubernetes resource allocation labels used by Kueue, not token quotas.
+
+A: Global API Key Rate Limits
+Incorrect: Rate limits are applied per subscription and group mapping, not globally across all keys simultaneously.
+---
+Q2: A developer belongs to multiple OpenShift groups. One group grants access to a "Standard" MaaS subscription, while another grants access to a "Premium" MaaS subscription. How does the system determine the default subscription when the user generates an API key?
+
+A: The user must explicitly declare the subscription in the Authorization header of every API call.
+Incorrect: While possible to declare at creation, the system has an automatic default mechanism if omitted.
+
+A: The system defaults to the subscription with the most permissive token limits.
+Incorrect: Limits themselves are not dynamically compared; administrative priority is.
+
+A: The system selects the subscription with the highest numeric Priority Level.
+Correct: Priority levels determine which subscription is selected when creating an API key without explicitly specifying one. The system automatically assigns the user to the subscription with the highest priority number (e.g., Priority 10 takes precedence over Priority 0).
+
+A: MaaS merges the token limits of both subscriptions automatically.
+Incorrect: Subscriptions are not merged; the highest priority is selected.
+---
+Q3: When defining token quotas in a MaaS subscription, how are the rate limits specifically structured?
+
+A: As a total financial cost limit per billing cycle.
+Incorrect: MaaS tracks raw tokens, not direct financial currency natively.
+
+A: As a static number of tokens allowed within a specific time window (e.g., 1h, 24h).
+Correct: Token rate limits configure token consumption constraints using a maximum limit of tokens allowed within a defined time window unit, such as 1,000,000 tokens per 1h or 24h.
+
+A: As a maximum number of concurrent HTTP requests per minute.
+Incorrect: While request rates can be limited, token quotas specifically measure token volume payload.
+
+A: As a daily limit on the number of generated API keys.
+Incorrect: Token quotas restrict inference payload volume, not API key credential creation.
+---
+Q4: Finance has requested a showback report detailing exactly how many tokens the Data Science team consumed against the GPT-4 endpoint last week. How do you provide this?
+
+A: Query the external OpenAI billing dashboard.
+Incorrect: The external dashboard won't show internal developer/team namespace breakdowns, only total company usage.
+
+A: Export the usage data as a CSV directly from the MaaS Observability Dashboard's "Usage" tab.
+Correct: The MaaS observability dashboard allows administrators to view token consumption by user, subscription, and model. This data can be exported in CSV format for cost attribution and showback reporting to finance teams.
+
+A: Parse the vLLM uvicorn access logs using a bash script.
+Incorrect: While logs exist, this is manual and does not leverage the native unified MaaS observability features.
+
+A: Export the billing metrics from the DataScienceCluster resource.
+Incorrect: The DSC resource deploys components; it does not store usage metrics.
+---
+Q5: A developer needs to rapidly prototype a new Retrieval-Augmented Generation (RAG) agent in the Gen AI Playground and requires API access to a MaaS-governed model. What is the fastest self-service method to achieve this?
+
+A: Submit a Jira ticket to the Platform Engineer to generate a persistent Secret.
+Incorrect: This introduces administrative friction and is not self-service.
+
+A: Generate a temporary, 1-hour API key directly from the Endpoints dialog on the AI Asset Endpoints page.
+Correct: Users can generate short-lived, temporary 1-hour API keys directly from the Endpoints dialog for quick testing and prototyping, bypassing administrative bottlenecks.
+
+A: Use their OpenShift SSO password as the Bearer token.
+Incorrect: MaaS API keys are required for Gateway proxy authentication.
+
+A: Embed their personal OpenAI API key into the Playground settings.
+Incorrect: This bypasses platform governance entirely and violates security protocols.
+---
+Q6: Your organization wants to use OpenAI's GPT-4o but demands that all traffic is routed, rate-limited, and tracked identically to internal models. Which OpenShift AI 3.4 custom resource makes this possible?
+
+A: ServingRuntime
+Incorrect: This is for hosting open-source models within the cluster, not proxying external APIs.
+
+A: ExternalModel
+Correct: Platform engineers define external LLM provider configurations using the ExternalModel custom resource. This applies MaaS governance, token tracking, and rate limiting to third-party services like OpenAI or Anthropic through the same gateway used for internal models.
+
+A: MaaSModelRef
+Incorrect: This references an internal model within a subscription, not the external provider definition endpoint.
+
+A: OdhDashboardConfig
+Incorrect: This configures the dashboard UI experience, not gateway routing.
+---
+Q7: When routing requests to an external provider like AWS Bedrock through MaaS, how are API credentials securely handled?
+
+A: The developer embeds the AWS Bedrock API key in their client application payload.
+Incorrect: This is a severe security anti-pattern known as a "Shadow AI key leak."
+
+A: MaaS uses a Two-Tier Authentication pattern where the user authenticates to the Gateway with a MaaS API key, and the Gateway injects the provider API key stored in a cluster secret.
+Correct: External model access uses two-tier authentication: Users authenticate to MaaS using their MaaS API key, and MaaS automatically injects the provider API key (from a Kubernetes secret) when forwarding requests to the external provider.
+
+A: The OpenShift cluster's global pull secret is used to authenticate to the external provider.
+Incorrect: The pull secret is for downloading container images, not inference endpoints.
+
+A: The user's MaaS API key is synchronized directly with AWS IAM.
+Incorrect: The Gateway acts as an opaque proxy; it does not sync identity credentials to the external provider.
+---
+Q8: You created a MaaSSubscription that grants the ml-engineers group a quota of 5 million tokens for the llama-3-8b model. However, the engineers receive "403 Forbidden" errors when calling the API. What configuration step did you miss?
+
+A: You failed to create a MaaSAuthPolicy for the group.
+Correct: Both a subscription and an authorization policy are required. The subscription defines the quota limits, while the MaaSAuthPolicy is a separate resource required to authorize groups to access the model endpoints through the API gateway.
+
+A: You forgot to restart the kserve-controller-manager pod.
+Incorrect: Pod restarts are not necessary for dynamic Gateway API policy changes.
+
+A: You did not set the subscription Priority Level to 100.
+Incorrect: Priority level dictates default quota selection, not basic network access authorization.
+
+A: You must assign the cluster-admin role to the developers.
+Incorrect: Developers should never be granted cluster-admin privileges to access model APIs.
+---
+Q9: A contractor leaves your organization and is removed from the corporate Identity Provider (OIDC) group. However, their previously generated MaaS API key is still active. Why?
+
+A: MaaS API keys are completely immune to OIDC changes and never expire.
+Incorrect: They can expire if configured, but group sync is the core issue here.
+
+A: Group membership is captured as a snapshot at API key creation time; the administrator must manually revoke the API key to immediately terminate access.
+Correct: API keys capture user group memberships at the time of creation. If a user is removed from a group, their existing API keys retain the original group associations and continue to work until revoked or expired. Administrators must manually revoke them.
+
+A: The Gateway API cache has a 24-hour TTL for identity verification.
+Incorrect: It's not a cache TTL issue; it's by design how the key authorization snapshot works.
+
+A: You must delete the contractor's OpenShift AI project to revoke access.
+Incorrect: MaaS API keys are governed centrally by Kuadrant, not by deleting user namespaces.
+---
+Q10: To prevent developers from creating permanent API keys that become security liabilities, where does a Platform Engineer configure the global maximum expiration limit for all generated keys?
+
+A: In the MaaSSubscription custom resource.
+Incorrect: Subscriptions define token payload quotas and rate limits, not key lifecycles.
+
+A: In the OpenShift oauth-server configuration.
+Incorrect: This manages OpenShift UI session tokens, not MaaS API keys.
+
+A: In the Tenant custom resource under spec.apiKeys.maxExpirationDays.
+Correct: Administrators can set a maximum expiration period for API keys (e.g., 90 days) by editing the Tenant custom resource in the models-as-a-service namespace, specifically under spec.apiKeys.maxExpirationDays.
+
+A: In the DataScienceCluster custom resource.
+Incorrect: This is configured at the MaaS Tenant level, not the global DSC level.`;
+
+      // --- PARSING LOGIC ---
+      function parseQuizData(text) {
+          try {
+              const parts = text.split('---');
+              const intro = parts.shift().trim();
+              
+              const questions = parts.filter(p => p.trim() !== '').map((part) => {
+                  const lines = part.trim().split('\n').map(l => l.trim()).filter(l => l !== '');
+                  if (lines.length === 0) return null;
+
+                  const questionLine = lines.shift();
+                  const questionText = questionLine.replace(/^Q\d+:\s*/, '').trim();
+                  
+                  const answers = [];
+                  let currentAnswer = null;
+
+                  for (const line of lines) {
+                      if (line.startsWith('A:')) {
+                          if (currentAnswer) {
+                              answers.push(currentAnswer);
+                          }
+                          currentAnswer = { text: line.substring(2).trim(), isCorrect: false, explanation: '' };
+                      } else if (line.startsWith('Correct:')) {
+                          if(currentAnswer) {
+                              currentAnswer.isCorrect = true;
+                              currentAnswer.explanation = line.substring(8).trim();
+                          }
+                      } else if (line.startsWith('Incorrect:')) {
+                           if(currentAnswer) {
+                              currentAnswer.isCorrect = false;
+                              currentAnswer.explanation = line.substring(10).trim();
+                          }
+                      } else {
+                          if (currentAnswer) {
+                              currentAnswer.explanation += ' ' + line;
+                          }
+                      }
+                  }
+                  if (currentAnswer) {
+                      answers.push(currentAnswer);
+                  }
+                  
+                  return { question: questionText, answers: answers, firstAttemptCorrect: null };
+              }).filter(q => q !== null);
+
+              return { intro, questions };
+          } catch (e) {
+              console.error("Failed to parse quiz data:", e);
+              return { intro: "<span style='color:red;'>Fatal Parsing Error. Check developer console.</span>", questions: [] };
+          }
+      }
+
+      // --- QUIZ APPLICATION LOGIC ---
+      try {
+          const { intro, questions } = parseQuizData(quizDataText);
+          let currentQuestionIndex = 0;
+
+          const introEl = document.getElementById('quiz-intro');
+          const questionCounterEl = document.getElementById('question-counter');
+          const questionTextEl = document.getElementById('question-text');
+          const answersContainerEl = document.getElementById('answers-container');
+          
+          const resultsContainerEl = document.getElementById('results-container');
+          const finalScorePercentEl = document.getElementById('final-score-percent');
+          const finalScoreBreakdownEl = document.getElementById('final-score-breakdown');
+          const finalMessageEl = document.getElementById('final-message');
+
+          const nextBtn = document.getElementById('next-btn');
+          const prevBtn = document.getElementById('prev-btn');
+          const resultsBtn = document.getElementById('results-btn');
+          const restartBtn = document.getElementById('restart-btn');
+
+          introEl.innerHTML = intro;
+
+          if (!questions || questions.length === 0) {
+              questionTextEl.innerHTML = "<span style='color:red;'>No questions were loaded. Ensure the data format is correct.</span>";
+          } else {
+              function displayQuestion(index) {
+                  const question = questions[index];
+                  questionCounterEl.style.display = 'block';
+                  questionContainerEl = document.getElementById('question-container');
+                  questionContainerEl.style.display = 'block';
+                  resultsContainerEl.style.display = 'none';
+
+                  questionCounterEl.textContent = `Question ${index + 1} of ${questions.length}`;
+                  questionTextEl.textContent = question.question;
+                  answersContainerEl.innerHTML = '';
+
+                  question.answers.forEach((answer, answerIndex) => {
+                      const answerItem = document.createElement('div');
+                      answerItem.className = 'answer-item';
+                      
+                      answerItem.innerHTML = `
+                          <div class="answer-label" data-index="${answerIndex}">
+                              <span class="custom-checkbox"></span>
+                              <span class="answer-text">${answer.text}</span>
+                          </div>
+                          <div class="explanation">${answer.explanation}</div>
+                      `;
+                      answersContainerEl.appendChild(answerItem);
+                  });
+                  
+                  updateNavigation();
+              }
+              
+              function handleAnswerClick(event) {
+                  const label = event.target.closest('.answer-label');
+                  if (!label) return;
+
+                  const answerItem = label.parentElement;
+                  const explanation = answerItem.querySelector('.explanation');
+                  const checkbox = label.querySelector('.custom-checkbox');
+
+                  const isAnswered = answerItem.classList.contains('answered');
+
+                  if (isAnswered) {
+                       answerItem.classList.remove('answered', 'correct', 'incorrect');
+                       explanation.style.display = 'none';
+                       checkbox.textContent = '';
+                  } else {
+                      const answerIndex = parseInt(label.dataset.index);
+                      const answer = questions[currentQuestionIndex].answers[answerIndex];
+                      
+                      if (questions[currentQuestionIndex].firstAttemptCorrect === null) {
+                          questions[currentQuestionIndex].firstAttemptCorrect = answer.isCorrect;
+                      }
+
+                      answerItem.classList.add('answered');
+                      explanation.style.display = 'block';
+
+                      if (answer.isCorrect) {
+                          answerItem.classList.add('correct');
+                          checkbox.innerHTML = '&#10003;'; 
+                      } else {
+                          answerItem.classList.add('incorrect');
+                          checkbox.innerHTML = '&#10007;'; 
+                      }
+                  }
+              }
+
+              function showResults() {
+                  document.getElementById('question-counter').style.display = 'none';
+                  document.getElementById('question-container').style.display = 'none';
+                  
+                  const correctCount = questions.filter(q => q.firstAttemptCorrect === true).length;
+                  const wrongCount = questions.filter(q => q.firstAttemptCorrect === false).length;
+                  const skippedCount = questions.length - correctCount - wrongCount;
+                  const percentage = Math.round((correctCount / questions.length) * 100);
+
+                  finalScorePercentEl.textContent = `${percentage}%`;
+                  finalScoreBreakdownEl.textContent = `${correctCount} Correct | ${wrongCount} Incorrect | ${skippedCount} Skipped`;
+
+                  if (percentage >= 80) {
+                      finalScorePercentEl.className = 'score-text pass';
+                      finalMessageEl.innerHTML = `<b>Congratulations!</b> You have demonstrated mastery of the Models-as-a-Service architecture. You may proceed directly to the Runbook and skip the interactive setup labs.`;
+                  } else {
+                      finalScorePercentEl.className = 'score-text fail';
+                      finalMessageEl.innerHTML = `You're on your way, but there are a few architectural concepts we need to solidify. Please proceed to the Runbook and complete the interactive setup labs below to build your foundational skills.`;
+                  }
+
+                  resultsContainerEl.style.display = 'block';
+
+                  prevBtn.style.display = 'none';
+                  nextBtn.style.display = 'none';
+                  resultsBtn.style.display = 'none';
+                  restartBtn.style.display = 'inline-block';
+              }
+
+              function updateNavigation() {
+                  prevBtn.style.display = currentQuestionIndex > 0 ? 'inline-block' : 'none';
+                  
+                  const isLastQuestion = currentQuestionIndex === questions.length - 1;
+                  nextBtn.style.display = isLastQuestion ? 'none' : 'inline-block';
+                  resultsBtn.style.display = isLastQuestion ? 'inline-block' : 'none';
+                  restartBtn.style.display = 'none';
+
+                  const navContainer = document.getElementById('navigation-container');
+                  navContainer.style.justifyContent = currentQuestionIndex === 0 ? 'flex-end' : 'space-between';
+              }
+
+              answersContainerEl.addEventListener('click', handleAnswerClick);
+
+              nextBtn.addEventListener('click', () => {
+                  if (currentQuestionIndex < questions.length - 1) {
+                      currentQuestionIndex++;
+                      displayQuestion(currentQuestionIndex);
+                  }
+              });
+
+              prevBtn.addEventListener('click', () => {
+                  if (currentQuestionIndex > 0) {
+                      currentQuestionIndex--;
+                      displayQuestion(currentQuestionIndex);
+                  }
+              });
+
+              resultsBtn.addEventListener('click', () => {
+                  showResults();
+              });
+
+              restartBtn.addEventListener('click', () => {
+                  questions.forEach(q => q.firstAttemptCorrect = null);
+                  currentQuestionIndex = 0;
+                  displayQuestion(currentQuestionIndex);
+              });
+
+              displayQuestion(currentQuestionIndex);
+          }
+      } catch (err) {
+          document.body.innerHTML = `<p style="color:red; font-weight:bold;">Initialization Error: ${err.message}</p>`;
+      }
+    </script>
+  </body>
+</html>

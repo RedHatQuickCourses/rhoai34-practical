@@ -1,8 +1,63 @@
-= Section 2
-:page-audio-src: audio-file.wav
-:page-transcript-src: sample-transcript.txt
+= Interactive Labs: Building the Engine Room
+:navtitle: Labs: Building the Engine Room
+:description: Interactive UI click-paths for installing OpenShift AI 3.4.
 
-* Create multiple copies of this section as needed.
-* Remove any unnecessary sections or chapter pages.
-* Customize the section as appropriate.
-* Ensure that each page contains a manageable amount of content.
+It is time to step into the Engine Room. In these interactive labs, you will execute the "Happy Path" to install the Operator, activate the centralized observability stack, and deploy a smoke-test model using the new Gateway API routing.
+
+== Lab 1: Operator Installation & Core Setup
+**Goal:** Install the OpenShift AI Operator and activate the core components using the `DataScienceCluster` resource.
+
+.Arcade: Install and Activate
+====
+// Antora iframe embed placeholder for Arcade 1
+// ++++ 
+// <iframe src="URL_TO_ARCADE_1" width="100%" height="600px"></iframe> 
+// ++++
+
+**Guided Steps:**
+1. In the OpenShift web console, log in as a cluster administrator.
+2. Navigate to **Operators -> OperatorHub** and install **Red Hat OpenShift AI**.
+3. Navigate to **Operators -> Installed Operators** and click the Operator.
+4. Click the **Data Science Cluster** tab, then click **Create DataScienceCluster**.
+5. Select **YAML view**. Change the `managementState` from `Removed` to `Managed` for the following core components: `kserve`, `kueue`, `mlflowoperator`, and `modelregistry`.
+6. Click **Create**.
+====
+
+== Lab 2: Configuring the Serving Environment (Observability)
+**Goal:** Activate the centralized observability stack to monitor AI health and user model metrics natively.
+
+.Arcade: Enable Observability
+====
+// Antora iframe embed placeholder for Arcade 2
+// ++++ 
+// <iframe src="URL_TO_ARCADE_2" width="100%" height="600px"></iframe> 
+// ++++
+
+**Guided Steps:**
+1. Navigate to **Operators -> Installed Operators -> Red Hat OpenShift AI**.
+2. Click the **DSC Initialization** tab and open the `default-dsci` instance.
+3. Select the **YAML** tab. Under `spec.monitoring`, set `managementState: Managed` to deploy the Prometheus and OpenTelemetry stack. Click **Save**.
+4. To enable the Dashboard UI, navigate to **Home -> API Explorer** and search for `OdhDashboardConfig`.
+5. Open the `odh-dashboard-config` instance YAML. Under `spec.dashboardConfig`, add `observabilityDashboard: true` and click **Save**.
+====
+
+== Lab 3: The Smoke Test
+**Goal:** Deploy a test model using the UI to verify KServe RawDeployment and Gateway API routing are operational.
+
+.Arcade: Deploy Smoke Test
+====
+// Antora iframe embed placeholder for Arcade 3
+// ++++ 
+// <iframe src="URL_TO_ARCADE_3" width="100%" height="600px"></iframe> 
+// ++++
+
+**Guided Steps:**
+1. Open the **Red Hat OpenShift AI** dashboard via the Application Launcher.
+2. Navigate to **Data Science Projects** and create a project named `smoke-test-project`.
+3. In the **Deployments** tab, click **Deploy model**.
+4. Fill out the wizard using the **MLServer ServingRuntime** and the **Scikit-learn** framework.
+5. *Critical Step:* Under the Model route section, check the box for **"Make deployed models available through an external route"** to trigger the Gateway API ingress.
+6. Click **Deploy** and wait for the status checkmark to turn green.
+====
+
+**Module Complete!** You have successfully laid the foundation. You are now ready to govern this platform using Models-as-a-Service in Module 3.

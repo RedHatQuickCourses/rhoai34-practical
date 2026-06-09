@@ -1,8 +1,45 @@
-= Section 1
-:page-audio-src: audio-file.wav
-:page-transcript-src: sample-transcript.json
 
-* Create multiple copies of this section as needed.
-* Remove any unnecessary sections or chapter pages.
-* Customize the section as appropriate.
-* Ensure that each page contains a manageable amount of content.
+= Runbook: Platform Setup & Readiness
+:navtitle: Runbook: Platform Setup
+:description: Theoretical architecture and component mapping for OpenShift AI 3.4 setup.
+
+If you passed the Diagnostic Gateway, use this page as your quick-reference job aid. If you are building your foundational skills, read this carefully before proceeding to the interactive labs.
+
+== Understanding the Architecture Layers
+Setting up OpenShift AI is not a single-click installation; it is a layered architecture. Platform Engineers must understand the distinction between the management plane and the activation plane.
+
+* **The Operator (Management Plane):** Installing the Red Hat OpenShift AI Operator from OperatorHub simply lays down the management plane. It does *not* actually install the AI components (like Jupyter, MLflow, or KServe).
+* **DataScienceClusterInitialization (DSCI - The Foundation):** The DSCI custom resource handles global, cluster-wide configurations that must exist before components spin up. This includes injecting cluster-wide trusted CA certificate bundles and enabling the centralized OpenTelemetry/Prometheus observability stack.
+* **DataScienceCluster (DSC - The Activation Layer):** The DSC custom resource defines exactly which components are instantiated in the cluster by setting their `managementState` to `Managed` or `Removed`. 
+** *Note for 3.4:* The MLflow Operator is now a natively managed component directly within the DSC, removing the need for legacy feature flags.
+
+== The Paradigm Shift: The Kubernetes Gateway API
+In previous versions of OpenShift AI, configuring KServe required OpenShift Service Mesh and OpenShift Serverless (Knative). 
+
+**In OpenShift AI 3.4, the KServe Serverless deployment mode is officially deprecated.**
+
+Instead, Platform Engineers must use **KServe RawDeployment mode**, which leverages the Kubernetes Gateway API for path-based routing. This modern architecture replaces individual OpenShift Routes and sidecar-heavy Service Mesh architectures with a single Gateway entry point (e.g., `openshift-ai-inference` Gateway). Advanced routing, token authentication, and distributed serving (`llm-d`) are now handled natively via the Gateway API paired with Red Hat Connectivity Link (Kuadrant).
+
+== Selecting the Right 3.4 Serving Runtime
+OpenShift AI 3.4 provides highly specialized runtimes out-of-the-box. Selecting the wrong runtime will cause immediate Out-Of-Memory (OOM) errors or massive latency.
+
+* **vLLM ServingRuntime:** The standard for serving Single-Node Large Language Models on NVIDIA/AMD GPUs. It uses advanced techniques like PagedAttention and continuous batching.
+* **Distributed Inference (`llm-d`):** Used when an LLM is too large to fit into the memory of a single GPU. It spans model weights across multiple nodes/GPUs using Ray and the Leader Worker Set operator.
+* **MLServer ServingRuntime:** Now GA in 3.4, this is the designated runtime for classical, structured-data machine learning models built with Scikit-Learn, XGBoost, and LightGBM.
+
+== Day-2 Diagnostics: The Anti-Pattern
+*Can you spot the architectural flaw?*
+
+**The Scenario:** A junior admin deployed the OpenShift AI 3.4 Operator and activated KServe in the DSC. A Data Scientist deploys a model, but external applications cannot reach the endpoint. The junior admin decides to manually write a Kubernetes `Route` YAML file exposing port 8080 of the model's pod to the public internet.
+
+**Why this is an Anti-Pattern:** By bypassing the Gateway API and creating a manual route, the admin has completely broken the platform's security and observability. The Models-as-a-Service (MaaS) token authentication, rate limiting, and Prometheus metrics scraping rely entirely on traffic passing through the centralized `openshift-ai-inference` Gateway. In 3.4, external ingress should *only* be configured by checking the "Make deployed models available through an external route" box in the UI, which registers the route securely with the Gateway.
+
+== Configuration Cheat Sheet: OpenShift AI 3.4 
+As a Platform Engineer, you will be expected to know these specific configurations to ensure the platform operates smoothly and upgrades safely:
+
+* **Operator Upgrades (OLM):** When installing the operator, always select the **Manual** update approval strategy. OpenShift AI requires sequential updates. "Manual" ensures you don't accidentally skip a required intermediate minor version during cluster maintenance.
+* **Monitoring User Workloads:** Activating the observability stack in the DSCI monitors the *platform*. To ensure Prometheus automatically scrapes metrics from a data scientist's custom model pod, you must apply the `monitoring.opendatahub.io/scrape=true` label to their workload.
+* **Prerequisites for `llm-d`:** If you plan to use Distributed Inference (`llm-d`), the OpenShift AI operator alone is not enough. You must pre-install the **cert-manager Operator**, the **Red Hat Connectivity Link Operator** (for gateway routing), and the **Leader Worker Set Operator** (to manage the multi-node pod topology).
+
+<<<
+*Ready to build it? Proceed to the Interactive Labs.*

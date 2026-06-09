@@ -1,0 +1,45 @@
+= Module 5 Runbook: Securing Agentic Workflows
+:navtitle: Runbook: MCP & EvalHub
+:description: Theoretical architecture and Anti-Pattern for MCP and EvalHub.
+
+If you passed the Diagnostic Gateway, use this page as your quick-reference job aid. If you are building your foundational skills, read this carefully before proceeding to the interactive labs.
+
+== The Shift to Agentic AI and the Security Paradigm
+Historically, AI deployments were simple Chatbots: a user asked a question, and the LLM returned text. With "Agentic AI," the paradigm has flipped. The LLM is now an agent making decisions to actively call external tools, execute code, or query databases to accomplish a goal. 
+
+If developers implement this by embedding raw API keys (for AWS, GitHub, databases) into their application code to manually glue the LLM to these tools, they create massive security vulnerabilities. 
+
+The **Model Context Protocol (MCP)** solves this by standardizing how models connect to data sources and tools. Instead of custom integration scripts with scattered API keys, the Platform Engineer deploys pre-built, secure MCP Servers (like the Red Hat OpenShift, Ansible, or partner servers) via the **MCP Catalog**. The infrastructure handles the tool execution, and the LLM merely requests the standardized tool format.
+
+== The Value of EvalHub: Securing CISO Approval
+Deploying an Agentic model without empirical safety data is a guaranteed CISO blocker. You cannot rely on "vibes-based" manual chat testing to determine if an agent will exfiltrate data. 
+
+**EvalHub** provides an enterprise-grade orchestration layer to automate and standardize LLM evaluation. It allows Platform Engineers to submit evaluation jobs against industry-standard benchmarks.
+
+ * For Agentic security, EvalHub integrates the **garak** framework to automatically run security vulnerability scans (like OWASP LLM Top 10 and AVID taxonomy).
+ * Crucially, EvalHub seamlessly integrates with **MLflow** (now natively managed in OpenShift AI 3.4), ensuring every evaluation run is tracked, versioned, and auditable for compliance.
+
+== Configuration Cheat Sheet: Secure Agentic Deployment
+1. **Vetting the Model:** Go to **AI hub -> Catalog**, check the **Tool calling** filter, and copy the validated CLI deployment arguments (e.g., `--enable-auto-tool-choice`).
+2. **Evaluating the Model:** Submit an EvalHub job specifying the model endpoint and selecting safety benchmarks (e.g., garak OWASP Top 10). Review the automated audit trail in the MLflow UI.
+3. **Deploying the Tool:** As an admin, navigate to **AI hub -> MCP servers (Catalog)**, find the required tool, and deploy the MCP Server directly into the namespace via the `mcp-lifecycle-operator`.
+4. **Testing Safely:** Instruct developers to open the **Gen AI Playground**, click the **MCP** tab, securely authorize the server with a session token, and test the agent interactively.
+
+== Day-2 Diagnostics: The Anti-Pattern
+*Can you spot the architectural flaw?*
+
+**The Scenario: The "Shadow Agent" Exfiltration Risk**
+A developer on the logistics team wants to build an AI agent capable of querying real-time shipping events from a secure internal Confluent Kafka stream. To bypass the "slow" IT provisioning process, they embed their personal Confluent Cloud API credentials directly into a LangChain Python script running locally. They expose the agent to the internet to test it from their phone.
+
+**Why this is an Anti-Pattern:**
+* The developer has created a "Shadow Agent." The LLM has unrestricted access to the Kafka stream via the developer's raw API credentials.
+* If the LLM is subjected to a prompt injection attack, a malicious actor could instruct the agent to query the Kafka stream and exfiltrate sensitive shipping manifests to an external URL.
+* Because the integration is hard-coded locally, the enterprise has zero visibility, no audit logs, and no centralized way to revoke the tool access if compromised.
+
+**The Solution:**
+In OpenShift AI 3.4, the Platform Engineer eliminates this risk by using the **MCP Catalog**. Instead of the developer hardcoding keys, the Platform Engineer navigates to the MCP Catalog and deploys the Red Hat technology partner Confluent Cloud MCP server. 
+
+The API credentials are securely managed by the cluster via the `mcp-gateway`. The developer simply opens the Gen AI Playground, navigates to the MCP tab, and checks the box for the Confluent tool. They can prototype the agent safely within the governed OpenShift environment without ever touching the raw API keys.
+
+<<<
+*Ready to build it? Proceed to the Interactive Labs.*

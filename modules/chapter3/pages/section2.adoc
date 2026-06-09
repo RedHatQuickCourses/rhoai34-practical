@@ -1,6 +1,66 @@
-= Section 2
+= Interactive Labs: Scaling Massive Models
+:navtitle: Labs: Distributed Inference
+:description: Interactive UI click-paths for configuring OpenShift AI 3.4 Kueue and llm-d.
 
-* Create multiple copies of this section as needed.
-* Remove any unnecessary sections or chapter pages.
-* Customize the section as appropriate.
-* Ensure that each page contains a manageable amount of content.
+In these interactive labs, you will execute the "Happy Path" to link Kueue to a Hardware Profile and deploy a massive model across multiple GPUs.
+
+== Lab 1: Stopping the GPU Turf War (Kueue)
+**Goal:** Ensure Kueue is enabled so workloads pend gracefully instead of crashing the cluster.
+
+.Arcade: Enable Kueue and LocalQueues
+====
+// Antora iframe embed placeholder for Arcade 1
+// ++++ 
+// <iframe src="URL_TO_ARCADE_1" width="100%" height="600px"></iframe> 
+// ++++
+
+**Guided Steps:**
+1. Log in to the OpenShift AI dashboard as an administrator.
+2. Navigate to **Settings -> Cluster settings**.
+3. Locate the Kueue section and ensure the UI integration is active.
+4. Navigate to your OpenShift Console terminal and ensure your data science project is labeled for Kueue enforcement: `oc label namespace <your-project> kueue.openshift.io/managed=true`.
+5. Apply a basic `LocalQueue` YAML to your namespace named `heavy-training-queue` that points to your cluster's default `ClusterQueue`.
+====
+
+== Lab 2: Creating a Hardware Profile
+**Goal:** Create a UI-selectable profile that automatically links distributed workloads to the Kueue system.
+
+.Arcade: Hardware Profiles
+====
+// Antora iframe embed placeholder for Arcade 2
+// ++++ 
+// <iframe src="URL_TO_ARCADE_2" width="100%" height="600px"></iframe> 
+// ++++
+
+**Guided Steps:**
+1. In the OpenShift AI dashboard, navigate to **Settings -> Hardware profiles**.
+2. Click **Create hardware profile**. Name it `Distributed GPU Node`.
+3. Click **Add resource**. Set Resource identifier to `nvidia.com/gpu` and ensure Requests/Limits are set appropriately for a multi-GPU slice.
+4. Scroll down to the **Resource allocation** section.
+5. Under **Workload allocation strategy**, select **Local queue**.
+6. In the Local queue field, enter `heavy-training-queue`.
+7. Click **Create hardware profile**.
+====
+
+== Lab 3: Deploying a Distributed Model
+**Goal:** Deploy a massive model using llm-d, leveraging the queue and hardware profile.
+
+.Arcade: Deploying llm-d
+====
+// Antora iframe embed placeholder for Arcade 3
+// ++++ 
+// <iframe src="URL_TO_ARCADE_3" width="100%" height="600px"></iframe> 
+// ++++
+
+**Guided Steps:**
+1. In the OpenShift AI dashboard, navigate to **Data Science Projects** and open your project.
+2. Click the **Deployments** tab.
+3. In the Model serving platform tile, click **Deploy model**.
+4. Name the deployment `massive-70b-model`.
+5. Under **Hardware profile**, select your newly created `Distributed GPU Node`.
+6. Under **Serving runtime**, explicitly select `Distributed inference with llm-d`.
+7. Provide your S3-compatible storage connection containing the model weights.
+8. Click **Deploy**. Because you assigned the hardware profile tied to Kueue, the underlying service is automatically labeled with `kueue.x-k8s.io/queue-name: heavy-training-queue` and will pend gracefully if GPUs are currently in use.
+====
+
+**Module Complete!** You have successfully eliminated GPU resource conflicts and scaled inference beyond the limits of a single node.

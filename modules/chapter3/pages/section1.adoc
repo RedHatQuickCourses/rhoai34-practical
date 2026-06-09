@@ -1,6 +1,40 @@
-= Section 1
+= Module 4 Runbook: Scaling Massive Models
+:navtitle: Runbook: Distributed Inference & Kueue
+:description: Theoretical architecture and Anti-Pattern for Kueue and llm-d.
 
-* Create multiple copies of this section as needed.
-* Remove any unnecessary sections or chapter pages.
-* Customize the section as appropriate.
-* Ensure that each page contains a manageable amount of content.
+If you passed the Diagnostic Gateway, use this page as your quick-reference job aid. If you are building your foundational skills, read this carefully before proceeding to the interactive labs.
+
+== Why Massive LLMs Require Distributed Inference
+A common misconception is that standard Kubernetes autoscaling or adding more Pod replicas will solve Out of Memory (OOM) errors for large models. It will not. 
+
+If a data science team attempts to load a 70-Billion parameter model at 16-bit precision, the model weights alone require approximately 140GB of VRAM. If your cluster only has standard GPUs with 24GB to 80GB of VRAM, the model cannot physically fit on a single device. 
+
+**Distributed Inference with `llm-d`** solves this by applying Tensor Parallelism and Pipeline Parallelism. Instead of duplicating the entire model per pod, `llm-d` leverages the Red Hat **Leader Worker Set (LWS) Operator** (which officially replaces Ray in 3.4 for vLLM workloads) to slice the model's layers and distribute them across multiple GPUs and nodes.
+
+== Kueue: The GPU Traffic Cop
+Without Kueue, if ten data scientists simultaneously request a 4-GPU distributed inference deployment on an 8-GPU cluster, Kubernetes will attempt to schedule all of them, resulting in `InsufficientQuota` crashes or deadlocks. 
+
+Kueue acts as a centralized traffic cop. It uses a **ClusterQueue** to define the global limits of your hardware (e.g., maximum 8 GPUs total) and **LocalQueues** in user namespaces that point to the ClusterQueue. If resources are full, Kueue gracefully holds the new workloads in a "Pending" state in the LocalQueue until the required GPUs are freed up.
+
+== Configuration Cheat Sheet: Preparing for Distributed Models
+1. **Install Prerequisites:** Install the independent Red Hat build of Kueue Operator, Node Feature Discovery, NVIDIA GPU Operator, and the Leader Worker Set Operator.
+2. **Enable Kueue:** In the DataScienceCluster CR, set `spec.components.kueue.managementState` to `Unmanaged` (as the embedded Kueue component is deprecated in 3.4). 
+3. **Define Quotas:** Create a `ResourceFlavor` (defining the node types) and a `ClusterQueue` (defining the total GPU limits).
+4. **Create the Local Queue:** In the target project namespace, create a `LocalQueue` that references the `ClusterQueue`. 
+5. **Create a Hardware Profile:** In the OpenShift AI Dashboard (**Settings -> Hardware profiles**), create a profile with the required GPUs. Under "Workload allocation strategy", select **Local queue** and input your LocalQueue name.
+6. **Deploy:** Data scientists select `Distributed inference with llm-d` as the serving runtime and apply the new Hardware Profile during deployment.
+
+== Day-2 Diagnostics: The Anti-Pattern
+*Can you spot the architectural flaw?*
+
+**The Scenario: The "More Replicas" Fallacy**
+A platform engineer is asked to deploy the `Llama-3.1-70B` model. They spin up a standard vLLM Serving Runtime on a cluster where nodes only have 24GB GPUs. The deployment instantly crashes with an Out of Memory (OOM) error. Thinking this is a throughput capacity issue, the engineer edits the InferenceService and increases `spec.replicas` from 1 to 4, hoping the load will spread out and the model will load. All 4 replicas immediately crash.
+
+**Why this is an Anti-Pattern:**
+This is a fundamental misunderstanding of VRAM memory footprint vs. HTTP request throughput. Requesting more replicas of a standard vLLM runtime does not split the model; it instructs Kubernetes to spin up 4 identical Pods, each attempting to cram the entire 140GB model into a single 24GB GPU. It just copies the failure four times.
+
+**The Solution:**
+The engineer must use the **Distributed Inference with `llm-d`** runtime. By configuring `workerSpec.tensorParallelSize` (e.g., setting it to 8), the `llm-d` runtime pairs with the Leader Worker Set operator to actually *shard* the model weights across 8 GPUs of 24GB each. This ensures the aggregate memory can easily accommodate the massive LLM.
+
+<<<
+*Ready to build it? Proceed to the Interactive Labs.*

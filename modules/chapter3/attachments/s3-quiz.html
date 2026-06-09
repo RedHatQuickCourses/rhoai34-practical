@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+      /* --- Basic Styles --- */
+        :root {
+            --correct-color: #63993d;
+            --incorrect-color: #f0561d;
+            --intro-color: #111;
+            --next-btn-color: #0066cc;
+            --prev-btn-color: #383838;
+            --restart-btn-color: #ee0000;
+            --text-color: #111;
+        }
+
+        body {
+            font-family: 'Red Hat Display', sans-serif;
+            color: var(--text-color);
+            margin: 1.5em;
+        }
+
+        /* --- Quiz Components --- */
+        #quiz-intro {
+            color: var(--intro-color);
+            margin-bottom: 2em;
+            line-height: 1.6;
+            background-color: #f4f4f4;
+            padding: 1.5em;
+            border-left: 4px solid #ee0000;
+            border-radius: 4px;
+        }
+
+        #question-counter {
+            color: #383838;
+            margin-bottom: 1em;
+            font-weight: 700;
+        }
+
+        #question-container {
+            margin-bottom: 1.5em;
+        }
+
+        #question-text {
+            font-size: 1.25em;
+            font-weight: 700;
+            margin-bottom: 1em;
+        }
+
+        .answer-item {
+            margin-bottom: 1em;
+        }
+
+        .answer-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 0.75em;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            transition: border-color 0.3s;
+        }
+        .answer-label:hover {
+            border-color: #999;
+        }
+
+        .custom-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #555;
+            border-radius: 4px;
+            margin-right: 12px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .explanation {
+            display: none;
+            padding: 0.75em;
+            margin-top: 0.5em;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+        
+        .explanation a {
+            color: inherit;
+            text-decoration: underline;
+        }
+
+        /* --- State Styling --- */
+        .answer-item.answered.correct .answer-label,
+        .answer-item.answered.correct .explanation {
+            background-color: #f0f8ec;
+            border-color: var(--correct-color);
+            color: var(--correct-color);
+        }
+
+        .answer-item.answered.incorrect .answer-label,
+        .answer-item.answered.incorrect .explanation {
+            background-color: #fff0e9;
+            border-color: var(--incorrect-color);
+            color: var(--incorrect-color);
+        }
+
+        .answer-item.answered.correct .custom-checkbox {
+            border-color: var(--correct-color);
+            background-color: var(--correct-color);
+            color: white;
+        }
+
+        .answer-item.answered.incorrect .custom-checkbox {
+            border-color: var(--incorrect-color);
+            background-color: var(--incorrect-color);
+            color: white;
+        }
+
+        /* --- Results Screen --- */
+        #results-container {
+            display: none;
+            text-align: center;
+            padding: 2.5em;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            margin-bottom: 2em;
+        }
+
+        .score-text {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 0.2em;
+        }
+
+        .score-details {
+            font-size: 1.2em;
+            color: #555;
+            margin-bottom: 1.5em;
+        }
+
+        .pass { color: var(--correct-color); }
+        .fail { color: var(--incorrect-color); }
+
+        .results-message {
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        /* --- Navigation --- */
+        #navigation-container {
+            margin-top: 2em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-button {
+            border: none;
+            padding: 0.8em 1.5em;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            color: white;
+            transition: opacity 0.3s;
+        }
+
+        .nav-button:hover {
+            opacity: 0.85;
+        }
+
+        #prev-btn { background-color: var(--prev-btn-color); }
+        #next-btn { background-color: var(--next-btn-color); }
+        #results-btn { background-color: var(--correct-color); }
+        #restart-btn { background-color: var(--restart-btn-color); }
+    </style>
+  </head>
+  <body>
+    <div id="quiz-container">
+      <div id="quiz-intro"></div>
+      
+      <div id="results-container">
+          <div class="score-text" id="final-score-percent"></div>
+          <div class="score-details" id="final-score-breakdown"></div>
+          <div class="results-message" id="final-message"></div>
+      </div>
+
+      <div id="question-counter"></div>
+      <div id="question-container">
+        <p id="question-text"></p>
+        <div id="answers-container"></div>
+      </div>
+      
+      <div id="navigation-container">
+        <button id="prev-btn" class="nav-button" style="display: none;">Previous</button>
+        <button id="next-btn" class="nav-button" style="display: none;">Next</button>
+        <button id="results-btn" class="nav-button" style="display: none;">View Results</button>
+        <button id="restart-btn" class="nav-button" style="display: none;">Restart Gateway</button>
+      </div>
+    </div>
+    
+    <script>
+      const quizDataText = `<b>Module 4: Diagnostic Gateway.</b> <br><br>Massive models like 70B parameter LLMs are crashing due to out-of-memory errors, and your data science teams are deadlocked fighting over remaining GPU capacity. Prove you know how to resolve this by configuring Kueue and Distributed Inference (llm-d) in OpenShift AI 3.4. <br><br><b>The 80% Rule:</b> Score 80% or higher to jump straight to the Runbook. If you score below 80%, you will proceed to the interactive labs to build these critical scaling skills.
+
+---
+Q1: A data scientist complains that deploying models involves too many confusing manual configurations. How do Hardware Profiles simplify this in the OpenShift AI 3.4 UI?
+
+A: They automatically download the required model weights from Hugging Face.
+Incorrect: Hardware profiles do not manage model weight downloads.
+
+A: They allow the system to automatically analyze the selected model framework and suggest the best serving runtime by matching the accelerator defined in the profile.
+Correct: When a user selects a Hardware Profile, the system can automatically suggest a compatible serving runtime (like vLLM NVIDIA GPU) by analyzing the model type, format, and matching the accelerator defined in the profile.
+
+A: They automatically configure the prompt templates for the model.
+Incorrect: Prompt templates are handled in the Gen AI playground or model metadata, not hardware profiles.
+
+A: They bypass the need for persistent storage.
+Incorrect: Persistent storage is still required to load model weights.
+---
+Q2: To prevent the "GPU Turf War" between teams, you implement Kueue. How do ClusterQueues and LocalQueues work together to manage resources?
+
+A: ClusterQueues are tied to individual users, while LocalQueues are tied to the entire cluster.
+Incorrect: This is the exact opposite of how Kueue architecture works.
+
+A: LocalQueues are namespace-scoped endpoints that accept workloads, while ClusterQueues manage the actual cluster-wide resource quotas and admission rules.
+Correct: A LocalQueue is a namespace-scoped object that accepts workloads from users in a specific project, which then points to a ClusterQueue that manages the actual global resource limits and admission decisions.
+
+A: ClusterQueues manage storage, while LocalQueues manage compute.
+Incorrect: Both queue types handle compute/accelerator scheduling.
+
+A: Both are exactly the same, but LocalQueues are used for predictive AI and ClusterQueues for generative AI.
+Incorrect: Kueue handles all batch workloads identically regardless of the AI type.
+---
+Q3: What is the fundamental architectural difference between standard KServe vLLM runtimes and the new Distributed Inference (llm-d) runtime?
+
+A: Standard vLLM uses CPUs, while llm-d uses GPUs.
+Incorrect: Both use GPUs; the difference is the span across nodes.
+
+A: Standard KServe vLLM deploys models onto a single node, whereas llm-d distributes model weights across multiple nodes and GPUs to serve massive models that exceed single-node memory limits.
+Correct: Distributed Inference with llm-d is a Kubernetes-native framework for serving large language models at scale, capable of splitting large models across multiple nodes and GPUs when they are too large to fit in a single GPU's VRAM.
+
+A: llm-d requires the Knative Serverless stack, while KServe vLLM uses RawDeployment.
+Incorrect: Neither use Knative Serverless in 3.4, as it is deprecated.
+
+A: Standard KServe requires an internet connection, while llm-d is offline-only.
+Incorrect: Both can operate in air-gapped environments.
+---
+Q4: A Platform Engineer is migrating from OpenShift AI 3.3 to 3.4. In 3.3, Ray was used to distribute multi-node vLLM workloads. What orchestration component handles multi-node vLLM deployments in 3.4?
+
+A: KubeRay Operator
+Incorrect: Ray is no longer the recommended mechanism for multi-node vLLM in 3.4.
+
+A: Knative Eventing
+Incorrect: Knative is deprecated for KServe workloads.
+
+A: Spark Operator
+Incorrect: Spark is for data processing, not vLLM inference orchestration.
+
+A: The Leader Worker Set (LWS) Operator and native vLLM multiprocessing
+Correct: Starting with OpenShift AI 3.4, Ray is removed from the vLLM multi-node ServingRuntime, and multi-node inference now relies on native vLLM multiprocessing support and the Red Hat Leader Worker Set Operator.
+---
+Q5: You have enabled the new 3.4 Workload Variant Autoscaler (WVA) for a distributed inference deployment. How does WVA decide when to scale up the deployment?
+
+A: It scales up when CPU utilization exceeds 80%.
+Incorrect: CPU metrics are a poor indicator of LLM saturation.
+
+A: It scales up when HTTP request per second (RPS) breaches a hardcoded limit.
+Incorrect: Generic RPS doesn't account for token length or KV cache size.
+
+A: It uses inference-specific saturation signals, specifically when average spare KV cache capacity or spare queue capacity falls below configured triggers.
+Correct: The WVA computes token-level demand rather than relying on generic metrics like CPU. It signals a scale-up if the average spare KV capacity falls below kvSpareTrigger or the average spare queue capacity falls below queueSpareTrigger.
+
+A: It scales up randomly based on a cron job.
+Incorrect: Scaling is strictly demand-driven via saturation algorithms.
+---
+Q6: To ensure data scientists automatically use Kueue without needing to write YAML, how do you link a Hardware Profile to a Kueue Local Queue in the UI?
+
+A: By naming the Hardware Profile with the prefix kueue-.
+Incorrect: Naming conventions alone do not link resources.
+
+A: In the Hardware Profile settings under "Workload allocation strategy", you select "Local queue" and enter the target LocalQueue name.
+Correct: In the hardware profile configuration under the "Resource allocation" section, administrators can select a "Workload allocation strategy" of "Local queue" and enter the name of the LocalQueue that the hardware profile will use.
+
+A: You cannot link them; data scientists must always apply manual annotations.
+Incorrect: The UI specifically solves this via Hardware Profiles.
+
+A: By selecting the "Enable Kueue" checkbox during model deployment.
+Incorrect: The integration is configured in the Hardware Profile, not a checkbox on deployment.
+---
+Q7: A 70B parameter model is crashing with Out of Memory (OOM) errors on a node with a single 24GB VRAM GPU. Why is this happening?
+
+A: The model requires an Intel Gaudi accelerator, not a GPU.
+Incorrect: GPUs can run this model, but not a single 24GB one.
+
+A: At 16-bit precision, a 70B model requires roughly 140GB of VRAM just to load the weights, far exceeding the 24GB capacity.
+Correct: A 70B model using 16-bit precision requires around 140GB of VRAM to load the model weights, making it impossible to fit into a single 24GB GPU without techniques like quantization or distributed tensor parallelism.
+
+A: The vLLM runtime does not support 70B models.
+Incorrect: vLLM fully supports 70B models, provided there is enough memory.
+
+A: The batch size is set too small.
+Incorrect: Small batch sizes reduce memory; this is purely a model weight size issue.
+---
+Q8: You apply the kueue.openshift.io/managed=true label to a project namespace. What mechanism enforces that all supported workloads in this namespace are routed through Kueue?
+
+A: A cron job deletes unmanaged pods.
+Incorrect: Enforcement happens at admission, not via post-creation deletion.
+
+A: A validating admission webhook prevents the creation or update of workloads if they lack the kueue.x-k8s.io/queue-name label.
+Correct: After a project is enabled for Kueue management via the namespace label, a validating webhook automatically enforces queuing rules, requiring that any new or updated workload has the kueue.x-k8s.io/queue-name label.
+
+A: Red Hat Service Mesh routes the network traffic to the queue.
+Incorrect: Service Mesh handles network routing, not Kubernetes pod scheduling/admission.
+
+A: OPA Gatekeeper intercepts the UI clicks.
+Incorrect: The enforcement is native to Kueue's own validating webhook.
+---
+Q9: In 3.4, the embedded Kueue component is deprecated. What is the required architectural state for Kueue in the DataScienceCluster CR to use modern queue management?
+
+A: spec.components.kueue.managementState must be set to Managed.
+Incorrect: Setting it to Managed will install the deprecated embedded component.
+
+A: spec.components.kueue.managementState must be set to Unmanaged, and the independent Red Hat build of Kueue Operator must be installed.
+Correct: Starting with OpenShift AI 3.4, the embedded Kueue component is deprecated. Administrators must set managementState to Unmanaged and install the independent Red Hat build of Kueue Operator to handle scheduling without conflicts.
+
+A: spec.components.kueue.managementState must be set to Removed.
+Incorrect: Removed entirely uninstalls it; Unmanaged tells the DSC to stop fighting the external operator.
+
+A: Kueue is entirely removed and replaced by KEDA.
+Incorrect: Kueue and KEDA serve different purposes (scheduling vs autoscaling).
+---
+Q10: When deploying a large model via Distributed Inference (llm-d), what configuration value determines how many GPUs the model weights are split across on a single node?
+
+A: workerSpec.pipelineParallelSize
+Incorrect: Pipeline parallelism dictates splitting across multiple distinct nodes, not GPUs on a single node.
+
+A: spec.replicas
+Incorrect: This just creates copies of the entire model service, it does not shard weights.
+
+A: workerSpec.tensorParallelSize
+Correct: The workerSpec.tensorParallelSize determines how many GPUs are used per node to balance and shard the model weights.
+
+A: NCCL_NET_GDR_LEVEL
+Incorrect: This is a low-level networking environment variable.`;
+
+      // --- PARSING LOGIC ---
+      function parseQuizData(text) {
+          try {
+              const parts = text.split('---');
+              const intro = parts.shift().trim();
+              
+              const questions = parts.filter(p => p.trim() !== '').map((part) => {
+                  const lines = part.trim().split('\n').map(l => l.trim()).filter(l => l !== '');
+                  if (lines.length === 0) return null;
+
+                  const questionLine = lines.shift();
+                  const questionText = questionLine.replace(/^Q\d+:\s*/, '').trim();
+                  
+                  const answers = [];
+                  let currentAnswer = null;
+
+                  for (const line of lines) {
+                      if (line.startsWith('A:')) {
+                          if (currentAnswer) {
+                              answers.push(currentAnswer);
+                          }
+                          currentAnswer = { text: line.substring(2).trim(), isCorrect: false, explanation: '' };
+                      } else if (line.startsWith('Correct:')) {
+                          if(currentAnswer) {
+                              currentAnswer.isCorrect = true;
+                              currentAnswer.explanation = line.substring(8).trim();
+                          }
+                      } else if (line.startsWith('Incorrect:')) {
+                           if(currentAnswer) {
+                              currentAnswer.isCorrect = false;
+                              currentAnswer.explanation = line.substring(10).trim();
+                          }
+                      } else {
+                          if (currentAnswer) {
+                              currentAnswer.explanation += ' ' + line;
+                          }
+                      }
+                  }
+                  if (currentAnswer) {
+                      answers.push(currentAnswer);
+                  }
+                  
+                  return { question: questionText, answers: answers, firstAttemptCorrect: null };
+              }).filter(q => q !== null);
+
+              return { intro, questions };
+          } catch (e) {
+              console.error("Failed to parse quiz data:", e);
+              return { intro: "<span style='color:red;'>Fatal Parsing Error. Check developer console.</span>", questions: [] };
+          }
+      }
+
+      // --- QUIZ APPLICATION LOGIC ---
+      try {
+          const { intro, questions } = parseQuizData(quizDataText);
+          let currentQuestionIndex = 0;
+
+          const introEl = document.getElementById('quiz-intro');
+          const questionCounterEl = document.getElementById('question-counter');
+          const questionTextEl = document.getElementById('question-text');
+          const answersContainerEl = document.getElementById('answers-container');
+          
+          const resultsContainerEl = document.getElementById('results-container');
+          const finalScorePercentEl = document.getElementById('final-score-percent');
+          const finalScoreBreakdownEl = document.getElementById('final-score-breakdown');
+          const finalMessageEl = document.getElementById('final-message');
+
+          const nextBtn = document.getElementById('next-btn');
+          const prevBtn = document.getElementById('prev-btn');
+          const resultsBtn = document.getElementById('results-btn');
+          const restartBtn = document.getElementById('restart-btn');
+
+          introEl.innerHTML = intro;
+
+          if (!questions || questions.length === 0) {
+              questionTextEl.innerHTML = "<span style='color:red;'>No questions were loaded. Ensure the data format is correct.</span>";
+          } else {
+              function displayQuestion(index) {
+                  const question = questions[index];
+                  questionCounterEl.style.display = 'block';
+                  questionContainerEl = document.getElementById('question-container');
+                  questionContainerEl.style.display = 'block';
+                  resultsContainerEl.style.display = 'none';
+
+                  questionCounterEl.textContent = `Question ${index + 1} of ${questions.length}`;
+                  questionTextEl.textContent = question.question;
+                  answersContainerEl.innerHTML = '';
+
+                  question.answers.forEach((answer, answerIndex) => {
+                      const answerItem = document.createElement('div');
+                      answerItem.className = 'answer-item';
+                      
+                      answerItem.innerHTML = `
+                          <div class="answer-label" data-index="${answerIndex}">
+                              <span class="custom-checkbox"></span>
+                              <span class="answer-text">${answer.text}</span>
+                          </div>
+                          <div class="explanation">${answer.explanation}</div>
+                      `;
+                      answersContainerEl.appendChild(answerItem);
+                  });
+                  
+                  updateNavigation();
+              }
+              
+              function handleAnswerClick(event) {
+                  const label = event.target.closest('.answer-label');
+                  if (!label) return;
+
+                  const answerItem = label.parentElement;
+                  const explanation = answerItem.querySelector('.explanation');
+                  const checkbox = label.querySelector('.custom-checkbox');
+
+                  const isAnswered = answerItem.classList.contains('answered');
+
+                  if (isAnswered) {
+                       answerItem.classList.remove('answered', 'correct', 'incorrect');
+                       explanation.style.display = 'none';
+                       checkbox.textContent = '';
+                  } else {
+                      const answerIndex = parseInt(label.dataset.index);
+                      const answer = questions[currentQuestionIndex].answers[answerIndex];
+                      
+                      if (questions[currentQuestionIndex].firstAttemptCorrect === null) {
+                          questions[currentQuestionIndex].firstAttemptCorrect = answer.isCorrect;
+                      }
+
+                      answerItem.classList.add('answered');
+                      explanation.style.display = 'block';
+
+                      if (answer.isCorrect) {
+                          answerItem.classList.add('correct');
+                          checkbox.innerHTML = '&#10003;'; 
+                      } else {
+                          answerItem.classList.add('incorrect');
+                          checkbox.innerHTML = '&#10007;'; 
+                      }
+                  }
+              }
+
+              function showResults() {
+                  document.getElementById('question-counter').style.display = 'none';
+                  document.getElementById('question-container').style.display = 'none';
+                  
+                  const correctCount = questions.filter(q => q.firstAttemptCorrect === true).length;
+                  const wrongCount = questions.filter(q => q.firstAttemptCorrect === false).length;
+                  const skippedCount = questions.length - correctCount - wrongCount;
+                  const percentage = Math.round((correctCount / questions.length) * 100);
+
+                  finalScorePercentEl.textContent = `${percentage}%`;
+                  finalScoreBreakdownEl.textContent = `${correctCount} Correct | ${wrongCount} Incorrect | ${skippedCount} Skipped`;
+
+                  if (percentage >= 80) {
+                      finalScorePercentEl.className = 'score-text pass';
+                      finalMessageEl.innerHTML = `<b>Congratulations!</b> You have demonstrated mastery of scaling models and queueing. You may proceed directly to the Runbook and skip the interactive setup labs.`;
+                  } else {
+                      finalScorePercentEl.className = 'score-text fail';
+                      finalMessageEl.innerHTML = `You're on your way, but there are a few architectural concepts we need to solidify. Please proceed to the Runbook and complete the interactive setup labs below to build your foundational skills.`;
+                  }
+
+                  resultsContainerEl.style.display = 'block';
+
+                  prevBtn.style.display = 'none';
+                  nextBtn.style.display = 'none';
+                  resultsBtn.style.display = 'none';
+                  restartBtn.style.display = 'inline-block';
+              }
+
+              function updateNavigation() {
+                  prevBtn.style.display = currentQuestionIndex > 0 ? 'inline-block' : 'none';
+                  
+                  const isLastQuestion = currentQuestionIndex === questions.length - 1;
+                  nextBtn.style.display = isLastQuestion ? 'none' : 'inline-block';
+                  resultsBtn.style.display = isLastQuestion ? 'inline-block' : 'none';
+                  restartBtn.style.display = 'none';
+
+                  const navContainer = document.getElementById('navigation-container');
+                  navContainer.style.justifyContent = currentQuestionIndex === 0 ? 'flex-end' : 'space-between';
+              }
+
+              answersContainerEl.addEventListener('click', handleAnswerClick);
+
+              nextBtn.addEventListener('click', () => {
+                  if (currentQuestionIndex < questions.length - 1) {
+                      currentQuestionIndex++;
+                      displayQuestion(currentQuestionIndex);
+                  }
+              });
+
+              prevBtn.addEventListener('click', () => {
+                  if (currentQuestionIndex > 0) {
+                      currentQuestionIndex--;
+                      displayQuestion(currentQuestionIndex);
+                  }
+              });
+
+              resultsBtn.addEventListener('click', () => {
+                  showResults();
+              });
+
+              restartBtn.addEventListener('click', () => {
+                  questions.forEach(q => q.firstAttemptCorrect = null);
+                  currentQuestionIndex = 0;
+                  displayQuestion(currentQuestionIndex);
+              });
+
+              displayQuestion(currentQuestionIndex);
+          }
+      } catch (err) {
+          document.body.innerHTML = `<p style="color:red; font-weight:bold;">Initialization Error: ${err.message}</p>`;
+      }
+    </script>
+  </body>
+</html>

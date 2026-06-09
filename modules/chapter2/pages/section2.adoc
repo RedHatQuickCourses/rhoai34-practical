@@ -1,0 +1,68 @@
+= Interactive Labs: Governing Access with MaaS
+:navtitle: Labs: MaaS & Observability
+:description: Interactive UI click-paths for configuring OpenShift AI 3.4 MaaS.
+
+In these interactive labs, you will execute the "Happy Path" to securely proxy an external LLM, govern user access with strict quotas, and view token showback reports for finance. 
+
+== Lab 1: Connecting an External Provider
+**Goal:** Securely register an external model (GPT-4o) using the OpenShift console so developers don't need the root API key.
+
+.Arcade: Configure External Egress
+====
+// Antora iframe embed placeholder for Arcade 1
+// ++++ 
+// <iframe src="URL_TO_ARCADE_1" width="100%" height="600px"></iframe> 
+// ++++
+
+**Guided Steps:**
+1. Log in to the OpenShift Console as a cluster administrator.
+2. Create the root credential: Open the terminal and run: `oc create secret generic openai-secret --from-literal=api-key=<YOUR_OPENAI_KEY> -n external-models`.
+3. Navigate to **Administration -> CustomResourceDefinitions**.
+4. Search for `ExternalModel` and click the resource name.
+5. Click the **Instances** tab, select the `external-models` project, and click **Create ExternalModel**.
+6. Configure the YAML: Set `spec.provider: openai`, `spec.endpoint: api.openai.com`, `spec.targetModel: gpt-4o`, and `spec.credentialRef.name: openai-secret`.
+7. Click **Create**. The model is now registered in the MaaS Gateway.
+====
+
+== Lab 2: Creating the Subscription and Auth Policy
+**Goal:** Assign the "Analytics" team a strict quota for the newly registered GPT-4o model.
+
+.Arcade: Define Subscription Quotas
+====
+// Antora iframe embed placeholder for Arcade 2
+// ++++ 
+// <iframe src="URL_TO_ARCADE_2" width="100%" height="600px"></iframe> 
+// ++++
+
+**Guided Steps:**
+1. Open the OpenShift AI Dashboard and navigate to **Settings -> Subscriptions**.
+2. Click **Create subscription**. Name it `analytics-gpt-sub`.
+3. Set the Priority level to `10`.
+4. Under Groups, select the OpenShift group `analytics-team`.
+5. Click **Add models**, select your new `gpt-4o` external model, and click **Add models**.
+6. Click **Add token limit**. Set the limit to `500000` tokens per `1 hour`. Click **Save**.
+7. Check the box for **"Create a matching authorization policy"** to simultaneously grant API gateway access.
+8. Click **Create subscription**.
+====
+
+== Lab 3: Generating Keys & Monitoring Showback
+**Goal:** Step into the shoes of a Developer generating a key, then pivot back to the Admin to view the financial showback report.
+
+.Arcade: Developer Self-Service and Showback
+====
+// Antora iframe embed placeholder for Arcade 3
+// ++++ 
+// <iframe src="URL_TO_ARCADE_3" width="100%" height="600px"></iframe> 
+// ++++
+
+**Guided Steps:**
+1. *(As the Developer):* Navigate to **Gen AI studio -> API keys**.
+2. Click **Create API key**. Name it `dev-testing-key`.
+3. Select the `analytics-gpt-sub` subscription, set expiration to 30 days, and click **Create**. Copy the `sk-oai-...` prefix key before closing the dialog.
+4. *(As the Admin):* Navigate to **Observe & monitor -> Dashboard**.
+5. Click the **Usage** tab to view the MaaS observability metrics.
+6. Review the **Token Consumption by User** table to see exactly how many tokens the developer consumed against the `gpt-4o` endpoint.
+7. Click **Export as CSV** to download the billing showback report for Finance.
+====
+
+**Module Complete!** You have successfully eliminated shadow AI by providing developers self-service access while maintaining strict financial and security controls.

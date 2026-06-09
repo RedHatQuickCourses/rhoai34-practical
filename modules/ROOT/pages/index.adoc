@@ -1,27 +1,122 @@
-= An Example Quick Course
-:navtitle: Home
+= Module 1: Introduction and Overview
+:navtitle: Introduction & Overview
+:description: A Practical Approach to OpenShift AI 3.4: Building the AI Engine Room
 
-== Introduction
+== The Shadow AI Crisis
 
-Course Title: Course title FIXME
+The CIO at your enterprise just called an emergency meeting. She projects a slide showing two deeply concerning charts.
 
-Description:
-Course description FIXME
+"We have a $1.5 million 'Shadow AI' problem," she begins, pointing to the first chart. "Developers across five different departments are expensing unmanaged, external LLM API keys. We have zero visibility into what data is leaving our network or how many tokens we are consuming."
 
-Duration: pass:[<span class="course-total-duration" aria-live="polite">…</span>]
+She points to the second chart. "At the same time, we've invested over $500,000 in internal GPU infrastructure. Yet, our data scientists are waiting weeks for capacity because resources are hoarded by single teams or sitting idle." 
 
-== Objectives
+The business needs to regain control. By centralizing AI operations, enterprises have realized over $5 million in cost avoidance , achieved a 40%+ reduction in GPU hours, and delivered 2x faster model responses. 
 
-On completing this course, you should be able to:
+Your mandate is clear: Transform this fragmented chaos into a secure, governed, and highly scalable **Enterprise AI Factory**.
 
-* Observable, measurable objective...
-* Observable, measurable objective...
-* Observable, measurable objective...
+.Arcade: Stepping into the AI Engine Room
+====
+// Antora iframe embed placeholder
+// ++++ 
+// <iframe src="URL_TO_ARCADE" width="100%" height="600px"></iframe> 
+// ++++
 
-== Prerequisites
+*(Visual: A split screen showing chaotic, fragmented infrastructure on the left, transitioning to a streamlined, automated, and secure factory pipeline on the right.)*
 
-This course assumes that you have the following prior experience:
+*Narrator:* "Welcome to 'A Practical Approach to OpenShift AI 3.4.' In this course, we will build a centralized, governed AI engine room from the ground up. You will learn how to enforce token limits to control API costs, securely deploy massive models across distributed hardware, and empower your data scientists and developers with self-service, compliant toolchains. Let’s step out of the shadows and get to work."
+====
 
-* Course or experience...
-* Course or experience...
-* Course or experience...
+== Course Prerequisites & Environment
+
+This is a practical, hands-on series. Rather than just showing you the "happy path," we will walk through the exact steps to build this architecture while navigating the configurations and capabilities you will face in production. 
+
+To get the most out of this course, you should understand:
+
+* Red Hat OpenShift administration basics.
+* Generic GPU enablement and Kubernetes resource requests.
+* Basic API and networking principles.
+
+== Product Overview by Persona
+
+OpenShift AI 3.4 brings massive updates that directly solve our CIO's crisis, targeting three core roles within the enterprise. 
+
+// Note: If your Antora UI uses the tabs extension, you can format these as [tabs] here.
+
+=== The Platform Engineer (Your Role)
+You are responsible for securing the infrastructure, optimizing hardware utilization, and providing visibility into resource consumption.
+
+* **Models-as-a-Service (MaaS) & Observability:** Replaces fragmented API keys with a flexible, internal subscription model. Define subscriptions to grant specific groups access to models with strict token quotas, and use the unified dashboard to generate chargeback reports for finance.
+* **Distributed Inference (`llm-d`):** Overcomes the lack of single-node GPU capacity for massive models by providing a Kubernetes-native framework to serve large language models at scale across multiple nodes.
+* **Kueue for Hardware Sharing:** Maximizes your GPU ROI by intelligently managing quotas and prioritizing job scheduling, stopping the "GPU turf wars."
+* **MCP Catalog:** A centralized UI for discovering and securely deploying Model Context Protocol (MCP) servers to prevent unvetted agentic integrations.
+
+=== The Data Scientist
+Focused on discovering the right models, ensuring their accuracy, and optimizing Retrieval-Augmented Generation (RAG) pipelines.
+
+* **Model Catalog & "Tool Calling" Filter:** A curated library of generative AI models. The new "Tool calling" filter instantly identifies models validated for agentic workflows.
+* **EvalHub:** An evaluation orchestration service that tests LLMs against standardized benchmarks to guarantee safety and compliance.
+* **AutoRAG (Technology Preview):** Automatically tests combinations of chunking, embedding, and retrieval settings to rank the best configurations for your RAG pipelines.
+
+=== The Application Developer
+Needs frictionless, self-service access to models and tools to build intelligent applications quickly.
+
+* **Gen AI Playground:** An interactive chat environment to rapidly prototype foundation models and test external tools before writing any application code.
+* **Self-Service API Keys:** Developers can instantly generate short-lived temporary API keys for prototyping, or permanent keys tied to their MaaS subscriptions, removing IT bottlenecks.
+
+== Feature-to-Role Alignment Matrix (Your Runbook)
+
+[cols="1,1,1,2", options="header"]
+|===
+| Business Challenge 
+| Persona 
+| OpenShift AI 3.4 Feature 
+| UI Action / Resolution
+
+| Spiraling API Costs & Lack of Showback
+| Platform Engineer
+| Models-as-a-Service (MaaS) & Observability
+| Navigate to **Settings -> Subscriptions** to set token limits, and **Observe & monitor -> Dashboard** to export usage data.
+
+| Hoarded GPUs & Model Capacity Limits
+| Platform Engineer
+| Kueue & Distributed Inference (`llm-d`)
+| Deploy models using the **Distributed inference with llm-d** runtime and apply Kueue labels to share resources.
+
+| Unvetted Shadow Agentic AI
+| Data Scientist
+| Model Catalog & EvalHub
+| Filter the Catalog using the **Tool calling** checkbox, then orchestrate benchmark tests via EvalHub.
+
+| Friction in API Credential Management
+| Application Developer
+| Gen AI Playground & API Keys
+| Access **Gen AI studio -> API keys** to generate scoped tokens securely.
+|===
+
+== Diagnostic Gateway: Knowledge Check
+
+Before we move into the lab environment to solve the CIO's challenges, let's verify your core understanding. 
+
+.Test Your Knowledge
+****
+*Scenario:* Your Finance department is demanding an LLM cost showback report by Friday to identify which development team is spending the most on AI inference. 
+
+*Question:* Which OpenShift AI 3.4 feature allows you to natively track token consumption and generate showback reports for specific user groups?
+
+* A) EvalHub
+* B) Models-as-a-Service (MaaS)
+* C) Model Registry
+* D) AutoRAG
+
+*(Answer: B - Models-as-a-Service allows you to centrally manage subscriptions, token rate limits, and view unified observability dashboards.)*
+****
+
+== What's Next: Your IT Support Tickets
+
+In the upcoming interactive lab modules, you will step into the AI Engine Room to resolve the following IT tickets:
+
+* **Ticket 1:** Configure a MaaS subscription and authorization policy to securely govern developer API access and enforce strict token quotas.
+* **Ticket 2:** Discover and deploy a massive agentic model using the Distributed Inference (`llm-d`) runtime to bypass single-node GPU limits.
+* **Ticket 3:** Interact with external MCP servers through the Gen AI Playground to test complex tool execution safely.
+
+Ready to start building? Proceed to Module 2.

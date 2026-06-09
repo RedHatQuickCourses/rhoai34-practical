@@ -1,0 +1,67 @@
+= Interactive Labs: Securing Agentic Workflows
+:navtitle: Labs: MCP & EvalHub
+:description: Interactive UI click-paths for vetting models and deploying MCP servers.
+
+In these interactive labs, you will execute the "Happy Path" to find a validated model, deploy a secure integration tool, and test it as a developer.
+
+== Lab 1: Vetting an Agentic Model (Model Catalog)
+**Goal:** Ensure you select a model empirically validated for agentic workflows, avoiding models that will hallucinate tool calls.
+
+.Arcade: Filtering for Tool Calling
+====
+// Antora iframe embed placeholder for Arcade 1
+// ++++ 
+// <iframe src="URL_TO_ARCADE_1" width="100%" height="600px"></iframe> 
+// ++++
+
+**Guided Steps:**
+1. Log in to the OpenShift AI dashboard.
+2. In the left navigation menu, click **AI hub -> Catalog**.
+3. In the left filter pane, locate the Task section and select the **Tool calling** checkbox. The catalog will refresh to display only models validated for tool-use compatibility.
+4. Click on a validated model card (e.g., `Ministral-3-14B-Instruct-2512`) to open its details page.
+5. Scroll to the YAML frontmatter section on the model card and locate the tool-calling metadata.
+6. Copy the specific required CLI arguments (e.g., `--enable-auto-tool-choice`, `--tool-call-parser`) and the chat template.
+7. Click **Deploy model**.
+8. In the deployment wizard, paste the copied CLI arguments into the *Additional serving runtime arguments* text box to ensure the model deploys with its agentic capabilities activated. Click **Deploy**.
+====
+
+== Lab 2: Deploying a Trusted Tool (MCP Catalog)
+**Goal:** Deploy a pre-packaged tool from the Catalog so developers can access backend systems without handling raw API credentials.
+
+.Arcade: Deploying an MCP Server
+====
+// Antora iframe embed placeholder for Arcade 2
+// ++++ 
+// <iframe src="URL_TO_ARCADE_2" width="100%" height="600px"></iframe> 
+// ++++
+
+**Guided Steps (Admin):**
+1. Ensure the `mcp-lifecycle-operator` is installed on the cluster.
+2. In the OpenShift AI dashboard, navigate to **AI hub -> MCP servers**.
+3. Browse the catalog and click on a trusted integration (e.g., the Confluent Cloud or GitHub MCP Server).
+4. Review the tool's capabilities and required environment variables (which will be securely stored as secrets).
+5. Click **Deploy** and select the target developer namespace (`logistics-agent-project`).
+6. The `mcp-gateway` now securely hosts this tool endpoint for the namespace.
+====
+
+== Lab 3: Testing the Agent Safely (Gen AI Playground)
+**Goal:** Act as the developer connecting to the governed tool using the UI, verifying the agentic workflow is operational.
+
+.Arcade: Connecting Tools in the Playground
+====
+// Antora iframe embed placeholder for Arcade 3
+// ++++ 
+// <iframe src="URL_TO_ARCADE_3" width="100%" height="600px"></iframe> 
+// ++++
+
+**Guided Steps (Developer):**
+1. In the OpenShift AI dashboard, navigate to **Gen AI studio -> Playground**.
+2. Select your newly deployed tool-capable model from the model dropdown.
+3. On the right-hand panel, click the **MCP** tab.
+4. You will see the MCP Server deployed by the Admin in Lab 2. Click the **Auth** icon to authorize your session securely.
+5. *Enable Safety:* In the Playground settings, toggle on **Prompt Guard** to ensure your test inputs are scanned for prompt injections.
+6. Type a prompt that requires the tool (e.g., *"Check the Kafka stream for shipping delays"*). 
+7. Watch the chat interface as the LLM successfully invokes the tool, receives the data, and formulates an answer—all without you writing a single line of integration code.
+====
+
+**Course Complete!** You have successfully built a secure, scalable, and governed AI Engine Room using OpenShift AI 3.4.
