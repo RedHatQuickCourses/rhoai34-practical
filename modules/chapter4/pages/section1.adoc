@@ -1,8 +1,8 @@
-= Module 5 Runbook: Securing Agentic Workflows
+= Module 4 Runbook: Securing Agentic Workflows
 :navtitle: Runbook: MCP & EvalHub
 :description: Theoretical architecture and Anti-Pattern for MCP and EvalHub.
 
-If you passed the Diagnostic Gateway, use this page as your quick-reference job aid. If you are building your foundational skills, read this carefully before proceeding to the interactive labs.
+If you passed the Readiness Assessment, use this page as your quick-reference job aid. If you are building your foundational skills, read this carefully before proceeding to the interactive labs.
 
 == The Shift to Agentic AI and the Security Paradigm
 Historically, AI deployments were simple Chatbots: a user asked a question, and the LLM returned text. With "Agentic AI," the paradigm has flipped. The LLM is now an agent making decisions to actively call external tools, execute code, or query databases to accomplish a goal. 

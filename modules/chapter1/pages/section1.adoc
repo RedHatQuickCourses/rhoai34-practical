@@ -1,9 +1,9 @@
 
-= Runbook: Platform Setup & Readiness
+= Module 1 Runbook: Platform Setup & Readiness
 :navtitle: Runbook: Platform Setup
 :description: Theoretical architecture and component mapping for OpenShift AI 3.4 setup.
 
-If you passed the Diagnostic Gateway, use this page as your quick-reference job aid. If you are building your foundational skills, read this carefully before proceeding to the interactive labs.
+If you passed the Readiness Assessment, use this page as your quick-reference job aid. If you are building your foundational skills, read this carefully before proceeding to the interactive labs.
 
 == Understanding the Architecture Layers
 Setting up OpenShift AI is not a single-click installation; it is a layered architecture. Platform Engineers must understand the distinction between the management plane and the activation plane.

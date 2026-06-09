@@ -1,8 +1,8 @@
-= Module 6 Runbook: Model Catalog, Registry, and Storage
+= Module 5 Runbook: Model Catalog, Registry, and Storage
 :navtitle: Runbook: Registry & Modelcars
 :description: Theoretical architecture and Anti-Pattern for the Model Registry and OCI Modelcars.
 
-If you passed the Diagnostic Gateway, use this page as your quick-reference job aid. If you are building your foundational skills, read this carefully before proceeding to the interactive labs.
+If you passed the Readiness Assessment, use this page as your quick-reference job aid. If you are building your foundational skills, read this carefully before proceeding to the interactive labs.
 
 == Model Catalog vs. Model Registry: Governing the Lifecycle
 In a mature AI architecture, Platform Engineers must define clear boundaries between discovery and governance to prevent shadow AI assets.

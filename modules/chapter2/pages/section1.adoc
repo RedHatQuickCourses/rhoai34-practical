@@ -1,8 +1,8 @@
-= Module 3 Runbook: Governing Access with Models-as-a-Service
+= Module 2 Runbook: Governing Access with Models-as-a-Service
 :navtitle: Runbook: MaaS & Observability
 :description: Theoretical architecture, cheat sheet, and Anti-Pattern for MaaS.
 
-If you passed the Diagnostic Gateway, use this page as your quick-reference job aid. If you are building your foundational skills, read this carefully before proceeding to the interactive labs.
+If you passed the Readiness Assessment, use this page as your quick-reference job aid. If you are building your foundational skills, read this carefully before proceeding to the interactive labs.
 
 == The Centralized Gateway vs. Direct Static API Keys
 In traditional "Shadow AI" environments, developers bypass IT by directly requesting and embedding vendor API keys (like OpenAI or AWS Bedrock) into their source code. This is a massive vulnerability: if a key leaks, there is no way to instantly restrict access, and the enterprise has zero visibility into which team is driving up the cloud bill.
@@ -51,7 +51,7 @@ The Gateway enforces their specific Subscription token limit (preventing runaway
 == API Key Lifecycle & Governance
 MaaS API keys carry a critical security implication: group membership is captured as a *snapshot* at the moment the key is created. If a contractor or employee is later removed from their OIDC group, their previously generated API keys continue to function until they expire or are manually revoked by an administrator. Platform Engineers must build a revocation checklist into their offboarding runbook.
 
-To enforce organizational key hygiene, administrators configure the global maximum expiration for all generated API keys in the `Tenant` custom resource at `spec.apiKeys.maxExpirationDays` (e.g., 90 days). This prevents developers from creating permanent keys that become long-lived security liabilities. The `Tenant` CR is also where Platform Engineers configure global MaaS settings including telemetry options for showback (covered in detail in Module 9) and Gateway references.
+To enforce organizational key hygiene, administrators configure the global maximum expiration for all generated API keys in the `Tenant` custom resource at `spec.apiKeys.maxExpirationDays` (e.g., 90 days). This prevents developers from creating permanent keys that become long-lived security liabilities. The `Tenant` CR is also where Platform Engineers configure global MaaS settings including telemetry options for showback (covered in detail in Module 8) and Gateway references.
 
 _(For advanced multi-tenant governance patterns — preemption policies, cross-subscription fairness, and enterprise-scale rollout playbooks — see the supplemental rhoai3-mass2 deep-dive content.)_
 

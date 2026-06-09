@@ -1,8 +1,8 @@
-= Module 8 Runbook: Enabling Rapid Prototyping (Llama Stack, Gen AI Studio, & AI Hub)
+= Module 7 Runbook: Enabling Rapid Prototyping (Llama Stack, Gen AI Studio, & AI Hub)
 :navtitle: Runbook: Llama Stack & Studio
 :description: Core architectural concepts behind Llama Stack Distributions, Gen AI Studio Playgrounds, and AI Hub asset utilization.
 
-If you passed the Diagnostic Gateway, use this page as your quick-reference job aid. If you are building your foundational skills, read this carefully before proceeding to the interactive labs.
+If you passed the Readiness Assessment, use this page as your quick-reference job aid. If you are building your foundational skills, read this carefully before proceeding to the interactive labs.
 
 == Llama Stack vs. Standalone vLLM
 A standalone vLLM deployment only provides a raw inference endpoint. If developers want to build a Retrieval-Augmented Generation (RAG) application, they are forced to write complex "glue code" using external frameworks like LangChain. This forces developers to manually handle document chunking, generate embeddings, orchestrate similarity searches against vector stores, and format context windows.

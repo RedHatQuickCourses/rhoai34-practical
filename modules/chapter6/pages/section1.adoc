@@ -1,8 +1,8 @@
-= Module 7 Runbook: Hardware Profiles & GPU Performance
+= Module 6 Runbook: Hardware Profiles & GPU Performance
 :navtitle: Runbook: Hardware & Performance
 :description: Theoretical architecture for Hardware Profiles, MIG vs. Time-slicing, and DCGM Observability.
 
-If you passed the Diagnostic Gateway, use this page as your quick-reference job aid. If you are building your foundational skills, read this carefully before proceeding to the interactive labs.
+If you passed the Readiness Assessment, use this page as your quick-reference job aid. If you are building your foundational skills, read this carefully before proceeding to the interactive labs.
 
 == The Hierarchy of Hardware Governance
 In OpenShift AI 3.4, hardware is governed in a strict, layered hierarchy to keep physical drivers abstracted away from end users.

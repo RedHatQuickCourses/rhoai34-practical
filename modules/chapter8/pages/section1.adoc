@@ -1,8 +1,8 @@
-= Module 9 Runbook: Observability, Monitoring, & Platform Showback
+= Module 8 Runbook: Observability, Monitoring, & Platform Showback
 :navtitle: Runbook: Telemetry & Showback
 :description: Theoretical architecture for the OpenShift AI Telemetry flow, vLLM metrics, and Financial Showback.
 
-If you passed the Diagnostic Gateway, use this page as your quick-reference job aid. If you are building your foundational skills, read this carefully before proceeding to the interactive labs.
+If you passed the Readiness Assessment, use this page as your quick-reference job aid. If you are building your foundational skills, read this carefully before proceeding to the interactive labs.
 
 == The Full Stack Telemetry Flow
 Enterprise observability is not just about checking if a pod is running; it is about tracking the entire AI pipeline.

@@ -1,4 +1,4 @@
-= Module 1: Introduction and Overview
+= Introduction and Overview
 :navtitle: Introduction & Overview
 :description: A Practical Approach to OpenShift AI 3.4: Building the AI Engine Room
 
@@ -18,7 +18,7 @@ Your mandate is clear: Transform this fragmented chaos into a secure, governed, 
 
 This is a practical, hands-on series. Rather than just showing you the "happy path," we walk through the exact configurations and capabilities you will face in production. Each of the 8 modules follows a consistent three-part structure:
 
-1. **Diagnostic Quiz** — Test your existing knowledge before studying the material.
+1. **Readiness Assessment** — Test your existing knowledge before studying the material.
 2. **Runbook** — Architecture overview, anti-patterns, configuration cheat sheets, and business value context.
 3. **Interactive Labs** — UI click-path walkthroughs that let you practice without dedicated lab infrastructure.
 
@@ -35,22 +35,22 @@ OpenShift AI 3.4 brings massive updates that directly solve our CIO's crisis, ta
 === The Platform Engineer (Your Primary Role)
 You are responsible for securing the infrastructure, optimizing hardware utilization, and providing visibility into resource consumption.
 
-* **Modules 2-3:** Stand up the platform and govern access with MaaS subscriptions, token quotas, and self-service API keys.
-* **Modules 4-5:** Scale massive models across GPUs with llm-d and Kueue, and secure agentic workflows with the MCP Catalog and EvalHub.
-* **Modules 6-7:** Govern hardware sharing with Hardware Profiles and lock down model provenance with the Registry and OCI Modelcars.
-* **Modules 8-9:** Enable rapid prototyping with Llama Stack and the Gen AI Playground, then build enterprise observability with financial showback.
+* **Modules 1-2:** Stand up the platform and govern access with MaaS subscriptions, token quotas, and self-service API keys.
+* **Modules 3-4:** Scale massive models across GPUs with llm-d and Kueue, and secure agentic workflows with the MCP Catalog and EvalHub.
+* **Modules 5-6:** Govern hardware sharing with Hardware Profiles and lock down model provenance with the Registry and OCI Modelcars.
+* **Modules 7-8:** Enable rapid prototyping with Llama Stack and the Gen AI Playground, then build enterprise observability with financial showback.
 
 === The Data Scientist
 Focused on discovering the right models, ensuring their accuracy, and optimizing RAG pipelines.
 
-* **Module 5:** Use the MCP Catalog's "Tool calling" filter to identify validated agentic models, then run EvalHub benchmarks to guarantee safety.
-* **Module 7:** Register, version, and promote fine-tuned models through the Model Registry with immutable OCI Modelcars.
+* **Module 4:** Use the MCP Catalog's "Tool calling" filter to identify validated agentic models, then run EvalHub benchmarks to guarantee safety.
+* **Module 6:** Register, version, and promote fine-tuned models through the Model Registry with immutable OCI Modelcars.
 
 === The Application Developer
 Needs frictionless, self-service access to models and tools to build intelligent applications quickly.
 
-* **Module 3:** Generate self-service API keys scoped to MaaS subscriptions — no IT tickets required.
-* **Module 8:** Prototype foundation models and test agentic MCP tools in the Gen AI Playground before writing any application code.
+* **Module 2:** Generate self-service API keys scoped to MaaS subscriptions — no IT tickets required.
+* **Module 7:** Prototype foundation models and test agentic MCP tools in the Gen AI Playground before writing any application code.
 
 == Your IT Support Queue
 
@@ -66,42 +66,42 @@ The CIO's mandate has landed as 8 open tickets in your IT support queue. Each mo
 | AIOPS-001
 | P1
 | *Platform deployed but models unreachable.* A junior admin manually created a Kubernetes Route to expose a model endpoint, completely bypassing the Gateway API. MaaS token authentication, rate limiting, and Prometheus scraping are all broken.
-| xref:chapter1:section1.adoc[Module 2]
+| xref:chapter1:section1.adoc[Module 1]
 
 | AIOPS-002
 | P1
 | *$1.5M in shadow API spend.* 50 developers are sharing a single root OpenAI API key embedded directly in source code. Finance cannot attribute costs. A runaway loop in one developer's code exhausted the enterprise token limit, taking down all 50 applications.
-| xref:chapter2:section1.adoc[Module 3]
+| xref:chapter2:section1.adoc[Module 2]
 
 | AIOPS-003
 | P1
 | *70B model crashes with OOM on every deploy.* The team keeps increasing Pod replicas hoping the model will "spread out" — but each replica attempts to load the entire 140GB model into a single 24GB GPU. It just copies the failure four times.
-| xref:chapter3:section1.adoc[Module 4]
+| xref:chapter3:section1.adoc[Module 3]
 
 | AIOPS-004
 | P1
 | *Agent leaked Kafka credentials.* A developer embedded personal Confluent Cloud API keys directly into a LangChain script and exposed the agent to the internet. A prompt injection attack could exfiltrate sensitive shipping manifests with zero audit trail.
-| xref:chapter4:section1.adoc[Module 5]
+| xref:chapter4:section1.adoc[Module 4]
 
 | AIOPS-005
 | P2
 | *Production model silently corrupted.* A data scientist uploaded experimental weights to the same S3 URI used by the production InferenceService. The next pod restart loaded the broken model — no version control, no rollback, no audit trail.
-| xref:chapter5:section1.adoc[Module 6]
+| xref:chapter5:section1.adoc[Module 5]
 
 | AIOPS-006
 | P2
 | *$50K A100 GPU assigned to an idle Pandas notebook.* A data scientist selected "GPU Node" for basic exploratory analysis and left the notebook running over the weekend. Meanwhile, a critical LLM deployment failed with `Insufficient quota for nvidia.com/gpu`.
-| xref:chapter6:section1.adoc[Module 7]
+| xref:chapter6:section1.adoc[Module 6]
 
 | AIOPS-007
 | P2
 | *Developers waiting 3 weeks for a RAG stack.* The platform team handed off three disconnected endpoints (LLM, embeddings, vector DB). Developers spent weeks writing fragile LangChain glue code. When any backend changed, everything broke.
-| xref:chapter7:section1.adoc[Module 8]
+| xref:chapter7:section1.adoc[Module 7]
 
 | AIOPS-008
 | P2
 | *CIO demands cost attribution by Friday.* The team is parsing raw pod logs with a custom Python sidecar to count tokens for showback. It misses cached requests, overloads the logging infrastructure, and the report is inaccurate.
-| xref:chapter8:section1.adoc[Module 9]
+| xref:chapter8:section1.adoc[Module 8]
 |===
 
 
@@ -109,4 +109,4 @@ The CIO's mandate has landed as 8 open tickets in your IT support queue. Each mo
 
 You have 8 open tickets and one mandate: build the Enterprise AI Factory. Each module closes one ticket — by the end, your queue is clear and your platform is production-ready.
 
-Proceed to xref:chapter1:index.adoc[Module 2: Platform Setup & Readiness].
+Proceed to xref:chapter1:index.adoc[Module 1: Platform Setup & Readiness].

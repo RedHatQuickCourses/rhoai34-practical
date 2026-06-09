@@ -1,4 +1,4 @@
-= Interactive Quiz #5
+= 5: Model Catalog, Registry, and Storage
 
 ++++
 <iframe type="text/javascript" src='_attachments/s5-quiz.html' style="width: 1024px; height: 800px" allowfullscreen webkitallowfullscreen mozAllowFullScreen allow="autoplay *; fullscreen *; encrypted-media *" frameborder="0"></iframe>

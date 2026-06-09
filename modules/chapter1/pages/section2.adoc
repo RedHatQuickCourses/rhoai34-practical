@@ -60,4 +60,4 @@ It is time to step into the Engine Room. In these interactive labs, you will exe
 6. Click **Deploy** and wait for the status checkmark to turn green.
 ====
 
-**Module Complete!** You have successfully laid the foundation. You are now ready to govern this platform using Models-as-a-Service in Module 3.
+**Module Complete!** You have successfully laid the foundation. You are now ready to govern this platform using Models-as-a-Service in Module 2.

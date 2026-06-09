@@ -1,8 +1,8 @@
-= Module 4 Runbook: Scaling Massive Models
+= Module 3 Runbook: Scaling Massive Models
 :navtitle: Runbook: Distributed Inference & Kueue
 :description: Theoretical architecture and Anti-Pattern for Kueue and llm-d.
 
-If you passed the Diagnostic Gateway, use this page as your quick-reference job aid. If you are building your foundational skills, read this carefully before proceeding to the interactive labs.
+If you passed the Readiness Assessment, use this page as your quick-reference job aid. If you are building your foundational skills, read this carefully before proceeding to the interactive labs.
 
 == Why Massive LLMs Require Distributed Inference
 A common misconception is that standard Kubernetes autoscaling or adding more Pod replicas will solve Out of Memory (OOM) errors for large models. It will not. 

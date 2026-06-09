@@ -1,4 +1,4 @@
-= Interactive Quiz #7
+= 7: Enabling Rapid Prototyping (Llama Stack, Gen AI Studio, & AI Hub)
 
 ++++
 <iframe type="text/javascript" src='_attachments/s7-quiz.html' style="width: 1024px; height: 800px" allowfullscreen webkitallowfullscreen mozAllowFullScreen allow="autoplay *; fullscreen *; encrypted-media *" frameborder="0"></iframe>
